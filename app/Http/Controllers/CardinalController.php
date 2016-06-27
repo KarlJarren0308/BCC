@@ -10,6 +10,7 @@ use App\TblAccounts;
 use App\TblBooks;
 use App\TblBounds;
 use App\TblLibrarians;
+use App\TblReservations;
 use App\TblStudents;
 
 date_default_timezone_set('Asia/Manila');
@@ -42,6 +43,19 @@ class CardinalController extends Controller
         return view('cardinal.opac', $data);
     }
 
+    public function getReservations() {
+        if(!session()->has('username')) {
+            session()->flash('flash_status', 'danger');
+            session()->flash('flash_message', 'Oops! Please login first.');
+
+            return redirect()->route('cardinal.getIndex');
+        }
+
+        $data['reservations'] = TblReservations::where('Username', session()->get('username'))->join('tbl_books', 'tbl_reservations.Book_ID', '=', 'tbl_books.Book_ID')->get();
+
+        return view('cardinal.my_reservations', $data);
+    }
+
     public function getForgotPassword() {
         return view('cardinal.forgot_password');
     }
@@ -52,21 +66,65 @@ class CardinalController extends Controller
         return redirect()->route('cardinal.getIndex');
     }
 
-    public function postData($key, Request $request) {
+    public function postReserve(Request $request) {
         if(!session()->has('username')) {
-            session()->flash('flash_status', 'danger');
-            session()->flash('flash_message', 'Oops! Please login first.');
+            return response()->json(array('status' => 'Failed', 'message' => 'Oops! Please login first...'));
+        }
 
-            return redirect()->route('cardinal.getIndex');
+        $query = TblReservations::where('Book_ID', $request->input('id'))->where('Username', session()->get('username'))->where('Status', 'active')->first();
+
+        if(!$query) {
+            $query = TblReservations::insert(array(
+                'Book_ID' => $request->input('id'),
+                'Username' => session()->get('username'),
+                'Date_Stamp' => date('Y-m-d'),
+                'Time_Stamp' => date('H:i:s')
+            ));
+
+            if($query) {
+                return response()->json(array('status' => 'Success', 'message' => 'You have reserved a copy of this book.'));
+            } else {
+                return response()->json(array('status' => 'Failed', 'message' => 'Oops! Failed to reserve a copy of this book.'));
+            }
+        } else {
+            return response()->json(array('status' => 'Failed', 'message' => 'Oops! You already reserved a copy of this book.'));
+        }
+    }
+
+    public function postCancelReservation(Request $request) {
+        if(!session()->has('username')) {
+            return response()->json(array('status' => 'Failed', 'message' => 'Oops! Please login first...'));
+        }
+
+        /*$query = TblReservations::where('Reservation_ID', $request->input('id'))->where('Status', 'active')->first();
+
+        if($query) {
+            $query = TblReservations::where('Reservation_ID', $request->input('id'))->update(array(
+                'Status' => 'inactive'
+            ));
+
+            if($query) {
+                return response()->json(array('status' => 'Success', 'message' => 'You have reserved a copy of this book.'));
+            } else {
+                return response()->json(array('status' => 'Failed', 'message' => 'Oops! Failed to reserve a copy of this book.'));
+            }
+        }*/
+        return response()->json(array('status' => 'Success', 'message' => 'Daebak'));
+    }
+
+    public function postRequestData($key, Request $request) {
+        if(!session()->has('username')) {
+            return response()->json(array('status' => 'Failed', 'message' => 'Oops! Please login first...'));
         }
 
         switch($key) {
             case 'd4cf32e8303053a4d7ba0f0859297f83':
                 // Request Book Information
 
-                $query = TblBooks::where('Book_ID', $request->input('id'))->first();
+                $book = TblBooks::where('Book_ID', $request->input('id'))->first();
+                $authors = TblBounds::where('tbl_bounds.Book_ID', $request->input('id'))->join('tbl_authors', 'tbl_bounds.Author_ID', '=', 'tbl_authors.Author_ID')->get();
 
-                return response()->json(array('status' => 'Success', 'data' => $query));
+                return response()->json(array('status' => 'Success', 'data' => array('book' => $book, 'authors' => $authors)));
 
                 break;
             default:
