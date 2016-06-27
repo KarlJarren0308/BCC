@@ -2,6 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+@yield('meta_tags')
     <title>Binangonan Catholic College</title>
     <link rel="shortcut icon" href="/img/logo.png">
     <link rel="stylesheet" href="/css/bootstrap.min.css">

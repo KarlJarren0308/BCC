@@ -18,4 +18,5 @@ Route::get('account_information', array('as' => 'cardinal.getAccountInformation'
 Route::get('login', array('as' => 'cardinal.getForgotPassword', 'uses' => 'CardinalController@getForgotPassword'));
 Route::get('dashboard', array('as' => 'dashboard.getIndex', 'uses' => 'DashboardController@getIndex'));
 
+Route::post('data/{key}', array('as' => 'cardinal.postData', 'uses' => 'CardinalController@postData'));
 Route::post('login', array('as' => 'cardinal.postLogin', 'uses' => 'CardinalController@postLogin'));

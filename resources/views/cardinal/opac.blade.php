@@ -1,5 +1,9 @@
 @extends('template')
 
+@section('meta_tags')
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+@stop
+
 @section('content')
     <div id="wrapper">
         <nav class="navbar navbar-custom navbar-static-top" role="navigation" style="margin-bottom: 0">
@@ -52,7 +56,60 @@
                 </div>
             </div>
             <table id="books-table" class="table table-bordered table-striped">
+                <thead>
+                    <tr>
+                        <th>Call Number</th>
+                        <th>Title</th>
+                        <th>Edition</th>
+                        <th>Copyright Year</th>
+                        <th>Author(s)</th>
+                        <th width="15%"></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach($books as $book)
+                        <tr>
+                            <td>{{ $book->Call_Number }}</td>
+                            <td>{{ $book->Title }}</td>
+                            <td>{{ $book->Edition }}</td>
+                            <td>{{ $book->Copyright_Year }}</td>
+                            <td>
+                                <?php $isFirst = true; ?>
+                                @foreach($bounds as $bound)
+                                    @if($bound->Book_ID == $book->Book_ID)
+                                        @if($isFirst)
+                                            <?php $isFirst = false; ?>
+                                        @else
+                                            <br>
+                                        @endif
+
+                                        @if(strlen($bound->Middle_Name) > 1)
+                                            {{ $bound->First_Name . ' ' . substr($bound->Middle_Name, 0, 1) . '. ' . $bound->Last_Name }}
+                                        @else
+                                            {{ $bound->First_Name . ' ' . $bound->Last_Name }}
+                                        @endif
+                                    @endif
+                                @endforeach
+                            </td>
+                            <td class="text-center">
+                                @if(session()->has('username'))
+                                    <button data-button="view-button" data-var-id="{{ $book->Book_ID }}" class="btn btn-primary btn-xs">View Info</button>
+                                    <a href="{{ 'TODO' }}" class="btn btn-danger btn-xs">Reserve</a>
+                                @endif
+                            </td>
+                        </tr>
+                    @endforeach
+                </tbody>
             </table>
+        </div>
+    </div>
+    <div class="modal fade">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header"></div>
+                <div class="modal-body"></div>
+                <div class="modal-footer"></div>
+            </div>
         </div>
     </div>
 @stop

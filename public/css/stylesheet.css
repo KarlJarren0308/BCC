@@ -36,6 +36,14 @@ hr {
     color: white;
 }
 
+.no-margin {
+    margin: 0;
+}
+
+.no-padding {
+    padding: 0;
+}
+
 .gap {
     margin: 5px;
 }
@@ -62,14 +70,6 @@ hr {
 
 .gap-horizontal {
     margin: 0 5px;
-}
-
-.no-margin {
-    margin: 0;
-}
-
-.no-padding {
-    padding: 0;
 }
 
 .pad {

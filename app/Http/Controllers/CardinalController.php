@@ -36,7 +36,10 @@ class CardinalController extends Controller
             return redirect()->route('cardinal.getIndex');
         }
 
-        return view('cardinal.opac');
+        $data['bounds'] = TblBounds::join('tbl_authors', 'tbl_bounds.Author_ID', '=', 'tbl_authors.Author_ID')->get();
+        $data['books'] = TblBooks::get();
+
+        return view('cardinal.opac', $data);
     }
 
     public function getForgotPassword() {
@@ -47,6 +50,30 @@ class CardinalController extends Controller
         session()->flush();
 
         return redirect()->route('cardinal.getIndex');
+    }
+
+    public function postData($key, Request $request) {
+        if(!session()->has('username')) {
+            session()->flash('flash_status', 'danger');
+            session()->flash('flash_message', 'Oops! Please login first.');
+
+            return redirect()->route('cardinal.getIndex');
+        }
+
+        switch($key) {
+            case 'd4cf32e8303053a4d7ba0f0859297f83':
+                // Request Book Information
+
+                $query = TblBooks::where('Book_ID', $request->input('id'))->first();
+
+                return response()->json(array('status' => 'Success', 'data' => $query));
+
+                break;
+            default:
+                return response()->json(array('status' => 'Failed', 'message' => 'Oops! Insufficient request data.'));
+
+                break;
+        }
     }
 
     public function postLogin(Request $request) {
