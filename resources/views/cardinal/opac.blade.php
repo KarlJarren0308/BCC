@@ -46,6 +46,7 @@
                         </li>
                         <li><a href="{{ route('cardinal.getOpac') }}">Online Public Access Catalog</a></li>
                         <li><a href="{{ route('cardinal.getReservations') }}">My Reservations</a></li>
+                        <li><a href="{{ route('cardinal.getBorrowedBooks') }}">Borrowed Books</a></li>
                     </ul>
                 </div>
             </div>

@@ -46,6 +46,7 @@
                         </li>
                         <li><a href="{{ route('cardinal.getOpac') }}">Online Public Access Catalog</a></li>
                         <li><a href="{{ route('cardinal.getReservations') }}">My Reservations</a></li>
+                        <li><a href="{{ route('cardinal.getBorrowedBooks') }}">Borrowed Books</a></li>
                     </ul>
                 </div>
             </div>
@@ -65,7 +66,8 @@
                         <th>Copyright Year</th>
                         <th>Date & Time Reserved</th>
                         <th>Expiration Date & Time</th>
-                        <th width="15%"></th>
+                        <th>Status</th>
+                        <th width="15%">Action</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -78,8 +80,19 @@
                             <td>{{ $reservation->Copyright_Year }}</td>
                             <td>{{ date('F d, Y (h:i A)', $datetime) }}</td>
                             <td>{{ date('F d, Y (h:i A)', strtotime('+1 day', $datetime)) }}</td>
+                            <td>
+                                @if($reservation->Reservation_Status == 'active')
+                                    {{ 'Reserved' }}
+                                @else
+                                    @if($reservation->Reference_ID != null)
+                                        {{ 'On-Loan' }}
+                                    @else
+                                        {{ 'Cancelled' }}
+                                    @endif
+                                @endif
+                            </td>
                             <td class="text-center">
-                                @if($reservation->Status == 'active')
+                                @if($reservation->Reservation_Status == 'active')
                                     <button data-button="cancel-reservation-button" data-var-id="{{ $reservation->Reservation_ID }}" class="btn btn-danger btn-xs">Cancel Reservation</a>
                                 @endif
                             </td>

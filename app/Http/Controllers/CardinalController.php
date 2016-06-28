@@ -10,6 +10,7 @@ use App\TblAccounts;
 use App\TblBooks;
 use App\TblBounds;
 use App\TblLibrarians;
+use App\TblLoans;
 use App\TblReservations;
 use App\TblStudents;
 
@@ -51,9 +52,22 @@ class CardinalController extends Controller
             return redirect()->route('cardinal.getIndex');
         }
 
-        $data['reservations'] = TblReservations::where('Username', session()->get('username'))->join('tbl_books', 'tbl_reservations.Book_ID', '=', 'tbl_books.Book_ID')->get();
+        $data['reservations'] = TblReservations::where('tbl_reservations.Username', session()->get('username'))->join('tbl_books', 'tbl_reservations.Book_ID', '=', 'tbl_books.Book_ID')->leftJoin('tbl_loans', 'tbl_reservations.Reservation_ID', '=', 'tbl_loans.Reference_ID')->get();
 
         return view('cardinal.my_reservations', $data);
+    }
+
+    public function getBorrowedBooks() {
+        if(!session()->has('username')) {
+            session()->flash('flash_status', 'danger');
+            session()->flash('flash_message', 'Oops! Please login first.');
+
+            return redirect()->route('cardinal.getIndex');
+        }
+
+        $data['borrowed_books'] = TblLoans::where('tbl_loans.Username', session()->get('username'))->join('tbl_books', 'tbl_loans.Book_ID', '=', 'tbl_books.Book_ID')->leftJoin('tbl_receives', 'tbl_loans.Loan_ID', '=', 'tbl_receives.Reference_ID')->get();
+
+        return view('cardinal.borrowed_books', $data);
     }
 
     public function getForgotPassword() {
@@ -71,18 +85,18 @@ class CardinalController extends Controller
             return response()->json(array('status' => 'Failed', 'message' => 'Oops! Please login first...'));
         }
 
-        $query = TblReservations::where('Book_ID', $request->input('id'))->where('Username', session()->get('username'))->where('Status', 'active')->first();
+        $query = TblReservations::where('Book_ID', $request->input('id'))->where('Username', session()->get('username'))->where('Reservation_Status', 'active')->first();
 
         if(!$query) {
             $query = TblReservations::insert(array(
                 'Book_ID' => $request->input('id'),
                 'Username' => session()->get('username'),
-                'Date_Stamp' => date('Y-m-d'),
-                'Time_Stamp' => date('H:i:s')
+                'Reservation_Date_Stamp' => date('Y-m-d'),
+                'Reservation_Time_Stamp' => date('H:i:s')
             ));
 
             if($query) {
-                return response()->json(array('status' => 'Success', 'message' => 'You have reserved a copy of this book.'));
+                return response()->json(array('status' => 'Success', 'message' => 'You have successfully reserved a copy of this book.'));
             } else {
                 return response()->json(array('status' => 'Failed', 'message' => 'Oops! Failed to reserve a copy of this book.'));
             }
@@ -96,20 +110,21 @@ class CardinalController extends Controller
             return response()->json(array('status' => 'Failed', 'message' => 'Oops! Please login first...'));
         }
 
-        /*$query = TblReservations::where('Reservation_ID', $request->input('id'))->where('Status', 'active')->first();
+        $query = TblReservations::where('Reservation_ID', $request->input('id'))->first();
 
         if($query) {
             $query = TblReservations::where('Reservation_ID', $request->input('id'))->update(array(
-                'Status' => 'inactive'
+                'Reservation_Status' => 'inactive'
             ));
 
             if($query) {
-                return response()->json(array('status' => 'Success', 'message' => 'You have reserved a copy of this book.'));
+                return response()->json(array('status' => 'Success', 'message' => 'You have successfully cancelled your reservation.'));
             } else {
-                return response()->json(array('status' => 'Failed', 'message' => 'Oops! Failed to reserve a copy of this book.'));
+                return response()->json(array('status' => 'Failed', 'message' => 'Oops! Failed to cancel reservation.'));
             }
-        }*/
-        return response()->json(array('status' => 'Success', 'message' => 'Daebak'));
+        } else {
+            return response()->json(array('status' => 'Failed', 'message' => 'Oops! Reservation doesn\'t exist.'));
+        }
     }
 
     public function postRequestData($key, Request $request) {
