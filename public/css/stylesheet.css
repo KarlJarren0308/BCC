@@ -134,6 +134,12 @@ hr {
     padding: 0 25px;
 }
 
+.modal-header {
+    background: #dd1e2f;
+    border-radius: 5px 5px 0 0;
+    color: white;
+}
+
 .navbar.navbar-custom {
     background-color: #dd1e2f;
     border-color: #bf1b2a;

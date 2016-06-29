@@ -2,7 +2,6 @@
 
 @section('content')
     <div id="wrapper">
-        <!-- Navigation -->
         <nav class="navbar navbar-custom navbar-static-top" role="navigation" style="margin-bottom: 0">
             <div class="navbar-header">
                 <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
@@ -40,20 +39,23 @@
                             <div class="text-left">{{ session()->get('type') }}</div>
                         </li>
                         <li><a href="{{ route('dashboard.getIndex') }}">Dashboard</a></li>
+                        <li><a href="{{ route('dashboard.getLoanBooks') }}">Loan Books</a></li>
+                        <li><a href="{{ route('dashboard.getReservedBooks') }}">Reserved Books</a></li>
+                        <li><a href="{{ route('dashboard.getReceiveBooks') }}">Receive Books</a></li>
+                        <li><a href="{{ route('dashboard.getManageRecords', 'books') }}">Manage Book Records</a></li>
+                        <li><a href="{{ route('dashboard.getManageRecords', 'authors') }}">Manage Author Records</a></li>
+                        <li><a href="{{ route('dashboard.getManageRecords', 'publishers') }}">Manage Publisher Records</a></li>
+                        <li><a href="{{ route('dashboard.getManageRecords', 'categories') }}">Manage Categorie Records</a></li>
                     </ul>
                 </div>
-                <!-- /.sidebar-collapse -->
             </div>
-            <!-- /.navbar-static-side -->
         </nav>
         <div id="page-wrapper">
             <div class="row">
                 <div class="col-lg-12">
                     <h1 class="page-header">Dashboard</h1>
                 </div>
-                <!-- /.col-lg-12 -->
             </div>
-            <!-- /.row -->
             <div class="row">
                 <div class="col-lg-3 col-md-6">
                     <div class="panel panel-primary">
@@ -144,9 +146,6 @@
                     </div>
                 </div>
             </div>
-            <!-- /.row -->
         </div>
-        <!-- /#page-wrapper -->
     </div>
-    <!-- /#wrapper -->
 @stop

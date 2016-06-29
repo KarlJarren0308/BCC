@@ -67,7 +67,7 @@
                         <th>Date & Time Reserved</th>
                         <th>Expiration Date & Time</th>
                         <th>Status</th>
-                        <th width="15%">Action</th>
+                        <th width="15%"></th>
                     </tr>
                 </thead>
                 <tbody>

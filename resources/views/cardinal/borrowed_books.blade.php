@@ -78,7 +78,11 @@
                             <td>{{ $borrowed_book->Edition }}</td>
                             <td>{{ $borrowed_book->Copyright_Year }}</td>
                             <td>{{ date('F d, Y (h:i A)', $loanDatetime) }}</td>
-                            <td>{{ date('F d, Y (h:i A)', $receiveDatetime) }}</td>
+                            <td>
+                                @if($borrowed_book->Loan_Status == 'inactive')
+                                    {{ date('F d, Y (h:i A)', $receiveDatetime) }}
+                                @endif
+                            </td>
                             <td>
                                 <!-- TODO: Compute for penalty -->
                                 {{ '&#8369; 0.00' }}
