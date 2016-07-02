@@ -45,7 +45,7 @@
                         <li><a href="{{ route('dashboard.getManageRecords', 'books') }}">Manage Book Records</a></li>
                         <li><a href="{{ route('dashboard.getManageRecords', 'authors') }}">Manage Author Records</a></li>
                         <li><a href="{{ route('dashboard.getManageRecords', 'publishers') }}">Manage Publisher Records</a></li>
-                        <li><a href="{{ route('dashboard.getManageRecords', 'categories') }}">Manage Categorie Records</a></li>
+                        <li><a href="{{ route('dashboard.getManageRecords', 'categories') }}">Manage Categories Records</a></li>
                     </ul>
                 </div>
             </div>

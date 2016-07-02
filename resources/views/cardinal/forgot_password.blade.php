@@ -34,7 +34,7 @@
                 <img src="/img/logo.png" id="logo">
             </div>
             <div class="col-sm-6">
-                {!! Form::open(array('route' => 'core.postLogin')) !!}
+                {!! Form::open(['route' => 'core.postLogin']) !!}
                     <div class="form-group">
                         {!! Form::label('username', 'Username:', array('class' => 'fg-yellow')) !!}
                         {!! Form::text('username', null, array('class' => 'form-control', 'placeholder' => 'Enter Username Here', 'required' => 'required', 'autofocus' => 'autofocus')) !!}

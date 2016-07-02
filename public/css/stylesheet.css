@@ -20,6 +20,10 @@ hr {
     background: #f0ad4e;
 }
 
+.enclosure {
+    margin: 0 10%;
+}
+
 .fg-red {
     color: #dd1e2f;
 }
@@ -190,6 +194,8 @@ hr {
 
 #page-wrapper {
     border-left: none;
+    padding-bottom: 25px;
+    height: 100%;
 }
 
 #dashboard-container {

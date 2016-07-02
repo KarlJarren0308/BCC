@@ -10,7 +10,7 @@ $(document).ready(function() {
         openModal();
 
         $.ajax({
-            url: '/public_data/d4cf32e8303053a4d7ba0f0859297f83',
+            url: '/data/d4cf32e8303053a4d7ba0f0859297f83',
             method: 'POST',
             headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
             data: {

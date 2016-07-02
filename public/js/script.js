@@ -34,3 +34,11 @@ function unsetModalContent() {
 function onDataButtonClick(dataButton, func) {
     $('[data-button="' + dataButton + '"]').click(func);
 }
+
+function onDataFormSubmit(dataForm, func) {
+    $('[data-form="' + dataForm + '"]').submit(func);
+}
+
+function onDynamicDataButtonClick(dataButton, func) {
+    $('body').on('click', '[data-button="' + dataButton + '"]', func);
+}

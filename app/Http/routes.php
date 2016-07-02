@@ -28,6 +28,8 @@ Route::get('edit_record/{what}/{id}', array('as' => 'dashboard.getEditRecord', '
 
 Route::post('opac/reserve', array('as' => 'cardinal.postReserve', 'uses' => 'CardinalController@postReserve'));
 Route::post('opac/cancel_reservation', array('as' => 'cardinal.postCancelReservation', 'uses' => 'CardinalController@postCancelReservation'));
-Route::post('public_data/{key}', array('as' => 'cardinal.postRequestData', 'uses' => 'CardinalController@postRequestData'));
 Route::post('login', array('as' => 'cardinal.postLogin', 'uses' => 'CardinalController@postLogin'));
-Route::post('private_data/{key}', array('as' => 'cardinal.postRequestData', 'uses' => 'CardinalController@postRequestData'));
+Route::post('add_record/{what}', array('as' => 'dashboard.postAddRecord', 'uses' => 'DashboardController@postAddRecord'));
+Route::post('edit_record/{what}/{id}', array('as' => 'dashboard.postEditRecord', 'uses' => 'DashboardController@postEditRecord'));
+
+Route::post('data/{key}', array('as' => 'data.postRequestData', 'uses' => 'DataController@postRequestData'));

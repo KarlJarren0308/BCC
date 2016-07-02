@@ -42,7 +42,7 @@
             <div class="col-md-6" style="padding: 0 75px;">
                 <h1 class="fg-white">Login</h1>
                 <hr>
-                {!! Form::open(array('route' => 'cardinal.postLogin')) !!}
+                {!! Form::open(['route' => 'cardinal.postLogin']) !!}
                     <div class="form-group">
                         {!! Form::label('username', 'Username:', array('class' => 'fg-yellow')) !!}
                         {!! Form::text('username', null, array('class' => 'form-control', 'placeholder' => 'Enter Username Here', 'required' => 'required', 'autofocus' => 'autofocus')) !!}
