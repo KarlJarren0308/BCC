@@ -114,7 +114,7 @@
                         <div class="col-sm-3">
                             <div class="form-group">
                                 {!! Form::label('numberOfCopies', 'Number of Copies:') !!}
-                                {!! Form::text('numberOfCopies', null, ['class' => 'form-control', 'placeholder' => '', 'required' => 'required']) !!}
+                                {!! Form::number('numberOfCopies', null, ['class' => 'form-control', 'min' => '1', 'value' => '1', 'placeholder' => '', 'required' => 'required']) !!}
                             </div>
                         </div>
                     </div>
@@ -168,7 +168,7 @@
                             </select>
                         </div>
                     </div>
-                    <div class="form-group text-right">
+                    <div class="form-group text-right no-margin">
                         <input type="submit" class="btn btn-primary" value="Add Book">
                     </div>
                 </div>

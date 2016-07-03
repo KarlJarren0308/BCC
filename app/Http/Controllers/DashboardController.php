@@ -90,6 +90,27 @@ class DashboardController extends Controller
         }
     }
 
+    public function getBarcodes($id) {
+        if(!session()->has('username')) {
+            session()->flash('flash_status', 'danger');
+            session()->flash('flash_message', 'Oops! Please login first.');
+
+            return redirect()->route('cardinal.getIndex');
+        } else {
+            if(session()->get('type') != 'Librarian') {
+                session()->flash('flash_status', 'danger');
+                session()->flash('flash_message', 'Oops! You do not have to privilege to access the dashboard.');
+
+                return redirect()->route('cardinal.getOpac');
+            }
+        }
+
+        $data['book'] = TblBooks::where('Book_ID', $id)->first();
+        $data['barcodes'] = TblBarcodes::where('Book_ID', $id)->get();
+
+        return view('dashboard.manage_records.barcodes', $data);
+    }
+
     public function getAddRecord($what) {
         if(!session()->has('username')) {
             session()->flash('flash_status', 'danger');
@@ -165,6 +186,39 @@ class DashboardController extends Controller
         }
     }
 
+    public function postAddBarcode(Request $request) {
+        if(!session()->has('username')) {
+            return response()->json(array('status' => 'Failed', 'message' => 'Oops! Please login first...'));
+        } else {
+            if(session()->get('type') != 'Librarian') {
+                return response()->json(array('status' => 'Failed', 'message' => 'Oops! You do not have to privilege to access the dashboard.'));
+            }
+        }
+
+        $addedBarcodes = 0;
+
+        for($i = 0; $i < $request->input('numberOfCopies'); $i++) {
+            $generatedBarcode = mt_rand(0, 9) . mt_rand(0, 9) . mt_rand(0, 9) . mt_rand(0, 9) . mt_rand(0, 9);
+
+            $query = TblBarcodes::insert([
+                'Barcode_Number' => $generatedBarcode,
+                'Book_ID' => $request->input('id')
+            ]);
+
+            if($query) {
+                $addedBarcodes++;
+            } else {
+                $i--;
+            }
+        }
+
+        if($addedBarcodes > 0) {
+            return response()->json(array('status' => 'Success', 'message' => $addedBarcodes . ' barcode(s) has been added.'));
+        } else {
+            return response()->json(array('status' => 'Failed', 'message' => 'Oops! Failed to generate barcodes.'));
+        }
+    }
+
     public function postAddRecord($what, Request $request) {
         if(!session()->has('username')) {
             session()->flash('flash_status', 'danger');
@@ -196,7 +250,6 @@ class DashboardController extends Controller
                         'ISBN' => $request->input('isbn'),
                         'Location' => $request->input('location'),
                         'Copyright_Year' => $request->input('copyrightYear'),
-                        'Number_Of_Copies' => $request->input('numberOfCopies'),
                         'Publisher_ID' => $request->input('publisher'),
                         'Category_ID' => $request->input('category')
                     ]);

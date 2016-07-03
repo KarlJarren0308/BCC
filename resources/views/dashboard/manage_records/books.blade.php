@@ -64,7 +64,7 @@
                 @include('partials.flash_alert')
             </div>
             <div class="text-right gap-bottom">
-                <a href="{{ route('dashboard.getAddRecord', 'books') }}" class="btn btn-danger">New Record</a>
+                <a href="{{ route('dashboard.getAddRecord', 'books') }}" class="btn btn-primary">Add Book</a>
             </div>
             <table id="books-table" class="table table-bordered table-striped">
                 <thead>
@@ -105,6 +105,7 @@
                             <td class="text-center">
                                 @if(session()->has('username'))
                                     <button data-button="view-button" data-var-id="{{ $book->Book_ID }}" class="btn btn-primary btn-xs">View Info</button>
+                                    <a href="{{ route('dashboard.getBarcodes', $book->Book_ID) }}" class="btn btn-info btn-xs">Barcodes</a>
                                     <a href="{{ route('dashboard.getEditRecord', ['books', $book->Book_ID]) }}" class="btn btn-success btn-xs">Edit</a>
                                     <button data-button="delete-button" data-var-id="{{ $book->Book_ID }}" class="btn btn-danger btn-xs">Delete</button>
                                 @endif

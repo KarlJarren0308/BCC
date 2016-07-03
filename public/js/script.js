@@ -42,3 +42,7 @@ function onDataFormSubmit(dataForm, func) {
 function onDynamicDataButtonClick(dataButton, func) {
     $('body').on('click', '[data-button="' + dataButton + '"]', func);
 }
+
+function onDynamicDataFormSubmit(dataForm, func) {
+    $('body').on('submit', '[data-form="' + dataForm + '"]', func);
+}

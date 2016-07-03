@@ -173,7 +173,7 @@
                             </div>
                         @endforeach
                     </div>
-                    <div class="form-group text-right">
+                    <div class="form-group text-right no-margin">
                         <input type="submit" class="btn btn-primary" value="Edit Book">
                     </div>
                 </div>
