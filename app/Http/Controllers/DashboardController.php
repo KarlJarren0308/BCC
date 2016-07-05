@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 
 use App\Http\Requests;
 
+use App\TblAccounts;
 use App\TblAuthors;
 use App\TblBarcodes;
 use App\TblBooks;
@@ -85,6 +86,20 @@ class DashboardController extends Controller
                 break;
             case 'categories':
                 break;
+            case 'borrowers':
+                $data['borrowers'] = TblAccounts::where('tbl_accounts.Type', '!=', 'Librarian')->leftJoin('tbl_faculties', function($join) {
+                        $join->on('tbl_accounts.Owner_ID', '=', 'tbl_faculties.Faculty_ID')->where('tbl_accounts.Type', '=', 'Faculty');
+                    })
+                    ->leftJoin('tbl_students', function($join) {
+                        $join->on('tbl_accounts.Owner_ID', '=', 'tbl_students.Student_ID')->where('tbl_accounts.Type', '=', 'Student');
+                })->get();
+                return view('dashboard.manage_records.borrowers', $data);
+
+                break;
+            case 'librarians':
+                return view('dashboard.manage_records.librarians', $data);
+
+                break;
             default:
                 break;
         }
@@ -141,6 +156,12 @@ class DashboardController extends Controller
             case 'publishers':
                 break;
             case 'categories':
+                break;
+            case 'borrowers':
+                return view('dashboard.manage_records.add_borrowers');
+
+                break;
+            case 'librarians':
                 break;
             default:
                 break;

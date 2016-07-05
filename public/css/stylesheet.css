@@ -132,6 +132,28 @@ hr {
     color: #6f5425;
 }
 
+.loadr {
+    background: rgba(25, 40, 35, 0.5);
+    display: none;
+    position: fixed;
+    z-index: 99999;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+}
+
+.loadr > .loadr-dialog {
+    background: white;
+    box-shadow: 0 2px 2px rgba(25, 40, 35, 0.5);
+    position: absolute;
+    padding: 25px;
+    top: 50px;
+    left: 50%;
+    margin-left: -150px;
+    width: 300px;
+}
+
 /* Custom */
 
 .container-fluid.custom {

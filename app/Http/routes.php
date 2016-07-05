@@ -31,7 +31,7 @@ Route::post('opac/reserve', array('as' => 'cardinal.postReserve', 'uses' => 'Car
 Route::post('opac/cancel_reservation', array('as' => 'cardinal.postCancelReservation', 'uses' => 'CardinalController@postCancelReservation'));
 Route::post('login', array('as' => 'cardinal.postLogin', 'uses' => 'CardinalController@postLogin'));
 Route::post('add_record/{what}', array('as' => 'dashboard.postAddRecord', 'uses' => 'DashboardController@postAddRecord'));
-Route::post('add_record/barcodes', array('as' => 'dashboard.postAddBarcode', 'uses' => 'DashboardController@postAddBarcode'));
+Route::post('generate_barcode', array('as' => 'dashboard.postAddBarcode', 'uses' => 'DashboardController@postAddBarcode'));
 Route::post('edit_record/{what}/{id}', array('as' => 'dashboard.postEditRecord', 'uses' => 'DashboardController@postEditRecord'));
 
 Route::post('data/{key}', array('as' => 'data.postRequestData', 'uses' => 'DataController@postRequestData'));

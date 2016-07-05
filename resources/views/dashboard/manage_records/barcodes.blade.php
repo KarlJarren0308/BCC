@@ -50,6 +50,8 @@
                         <li><a href="{{ route('dashboard.getManageRecords', 'authors') }}">Manage Author Records</a></li>
                         <li><a href="{{ route('dashboard.getManageRecords', 'publishers') }}">Manage Publisher Records</a></li>
                         <li><a href="{{ route('dashboard.getManageRecords', 'categories') }}">Manage Categories Records</a></li>
+                        <li><a href="{{ route('dashboard.getManageRecords', 'borrowers') }}">Manage Borrowers</a></li>
+                        <li><a href="{{ route('dashboard.getManageRecords', 'librarians') }}">Manage Librarians</a></li>
                     </ul>
                 </div>
             </div>
@@ -121,6 +123,14 @@
                 <div class="modal-header"></div>
                 <div class="modal-body"></div>
                 <div class="modal-footer"></div>
+            </div>
+        </div>
+    </div>
+    <div class="loadr">
+        <div class="loadr-dialog">
+            <div class="text-center">
+                <span class="fa fa-spinner fa-4x fa-pulse"></span>
+                <h4 class="no-margin gap-top">Please Wait...</h4>
             </div>
         </div>
     </div>

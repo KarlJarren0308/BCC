@@ -11,15 +11,15 @@ $(document).ready(function() {
     });
 
     onDynamicDataFormSubmit('add-barcode-form', function() {
-        var serializedInfo = $(this).serialize();
+        var serializedForm = $(this).serialize();
 
         setModalLoader();
 
         $.ajax({
-            url: '/add_record/barcodes',
+            url: '/generate_barcode',
             method: 'POST',
             headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
-            data: serializedInfo,
+            data: serializedForm,
             dataType: 'json',
             success: function(response) {
                 setModalContent('Add Barcode Status', response['message'], '');

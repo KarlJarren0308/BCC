@@ -25,6 +25,14 @@ function setModalLoader() {
     $('.modal .modal-footer').html('');
 }
 
+function showLoadrModal() {
+    $('.loadr').fadeIn(250);
+}
+
+function hideLoadrModal() {
+    $('.loadr').fadeOut(250);
+}
+
 function unsetModalContent() {
     $('.modal .modal-header').html('');
     $('.modal .modal-body').html('');
