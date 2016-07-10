@@ -9,6 +9,7 @@ use App\Http\Requests;
 use App\TblAccounts;
 use App\TblAuthors;
 use App\TblBarcodes;
+use App\TblBorrowers;
 use App\TblBooks;
 use App\TblBounds;
 use App\TblCategories;
@@ -87,16 +88,16 @@ class DashboardController extends Controller
             case 'categories':
                 break;
             case 'borrowers':
-                $data['borrowers'] = TblAccounts::where('tbl_accounts.Type', '!=', 'Librarian')->leftJoin('tbl_faculties', function($join) {
-                        $join->on('tbl_accounts.Owner_ID', '=', 'tbl_faculties.Faculty_ID')->where('tbl_accounts.Type', '=', 'Faculty');
-                    })
-                    ->leftJoin('tbl_students', function($join) {
-                        $join->on('tbl_accounts.Owner_ID', '=', 'tbl_students.Student_ID')->where('tbl_accounts.Type', '=', 'Student');
-                })->get();
+                $data['borrowers'] = TblAccounts::where('tbl_accounts.Type', '!=', 'Librarian')
+                    ->leftJoin('tbl_borrowers', 'tbl_accounts.Owner_ID', '=', 'tbl_borrowers.Borrower_ID')
+                ->get();
+
                 return view('dashboard.manage_records.borrowers', $data);
 
                 break;
             case 'librarians':
+                $data['librarians'] = TblAccounts::where('Type', 'Librarian')->join('tbl_librarians', 'tbl_accounts.Owner_ID', '=', 'tbl_librarians.Librarian_ID')->get();
+
                 return view('dashboard.manage_records.librarians', $data);
 
                 break;
@@ -162,6 +163,8 @@ class DashboardController extends Controller
 
                 break;
             case 'librarians':
+                return view('dashboard.manage_records.add_librarians');
+
                 break;
             default:
                 break;
@@ -201,6 +204,20 @@ class DashboardController extends Controller
             case 'publishers':
                 break;
             case 'categories':
+                break;
+            case 'borrowers':
+                $data['borrower'] = TblAccounts::where('tbl_accounts.Owner_ID', $id)->where('tbl_accounts.Type', '!=', 'Librarian')
+                    ->leftJoin('tbl_borrowers', 'tbl_accounts.Owner_ID', '=', 'tbl_borrowers.Borrower_ID')
+                ->first();
+                    
+                return view('dashboard.manage_records.edit_borrowers', $data);
+
+                break;
+            case 'librarians':
+                $data['librarian'] = TblAccounts::where('Username', $id)->where('Type', 'Librarian')->join('tbl_librarians', 'tbl_accounts.Owner_ID', '=', 'tbl_librarians.Librarian_ID')->first();
+
+                return view('dashboard.manage_records.edit_librarians', $data);
+
                 break;
             default:
                 break;
@@ -319,15 +336,61 @@ class DashboardController extends Controller
 
                 break;
             case 'authors':
-                return redirect()->route('dashboard.manage_records', $what);
+                return redirect()->route('dashboard.getManageRecords', $what);
 
                 break;
             case 'publishers':
-                return redirect()->route('dashboard.manage_records', $what);
+                return redirect()->route('dashboard.getManageRecords', $what);
 
                 break;
             case 'categories':
-                return redirect()->route('dashboard.manage_records', $what);
+                return redirect()->route('dashboard.getManageRecords', $what);
+
+                break;
+            case 'borrowers':
+                $query = TblAccounts::where('Username', $request->input('borrowerID'))->first();
+
+                if(!$query) {
+                    $query = TblBorrowers::where('First_Name', $request->input('firstName'))->where('Last_Name', $request->input('lastName'))->first();
+
+                    if(!$query) {
+                        $borrowerID = TblBorrowers::insertGetId([
+                            'First_Name' => $request->input('firstName'),
+                            'Middle_Name' => $request->input('middleName'),
+                            'Last_Name' => $request->input('lastName'),
+                            'Birth_Date' => $request->input('birthDate'),
+                            'Gender' => $request->input('gender')
+                        ]);
+
+                        if($borrowerID) {
+                            $query = TblAccounts::insert([
+                                'Username' => $request->input('borrowerID'),
+                                'Password' => md5($request->input('birthDate')),
+                                'Type' => $request->input('type'),
+                                'Owner_ID' => $borrowerID
+                            ]);
+
+                            if($query) {
+                                session()->flash('flash_status', 'success');
+                                session()->flash('flash_message', 'Borrower has been added.');
+                            } else {
+                                session()->flash('flash_status', 'danger');
+                                session()->flash('flash_message', 'Oops! Borrower has been added but failed to associate login account.');
+                            }
+                        } else {
+                            session()->flash('flash_status', 'danger');
+                            session()->flash('flash_message', 'Oops! Failed to add borrower. Please refresh the page and try again.');
+                        }
+                    } else {
+                        session()->flash('flash_status', 'danger');
+                        session()->flash('flash_message', 'Oops! Borrower already exist.');
+                    }
+                } else {
+                    session()->flash('flash_status', 'danger');
+                    session()->flash('flash_message', 'Oops! Borrower ID already in use by another person.');
+                }
+
+                return redirect()->route('dashboard.getManageRecords', $what);
 
                 break;
             default:
@@ -385,14 +448,14 @@ class DashboardController extends Controller
 
                         if($addedAuthors > 0) {
                             session()->flash('flash_status', 'success');
-                            session()->flash('flash_message', 'Book has been edited.');
+                            session()->flash('flash_message', 'Book has been updated.');
                         } else {
                             session()->flash('flash_status', 'warning');
-                            session()->flash('flash_message', 'Oops! Book has been edited but failed to associate author(s).');
+                            session()->flash('flash_message', 'Oops! Book has been updated but failed to associate author(s).');
                         }
                     } else {
                         session()->flash('flash_status', 'warning');
-                        session()->flash('flash_message', 'Oops! Failed to edit book. Please refresh the page and try again.');
+                        session()->flash('flash_message', 'Oops! Failed to update book. Please refresh the page and try again.');
                     }
                 } else {
                     session()->flash('flash_status', 'danger');
@@ -403,15 +466,58 @@ class DashboardController extends Controller
 
                 break;
             case 'authors':
-                return redirect()->route('dashboard.manage_records', $what);
+                return redirect()->route('dashboard.getManageRecords', $what);
 
                 break;
             case 'publishers':
-                return redirect()->route('dashboard.manage_records', $what);
+                return redirect()->route('dashboard.getManageRecords', $what);
 
                 break;
             case 'categories':
-                return redirect()->route('dashboard.manage_records', $what);
+                return redirect()->route('dashboard.getManageRecords', $what);
+
+                break;
+            case 'borrowers':
+                /*
+                    Possible Future Update(s):
+                    => Check if name is already in the database
+                */
+                $query = TblAccounts::where('Owner_ID', $id)->first();
+
+                if($query) {
+                    $query = TblAccounts::where('Username', $request->input('borrowerID'))->first();
+
+                    if(!$query || ($query && $query->Owner_ID == $id)) {
+                        $query1 = TblAccounts::where('Owner_ID', $id)->where('Type', '!=', 'Librarian')->update([
+                            'Username' => $request->input('borrowerID'),
+                            'Type' => $request->input('type')
+                        ]);
+
+                        $query2 = TblBorrowers::where('Borrower_ID', $id)->update([
+                            'First_Name' => $request->input('firstName'),
+                            'Middle_Name' => $request->input('middleName'),
+                            'Last_Name' => $request->input('lastName'),
+                            'Birth_Date' => $request->input('birthDate'),
+                            'Gender' => $request->input('gender')
+                        ]);
+
+                        if($query1 || $query2) {
+                            session()->flash('flash_status', 'success');
+                            session()->flash('flash_message', 'Borrower has been updated.');
+                        } else {
+                            session()->flash('flash_status', 'warning');
+                            session()->flash('flash_message', 'No changes has been made.');
+                        }
+                    } else {
+                        session()->flash('flash_status', 'danger');
+                        session()->flash('flash_message', 'Oops! Borrower ID already in use by another person.');
+                    }
+                } else {
+                    session()->flash('flash_status', 'danger');
+                    session()->flash('flash_message', 'Oops! Borrower doesn\'t exist.');
+                }
+                
+                return redirect()->route('dashboard.getManageRecords', $what);
 
                 break;
             default:

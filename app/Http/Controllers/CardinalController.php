@@ -8,11 +8,11 @@ use App\Http\Requests;
 
 use App\TblAccounts;
 use App\TblBooks;
+use App\TblBorrowers;
 use App\TblBounds;
 use App\TblLibrarians;
 use App\TblLoans;
 use App\TblReservations;
-use App\TblStudents;
 
 date_default_timezone_set('Asia/Manila');
 
@@ -133,13 +133,14 @@ class CardinalController extends Controller
         if($account) {
             switch($account->Type) {
                 case 'Faculty':
-                    $faculty = TblFaculties::where('Faculty_ID', $account->Owner_ID)->first();
+                case 'Student':
+                    $borrower = TblBorrowers::where('Borrower_ID', $account->Owner_ID)->first();
 
-                    if($faculty) {
+                    if($borrower) {
                         session()->put('username', $account->Username);
-                        session()->put('first_name', $faculty->First_Name);
-                        session()->put('middle_name', $faculty->Middle_Name);
-                        session()->put('last_name', $faculty->Last_Name);
+                        session()->put('first_name', $borrower->First_Name);
+                        session()->put('middle_name', $borrower->Middle_Name);
+                        session()->put('last_name', $borrower->Last_Name);
                         session()->put('type', $account->Type);
                         session()->put('owner', $account->Owner_ID);
 
@@ -159,21 +160,6 @@ class CardinalController extends Controller
                         session()->put('owner', $account->Owner_ID);
 
                         return redirect()->route('dashboard.getIndex');
-                    }
-
-                    break;
-                case 'Student':
-                    $student = TblStudents::where('Student_ID', $account->Owner_ID)->first();
-
-                    if($student) {
-                        session()->put('username', $account->Username);
-                        session()->put('first_name', $student->First_Name);
-                        session()->put('middle_name', $student->Middle_Name);
-                        session()->put('last_name', $student->Last_Name);
-                        session()->put('type', $account->Type);
-                        session()->put('owner', $account->Owner_ID);
-
-                        return redirect()->route('cardinal.getOpac');
                     }
 
                     break;

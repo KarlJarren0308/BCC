@@ -176,7 +176,7 @@
                         @endforeach
                     </div>
                     <div class="form-group text-right no-margin">
-                        <input type="submit" class="btn btn-primary" value="Edit Book">
+                        <input type="submit" class="btn btn-primary" value="Save Changes">
                     </div>
                 </div>
             {!! Form::close() !!}

@@ -3,7 +3,7 @@
 use Illuminate\Database\Seeder;
 
 use App\TblAccounts;
-use App\TblStudents;
+use App\TblBorrowers;
 use App\TblLibrarians;
 
 class AccountSeeder extends Seeder
@@ -16,8 +16,7 @@ class AccountSeeder extends Seeder
     public function run()
     {
         TblAccounts::truncate();
-        TblLibrarians::truncate();
-        TblStudents::truncate();
+        TblBorrowers::truncate();
 
         TblAccounts::insert(array(
             'Username' => 'librarian',
@@ -30,19 +29,6 @@ class AccountSeeder extends Seeder
             'Middle_Name' => '',
             'Last_Name' => 'Kayaba',
             'Birth_Date' => date('Y-m-d', strtotime('1996-01-01'))
-        ));
-
-        TblAccounts::insert(array(
-            'Username' => '20120123456',
-            'Password' => md5('asd123'),
-            'Type' => 'Student',
-            'Owner_ID' => 1
-        ));
-        TblStudents::insert(array(
-            'First_Name' => 'Kaaru',
-            'Middle_Name' => '',
-            'Last_Name' => 'Makuzo',
-            'Birth_Date' => date('Y-m-d', strtotime('1996-03-08'))
         ));
     }
 }
