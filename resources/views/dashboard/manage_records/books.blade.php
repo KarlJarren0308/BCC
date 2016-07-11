@@ -109,7 +109,7 @@
                                     <button data-button="view-button" data-var-id="{{ $book->Book_ID }}" class="btn btn-primary btn-xs">View Info</button>
                                     <a href="{{ route('dashboard.getBarcodes', $book->Book_ID) }}" class="btn btn-info btn-xs">Barcodes</a>
                                     <a href="{{ route('dashboard.getEditRecord', ['books', $book->Book_ID]) }}" class="btn btn-success btn-xs">Edit</a>
-                                    <button data-button="delete-button" data-var-id="{{ $book->Book_ID }}" class="btn btn-danger btn-xs">Delete</button>
+                                    <a href="{{ route('dashboard.getDeleteRecord', ['books', $book->Book_ID]) }}" class="btn btn-danger btn-xs">Delete</a>
                                 @endif
                             </td>
                         </tr>

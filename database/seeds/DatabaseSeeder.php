@@ -2,6 +2,10 @@
 
 use Illuminate\Database\Seeder;
 
+use App\TblAccounts;
+use App\TblBorrowers;
+use App\TblLibrarians;
+
 class DatabaseSeeder extends Seeder
 {
     /**
@@ -11,7 +15,12 @@ class DatabaseSeeder extends Seeder
      */
     public function run()
     {
-        $this->call(AccountSeeder::class);
+        TblAccounts::truncate();
+        TblBorrowers::truncate();
+        TblLibrarians::truncate();
+
+        $this->call(BorrowerSeeder::class);
         $this->call(BoundSeeder::class);
+        $this->call(LibrarianSeeder::class);
     }
 }

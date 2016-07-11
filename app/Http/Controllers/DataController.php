@@ -16,10 +16,6 @@ class DataController extends Controller
     public function postRequestData($what, Request $request) {
         if(!session()->has('username')) {
             return response()->json(array('status' => 'Failed', 'message' => 'Oops! Please login first...'));
-        } else {
-            if(session()->get('type') != 'Librarian') {
-                return response()->json(array('status' => 'Failed', 'message' => 'Oops! Unauthorizes access.'));
-            }
         }
 
         switch($what) {
@@ -29,7 +25,7 @@ class DataController extends Controller
                 $book = TblBooks::where('Book_ID', $request->input('id'))->first();
                 $authors = TblBounds::where('tbl_bounds.Book_ID', $request->input('id'))->join('tbl_authors', 'tbl_bounds.Author_ID', '=', 'tbl_authors.Author_ID')->get();
 
-                return response()->json(array('status' => 'Success', 'data' => array('book' => $book, 'authors' => $authors)));
+                return response()->json(array('status' => 'Success', 'data' => ['book' => $book, 'authors' => $authors]));
 
                 break;
             default:

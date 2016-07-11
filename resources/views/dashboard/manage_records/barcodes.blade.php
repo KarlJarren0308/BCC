@@ -62,9 +62,6 @@
                     <h1 class="page-header">Manage Barcodes</h1>
                 </div>
             </div>
-            <div class="text-left gap-bottom">
-                @include('partials.flash_alert')
-            </div>
             <div class="row">
                 <div class="col-sm-7">
                     <div class="text-left" style="margin-bottom: 25px;">
@@ -88,6 +85,9 @@
                     </table>
                 </div>
                 <div class="col-sm-5">
+                    <div class="text-left gap-bottom">
+                        @include('partials.flash_alert')
+                    </div>
                     <div class="text-right gap-bottom">
                         <button data-button="add-button" data-var-id="{{ $book->Book_ID }}" data-var-title="{{ $book->Title }}" class="btn btn-primary">Add Barcode</button>
                     </div>
@@ -106,7 +106,7 @@
                                     <td>{{ ucfirst($barcode->Status) }}</td>
                                     <td class="text-center">
                                         @if(session()->has('username'))
-                                            <button data-button="delete-button" data-var-id="{{ $barcode->Bacrode_Number }}" class="btn btn-danger btn-xs">Delete</button>
+                                            <a href="{{ route('dashboard.getDeleteRecord', ['barcodes', $barcode->Classification_ID]) }}" class="btn btn-danger btn-xs">Delete</a>
                                         @endif
                                     </td>
                                 </tr>

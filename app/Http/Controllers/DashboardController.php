@@ -13,6 +13,7 @@ use App\TblBorrowers;
 use App\TblBooks;
 use App\TblBounds;
 use App\TblCategories;
+use App\TblLibrarians;
 use App\TblPublishers;
 
 date_default_timezone_set('Asia/Manila');
@@ -244,7 +245,41 @@ class DashboardController extends Controller
         $data['id'] = $id;
 
         switch($what) {
+            case 'barcodes':
+                $barcode = TblBarcodes::where('Classification_ID', $id)->first();
+
+                if($barcode) {
+                    $query = TblBarcodes::where('Classification_ID', $id)->delete();
+
+                    if($query) {
+                        session()->flash('flash_status', 'success');
+                        session()->flash('flash_message', 'Book has been deleted.');
+                    } else {
+                        session()->flash('flash_status', 'danger');
+                        session()->flash('flash_message', 'Oops! Failed to delete book. Please refresh the page and try again.');
+                    }
+                } else {
+                    session()->flash('flash_status', 'danger');
+                    session()->flash('flash_message', 'Oops! Barcode doesn\'t exist anymore.');
+                }
+
+                return redirect()->route('dashboard.getBarcodes', $barcode['Book_ID']);
+
+                break;
             case 'books':
+                $query1 = TblBarcodes::where('Book_ID', $id)->delete();
+                $query2 = TblBooks::where('Book_ID', $id)->delete();
+
+                if($query1 && $query2) {
+                    session()->flash('flash_status', 'success');
+                    session()->flash('flash_message', 'Book has been deleted.');
+                } else {
+                    session()->flash('flash_status', 'danger');
+                    session()->flash('flash_message', 'Oops! Failed to delete book. Please refresh the page and try again.');
+                }
+
+                return redirect()->route('dashboard.getManageRecords', $what);
+
                 break;
             case 'authors':
                 break;
@@ -269,14 +304,14 @@ class DashboardController extends Controller
                 break;
             case 'librarians':
                 $query1 = TblLibrarians::where('Librarian_ID', $id)->delete();
-                $query2 = TblAccounts::where('Owner_ID', $id)->delete();
+                $query2 = TblAccounts::where('Owner_ID', $id)->where('Type', 'Librarian')->delete();
 
                 if($query1 && $query2) {
                     session()->flash('flash_status', 'success');
-                    session()->flash('flash_message', 'Borrower has been deleted.');
+                    session()->flash('flash_message', 'Librarian has been deleted.');
                 } else {
                     session()->flash('flash_status', 'danger');
-                    session()->flash('flash_message', 'Oops! Failed to delete borrower. Please refresh the page and try again.');
+                    session()->flash('flash_message', 'Oops! Failed to delete librarian. Please refresh the page and try again.');
                 }
 
                 return redirect()->route('dashboard.getManageRecords', $what);
@@ -298,11 +333,14 @@ class DashboardController extends Controller
 
         $addedBarcodes = 0;
 
+        $query = TblBarcodes::where('Book_ID', $request->input('id'))->orderBy('Barcode_Number', 'desc')->first();
+        $startCount = substr($query->Barcode_Number, 1);
+
         for($i = 0; $i < $request->input('numberOfCopies'); $i++) {
-            $generatedBarcode = mt_rand(0, 9) . mt_rand(0, 9) . mt_rand(0, 9) . mt_rand(0, 9) . mt_rand(0, 9);
+            $startCount++;
 
             $query = TblBarcodes::insert([
-                'Barcode_Number' => $generatedBarcode,
+                'Barcode_Number' => 'C' . sprintf('%04d', $startCount),
                 'Book_ID' => $request->input('id')
             ]);
 
@@ -357,12 +395,13 @@ class DashboardController extends Controller
 
                     if($bookID) {
                         $addedAuthors = 0;
+                        $startCount = 0;
 
                         for($i = 0; $i < $request->input('numberOfCopies'); $i++) {
-                            $generatedBarcode = mt_rand(0, 9) . mt_rand(0, 9) . mt_rand(0, 9) . mt_rand(0, 9) . mt_rand(0, 9);
+                            $startCount++;
 
                             $query = TblBarcodes::insert([
-                                'Barcode_Number' => $generatedBarcode,
+                                'Barcode_Number' => 'C' . sprintf('%04d', $startCount),
                                 'Book_ID' => $bookID
                             ]);
 

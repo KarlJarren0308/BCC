@@ -3,6 +3,7 @@
 use Illuminate\Database\Seeder;
 
 use App\TblAuthors;
+use App\TblBarcodes;
 use App\TblBooks;
 use App\TblBounds;
 use App\TblCategories;
@@ -18,18 +19,19 @@ class BoundSeeder extends Seeder
     public function run()
     {
         TblAuthors::truncate();
+        TblBarcodes::truncate();
         TblBooks::truncate();
         TblBounds::truncate();
         TblCategories::truncate();
         TblPublishers::truncate();
 
-        TblPublishers::insert(array(
+        TblPublishers::insert([
             'Publisher_Name' => 'HarperCollins'
-        ));
-        TblCategories::insert(array(
+        ]);
+        TblCategories::insert([
             'Category_Name' => 'Storybook'
-        ));
-        TblBooks::insert(array(
+        ]);
+        TblBooks::insert([
             'Title' => 'What I Wish I Knew When I Was 20',
             'Edition' => '1st',
             'Collection_Type' => 'Book',
@@ -37,18 +39,24 @@ class BoundSeeder extends Seeder
             'ISBN' => '978-0-06-187247-1',
             'Location' => '',
             'Copyright_Year' => '2009',
-            'Number_of_Copies' => '5',
             'Publisher_ID' => '1',
             'Category_ID' => '1'
-        ));
-        TblAuthors::insert(array(
+        ]);
+        TblAuthors::insert([
             'First_Name' => 'Tina',
             'Middle_Name' => '',
             'Last_Name' => 'Seelig'
-        ));
-        TblBounds::insert(array(
+        ]);
+        TblBounds::insert([
             'Book_ID' => '1',
             'Author_ID' => '1'
-        ));
+        ]);
+        TblBarcodes::insert([
+            ['Barcode_Number' => 'C0001', 'Book_ID' => '1'],
+            ['Barcode_Number' => 'C0002', 'Book_ID' => '1'],
+            ['Barcode_Number' => 'C0003', 'Book_ID' => '1'],
+            ['Barcode_Number' => 'C0004', 'Book_ID' => '1'],
+            ['Barcode_Number' => 'C0005', 'Book_ID' => '1']
+        ]);
     }
 }
