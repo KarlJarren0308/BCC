@@ -91,7 +91,7 @@
                                 @if(session()->has('username'))
                                     <a href="{{ route('dashboard.getChangePassword', $borrower->Borrower_ID) }}" class="btn btn-info btn-xs">Change Password</a>
                                     <a href="{{ route('dashboard.getEditRecord', ['borrowers', $borrower->Borrower_ID]) }}" class="btn btn-success btn-xs">Edit</a>
-                                    <button data-button="delete-button" data-var-id="{{ $borrower->Borrower_ID }}" class="btn btn-danger btn-xs">Delete</button>
+                                    <a href="{{ route('dashboard.getDeleteRecord', ['borrowers', $borrower->Borrower_ID]) }}" class="btn btn-danger btn-xs">Delete</a>
                                 @endif
                             </td>
                         </tr>

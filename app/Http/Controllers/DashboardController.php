@@ -214,9 +214,72 @@ class DashboardController extends Controller
 
                 break;
             case 'librarians':
-                $data['librarian'] = TblAccounts::where('Username', $id)->where('Type', 'Librarian')->join('tbl_librarians', 'tbl_accounts.Owner_ID', '=', 'tbl_librarians.Librarian_ID')->first();
+                $data['librarian'] = TblAccounts::where('tbl_accounts.Owner_ID', $id)->where('tbl_accounts.Type', 'Librarian')
+                    ->leftJoin('tbl_librarians', 'tbl_accounts.Owner_ID', '=', 'tbl_librarians.Librarian_ID')
+                ->first();
 
                 return view('dashboard.manage_records.edit_librarians', $data);
+
+                break;
+            default:
+                break;
+        }
+    }
+
+    public function getDeleteRecord($what, $id) {
+        if(!session()->has('username')) {
+            session()->flash('flash_status', 'danger');
+            session()->flash('flash_message', 'Oops! Please login first.');
+
+            return redirect()->route('cardinal.getIndex');
+        } else {
+            if(session()->get('type') != 'Librarian') {
+                session()->flash('flash_status', 'danger');
+                session()->flash('flash_message', 'Oops! You do not have to privilege to access the dashboard.');
+
+                return redirect()->route('cardinal.getOpac');
+            }
+        }
+
+        $data['id'] = $id;
+
+        switch($what) {
+            case 'books':
+                break;
+            case 'authors':
+                break;
+            case 'publishers':
+                break;
+            case 'categories':
+                break;
+            case 'borrowers':
+                $query1 = TblBorrowers::where('Borrower_ID', $id)->delete();
+                $query2 = TblAccounts::where('Owner_ID', $id)->whereIn('Type', ['Student', 'Faculty'])->delete();
+
+                if($query1 && $query2) {
+                    session()->flash('flash_status', 'success');
+                    session()->flash('flash_message', 'Borrower has been deleted.');
+                } else {
+                    session()->flash('flash_status', 'danger');
+                    session()->flash('flash_message', 'Oops! Failed to delete borrower. Please refresh the page and try again.');
+                }
+
+                return redirect()->route('dashboard.getManageRecords', $what);
+
+                break;
+            case 'librarians':
+                $query1 = TblLibrarians::where('Librarian_ID', $id)->delete();
+                $query2 = TblAccounts::where('Owner_ID', $id)->delete();
+
+                if($query1 && $query2) {
+                    session()->flash('flash_status', 'success');
+                    session()->flash('flash_message', 'Borrower has been deleted.');
+                } else {
+                    session()->flash('flash_status', 'danger');
+                    session()->flash('flash_message', 'Oops! Failed to delete borrower. Please refresh the page and try again.');
+                }
+
+                return redirect()->route('dashboard.getManageRecords', $what);
 
                 break;
             default:

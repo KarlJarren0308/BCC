@@ -26,6 +26,7 @@ Route::get('manage_records/{what}', array('as' => 'dashboard.getManageRecords', 
 Route::get('manage_records/barcodes/{id}', array('as' => 'dashboard.getBarcodes', 'uses' => 'DashboardController@getBarcodes'));
 Route::get('add_record/{what}', array('as' => 'dashboard.getAddRecord', 'uses' => 'DashboardController@getAddRecord'));
 Route::get('edit_record/{what}/{id}', array('as' => 'dashboard.getEditRecord', 'uses' => 'DashboardController@getEditRecord'));
+Route::get('delete_record/{what}/{id}', array('as' => 'dashboard.getDeleteRecord', 'uses' => 'DashboardController@getDeleteRecord'));
 Route::get('force/change_password/{id}', array('as' => 'dashboard.getChangePassword', 'uses' => 'DashboardController@getChangePassword'));
 
 Route::post('opac/reserve', array('as' => 'cardinal.postReserve', 'uses' => 'CardinalController@postReserve'));

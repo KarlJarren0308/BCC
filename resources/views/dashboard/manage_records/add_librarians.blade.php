@@ -64,10 +64,24 @@
             {!! Form::open(array('route' => ['dashboard.postAddRecord', 'librarians'])) !!}
                 <div class="enclosure">
                     <div class="row">
+                        <div class="col-sm-6">
+                            <div class="form-group">
+                                {!! Form::label('librarianID', 'Username:') !!}
+                                {!! Form::text('librarianID', null, ['class' => 'form-control', 'placeholder' => '', 'required' => 'required', 'autofocus' => 'autofocus']) !!}
+                            </div>
+                        </div>
+                        <div class="col-sm-6">
+                            <div class="form-group">
+                                {!! Form::label('birthDate', 'Birth Date:') !!}
+                                {!! Form::date('birthDate', null, ['class' => 'form-control', 'placeholder' => '', 'required' => 'required']) !!}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
                         <div class="col-sm-4">
                             <div class="form-group">
                                 {!! Form::label('firstName', 'First Name:') !!}
-                                {!! Form::text('firstName', null, ['class' => 'form-control', 'placeholder' => '', 'required' => 'required', 'autofocus' => 'autofocus']) !!}
+                                {!! Form::text('firstName', null, ['class' => 'form-control', 'placeholder' => '', 'required' => 'required']) !!}
                             </div>
                         </div>
                         <div class="col-sm-4">
@@ -86,13 +100,23 @@
                     <div class="row">
                         <div class="col-sm-6">
                             <div class="form-group">
-                                {!! Form::label('birthDate', 'Birth Date:') !!}
-                                {!! Form::date('birthDate', null, ['class' => 'form-control', 'placeholder' => '', 'required' => 'required']) !!}
+                                {!! Form::label('gender', 'Gender:') !!}
+                                <select name="gender" id="gender" class="form-control" required>
+                                    <option value="" selected disabled>Select an option...</option>
+                                    <option value="Male">Male</option>
+                                    <option value="Female">Female</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-sm-6">
+                            <div class="form-group">
+                                {!! Form::label('emailAddress', 'E-mail Address:') !!}
+                                {!! Form::text('emailAddress', null, ['class' => 'form-control', 'placeholder' => '']) !!}
                             </div>
                         </div>
                     </div>
                     <div class="form-group text-right no-margin">
-                        <input type="submit" class="btn btn-primary" value="Add Librarian">
+                        <input type="submit" class="btn btn-primary" value="Add Borrower">
                     </div>
                 </div>
             {!! Form::close() !!}
