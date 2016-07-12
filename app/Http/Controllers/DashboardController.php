@@ -59,6 +59,42 @@ class DashboardController extends Controller
         return view('dashboard.loan_books', $data);
     }
 
+    public function getReservedBooks() {
+        if(!session()->has('username')) {
+            session()->flash('flash_status', 'danger');
+            session()->flash('flash_message', 'Oops! Please login first.');
+
+            return redirect()->route('cardinal.getIndex');
+        } else {
+            if(session()->get('type') != 'Librarian') {
+                session()->flash('flash_status', 'danger');
+                session()->flash('flash_message', 'Oops! You do not have to privilege to access the dashboard.');
+
+                return redirect()->route('cardinal.getOpac');
+            }
+        }
+
+        return view('maintenance');
+    }
+
+    public function getReceiveBooks() {
+        if(!session()->has('username')) {
+            session()->flash('flash_status', 'danger');
+            session()->flash('flash_message', 'Oops! Please login first.');
+
+            return redirect()->route('cardinal.getIndex');
+        } else {
+            if(session()->get('type') != 'Librarian') {
+                session()->flash('flash_status', 'danger');
+                session()->flash('flash_message', 'Oops! You do not have to privilege to access the dashboard.');
+
+                return redirect()->route('cardinal.getOpac');
+            }
+        }
+
+        return view('maintenance');
+    }
+
     public function getManageRecords($what) {
         if(!session()->has('username')) {
             session()->flash('flash_status', 'danger');
@@ -83,10 +119,16 @@ class DashboardController extends Controller
 
                 break;
             case 'authors':
+                return view('maintenance');
+
                 break;
             case 'publishers':
+                return view('maintenance');
+
                 break;
             case 'categories':
+                return view('maintenance');
+
                 break;
             case 'borrowers':
                 $data['borrowers'] = TblAccounts::where('tbl_accounts.Type', '!=', 'Librarian')
@@ -675,7 +717,7 @@ class DashboardController extends Controller
                     => Check if name is already in the database
                 */
                 $query = TblAccounts::where('Owner_ID', $id)->where('Type', 'Librarian')->first();
-                
+
                 if($query) {
                     $query = TblAccounts::where('Username', $request->input('librarianID'))->first();
 

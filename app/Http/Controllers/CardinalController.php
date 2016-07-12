@@ -30,6 +30,26 @@ class CardinalController extends Controller
         return view('cardinal.index');
     }
 
+    public function getAccountInformation() {
+        if(!session()->has('username')) {
+            session()->flash('flash_status', 'danger');
+            session()->flash('flash_message', 'Oops! Please login first.');
+
+            return redirect()->route('cardinal.getIndex');
+        }
+
+        $query = TblAccounts::where('Username', session()->get('username'))->first();
+        $data['account'] = $query;
+        
+        if($query->Type == 'Librarian') {
+            $data['user'] = TblLibrarians::where('Librarian_ID', $query->Owner_ID)->first();
+        } else {
+            $data['user'] = TblBorrowers::where('Borrower_ID', $query->Owner_ID)->first();
+        }
+
+        return view('cardinal.account_information', $data);
+    }
+
     public function getOpac() {
         if(!session()->has('username')) {
             session()->flash('flash_status', 'danger');
