@@ -495,6 +495,53 @@ class DashboardController extends Controller
                 return redirect()->route('dashboard.getManageRecords', $what);
 
                 break;
+            case 'librarians':
+                $query = TblAccounts::where('Username', $request->input('librarianID'))->first();
+
+                if(!$query) {
+                    $query = TblLibrarians::where('First_Name', $request->input('firstName'))->where('Last_Name', $request->input('lastName'))->first();
+
+                    if(!$query) {
+                        $librarianID = TblLibrarians::insertGetId([
+                            'First_Name' => $request->input('firstName'),
+                            'Middle_Name' => $request->input('middleName'),
+                            'Last_Name' => $request->input('lastName'),
+                            'Birth_Date' => $request->input('birthDate'),
+                            'Gender' => $request->input('gender')
+                        ]);
+
+                        if($librarianID) {
+                            $query = TblAccounts::insert([
+                                'Username' => $request->input('librarianID'),
+                                'Password' => md5($request->input('birthDate')),
+                                'Type' => 'Librarian',
+                                'Email_Address' => $request->input('emailAddress'),
+                                'Owner_ID' => $librarianID
+                            ]);
+
+                            if($query) {
+                                session()->flash('flash_status', 'success');
+                                session()->flash('flash_message', 'Librarian has been added.');
+                            } else {
+                                session()->flash('flash_status', 'danger');
+                                session()->flash('flash_message', 'Oops! Librarian has been added but failed to associate login account.');
+                            }
+                        } else {
+                            session()->flash('flash_status', 'danger');
+                            session()->flash('flash_message', 'Oops! Failed to add librarian. Please refresh the page and try again.');
+                        }
+                    } else {
+                        session()->flash('flash_status', 'danger');
+                        session()->flash('flash_message', 'Oops! Librarian already exist.');
+                    }
+                } else {
+                    session()->flash('flash_status', 'danger');
+                    session()->flash('flash_message', 'Oops! Username already in use by another person.');
+                }
+
+                return redirect()->route('dashboard.getManageRecords', $what);
+
+                break;
             default:
                 break;
         }
@@ -617,6 +664,49 @@ class DashboardController extends Controller
                 } else {
                     session()->flash('flash_status', 'danger');
                     session()->flash('flash_message', 'Oops! Borrower doesn\'t exist.');
+                }
+                
+                return redirect()->route('dashboard.getManageRecords', $what);
+
+                break;
+            case 'librarians':
+                /*
+                    Possible Future Update(s):
+                    => Check if name is already in the database
+                */
+                $query = TblAccounts::where('Owner_ID', $id)->where('Type', 'Librarian')->first();
+                
+                if($query) {
+                    $query = TblAccounts::where('Username', $request->input('librarianID'))->first();
+
+                    if(!$query || ($query && $query->Owner_ID == $id && $query->Type == 'Librarian')) {
+                        $query1 = TblAccounts::where('Owner_ID', $id)->where('Type', 'Librarian')->update([
+                            'Username' => $request->input('librarianID'),
+                            'Email_Address' => $request->input('emailAddress')
+                        ]);
+
+                        $query2 = TblLibrarians::where('Librarian_ID', $id)->update([
+                            'First_Name' => $request->input('firstName'),
+                            'Middle_Name' => $request->input('middleName'),
+                            'Last_Name' => $request->input('lastName'),
+                            'Birth_Date' => $request->input('birthDate'),
+                            'Gender' => $request->input('gender')
+                        ]);
+
+                        if($query1 || $query2) {
+                            session()->flash('flash_status', 'success');
+                            session()->flash('flash_message', 'Librarian has been updated.');
+                        } else {
+                            session()->flash('flash_status', 'warning');
+                            session()->flash('flash_message', 'No changes has been made.');
+                        }
+                    } else {
+                        session()->flash('flash_status', 'danger');
+                        session()->flash('flash_message', 'Oops! Username already in use by another person.');
+                    }
+                } else {
+                    session()->flash('flash_status', 'danger');
+                    session()->flash('flash_message', 'Oops! Librarian doesn\'t exist.');
                 }
                 
                 return redirect()->route('dashboard.getManageRecords', $what);

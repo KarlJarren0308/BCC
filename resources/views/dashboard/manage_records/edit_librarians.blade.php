@@ -61,7 +61,7 @@
             <div class="text-left" style="margin-bottom: 25px;">
                 <a href="{{ route('dashboard.getManageRecords', 'librarians') }}" class="btn btn-danger btn-xs"><span class="fa fa-arrow-left gap-right"></span>Go Back</a>
             </div>
-            {!! Form::open(array('route' => ['dashboard.postAddRecord', 'librarians'])) !!}
+            {!! Form::open(array('route' => ['dashboard.postEditRecord', 'librarians', $librarian->Librarian_ID])) !!}
                 <div class="enclosure">
                     <div class="row">
                         <div class="col-sm-6">
