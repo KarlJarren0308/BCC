@@ -48,6 +48,7 @@
                         <li><a href="{{ route('dashboard.getManageRecords', 'categories') }}">Manage Categories Records</a></li>
                         <li><a class="active" href="{{ route('dashboard.getManageRecords', 'borrowers') }}">Manage Borrowers<span class="badge pull-right">Edit</span></a></li>
                         <li><a href="{{ route('dashboard.getManageRecords', 'librarians') }}">Manage Librarians</a></li>
+                        <li><a href="{{ route('dashboard.getSystemSettings') }}">System Settings</a></li>
                     </ul>
                 </div>
             </div>

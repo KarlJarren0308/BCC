@@ -14,6 +14,8 @@ use App\TblLibrarians;
 use App\TblLoans;
 use App\TblReservations;
 
+use Storage;
+
 date_default_timezone_set('Asia/Manila');
 
 class CardinalController extends Controller
@@ -58,10 +60,30 @@ class CardinalController extends Controller
             return redirect()->route('cardinal.getIndex');
         }
 
-        $data['bounds'] = TblBounds::join('tbl_authors', 'tbl_bounds.Author_ID', '=', 'tbl_authors.Author_ID')->get();
-        $data['books'] = TblBooks::get();
+        $settingsFile = storage_path('app/public') . '/settings.xml';
+        $xml = simplexml_load_file($settingsFile);
 
-        return view('cardinal.opac', $data);
+        foreach($xml as $item) {
+            if($item['name'] == 'opac_version') {
+                switch($item['value']) {
+                    case 'v1.0':
+                        $data['bounds'] = TblBounds::join('tbl_authors', 'tbl_bounds.Author_ID', '=', 'tbl_authors.Author_ID')->get();
+                        $data['books'] = TblBooks::get();
+
+                        return view('cardinal.opac_v1_0', $data);
+
+                        break;
+                    case 'v2.0':
+                        return view('cardinal.opac_v2_0');
+
+                        break;
+                    default:
+                        return view('maintenance');
+
+                        break;
+                }
+            }
+        }
     }
 
     public function getReservations() {
@@ -98,6 +120,16 @@ class CardinalController extends Controller
         session()->flush();
 
         return redirect()->route('cardinal.getIndex');
+    }
+
+    public function postSearchOpac(Request $request) {
+        // Available and used only for OPAC Version 2.0
+
+        $data['bounds'] = TblBounds::join('tbl_authors', 'tbl_bounds.Author_ID', '=', 'tbl_authors.Author_ID')->get();
+        $data['books'] = TblBooks::where('Title', 'like', '%' . $request->input('keyword') . '%')->get();
+        $count = TblBooks::where('Title', 'like', '%' . $request->input('keyword') . '%')->count();
+
+        return response()->json(array('status' => 'Success', 'message' => $count . ' result(s) found.', 'data' => $data));
     }
 
     public function postReserve(Request $request) {

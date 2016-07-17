@@ -16,6 +16,8 @@ use App\TblCategories;
 use App\TblLibrarians;
 use App\TblPublishers;
 
+use Storage;
+
 date_default_timezone_set('Asia/Manila');
 
 class DashboardController extends Controller
@@ -362,6 +364,27 @@ class DashboardController extends Controller
             default:
                 break;
         }
+    }
+
+    public function getSystemSettings() {
+        if(!session()->has('username')) {
+            session()->flash('flash_status', 'danger');
+            session()->flash('flash_message', 'Oops! Please login first.');
+
+            return redirect()->route('cardinal.getIndex');
+        } else {
+            if(session()->get('type') != 'Librarian') {
+                session()->flash('flash_status', 'danger');
+                session()->flash('flash_message', 'Oops! You do not have to privilege to access the dashboard.');
+
+                return redirect()->route('cardinal.getOpac');
+            }
+        }
+
+        $settingsFile = storage_path('app/public') . '/settings.xml';
+        $data['settings'] = simplexml_load_file($settingsFile);
+
+        return view('dashboard.settings', $data);
     }
 
     public function postAddBarcode(Request $request) {
@@ -757,5 +780,24 @@ class DashboardController extends Controller
             default:
                 break;
         }
+    }
+
+    public function postSystemSettings(Request $request) {
+        if(!Storage::exists('settings.xml')) {
+            Storage::put('settings.xml', '<?xml version="1.0" encoding="UTF-8"?><settings></settings>');
+        }
+
+        $settingsFile = storage_path('app/public') . '/settings.xml';
+        $xml = simplexml_load_file($settingsFile);
+
+        foreach($xml as $item) {
+            if($item['name'] == 'opac_version') {
+                $item['value'] = $request->input('version');
+            }
+        }
+
+        $xml->asXML($settingsFile);
+
+        return redirect()->route('dashboard.getSystemSettings');
     }
 }
