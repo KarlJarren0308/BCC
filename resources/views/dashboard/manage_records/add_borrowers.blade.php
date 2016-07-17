@@ -101,6 +101,26 @@
                     <div class="row">
                         <div class="col-sm-6">
                             <div class="form-group">
+                                {!! Form::label('address', 'Address:') !!}
+                                {!! Form::text('address', null, ['class' => 'form-control', 'placeholder' => '', 'required' => 'required']) !!}
+                            </div>
+                        </div>
+                        <div class="col-sm-3">
+                            <div class="form-group">
+                                {!! Form::label('telephoneNumber', 'Telephone Number:') !!}
+                                {!! Form::text('telephoneNumber', null, ['class' => 'form-control', 'placeholder' => '']) !!}
+                            </div>
+                        </div>
+                        <div class="col-sm-3">
+                            <div class="form-group">
+                                {!! Form::label('cellphoneNumber', 'Cellphone Number:') !!}
+                                {!! Form::text('cellphoneNumber', null, ['class' => 'form-control', 'placeholder' => '']) !!}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-3">
+                            <div class="form-group">
                                 {!! Form::label('gender', 'Gender:') !!}
                                 <select name="gender" id="gender" class="form-control" required>
                                     <option value="" selected disabled>Select an option...</option>
@@ -109,7 +129,7 @@
                                 </select>
                             </div>
                         </div>
-                        <div class="col-sm-6">
+                        <div class="col-sm-3">
                             <div class="form-group">
                                 {!! Form::label('type', 'Type:') !!}
                                 <select name="type" id="type" class="form-control" required>
@@ -119,6 +139,28 @@
                                 </select>
                             </div>
                         </div>
+                        <fieldset data-for="Student" disabled>
+                            <div class="col-sm-6">
+                                <div class="form-group">
+                                    {!! Form::label('yearLevel', 'Year Level:') !!}
+                                    <select name="yearLevel" id="yearLevel" class="form-control" required>
+                                        <option value="" selected disabled>Select an option...</option>
+                                        <option value="Student">Student</option>
+                                        <option value="Faculty">Faculty</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-sm-6">
+                                <div class="form-group">
+                                    {!! Form::label('course', 'Course:') !!}
+                                    <select name="course" id="course" class="form-control" required>
+                                        <option value="" selected disabled>Select an option...</option>
+                                        <option value="Student">Student</option>
+                                        <option value="Faculty">Faculty</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </fieldset>
                     </div>
                     <div class="form-group text-right no-margin">
                         <input type="submit" class="btn btn-primary" value="Add Borrower">

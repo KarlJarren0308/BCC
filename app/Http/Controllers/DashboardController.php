@@ -526,7 +526,12 @@ class DashboardController extends Controller
                             'Middle_Name' => $request->input('middleName'),
                             'Last_Name' => $request->input('lastName'),
                             'Birth_Date' => $request->input('birthDate'),
-                            'Gender' => $request->input('gender')
+                            'Gender' => $request->input('gender'),
+                            'Address' => $request->input('address'),
+                            'Telephone_Number' => $request->input('telephoneNumber'),
+                            'Cellphone_Number' => $request->input('cellphoneNumber'),
+                            'Year_Level' => $request->input('yearLevel'),
+                            'Course' => $request->input('course')
                         ]);
 
                         if($borrowerID) {
@@ -712,7 +717,12 @@ class DashboardController extends Controller
                             'Middle_Name' => $request->input('middleName'),
                             'Last_Name' => $request->input('lastName'),
                             'Birth_Date' => $request->input('birthDate'),
-                            'Gender' => $request->input('gender')
+                            'Gender' => $request->input('gender'),
+                            'Address' => $request->input('address'),
+                            'Telephone_Number' => $request->input('telephoneNumber'),
+                            'Cellphone_Number' => $request->input('cellphoneNumber'),
+                            'Year_Level' => $request->input('yearLevel'),
+                            'Course' => $request->input('course')
                         ]);
 
                         if($query1 || $query2) {

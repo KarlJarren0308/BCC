@@ -101,6 +101,26 @@
                     <div class="row">
                         <div class="col-sm-6">
                             <div class="form-group">
+                                {!! Form::label('address', 'Address:') !!}
+                                {!! Form::text('address', $borrower->Address, ['class' => 'form-control', 'placeholder' => '', 'required' => 'required']) !!}
+                            </div>
+                        </div>
+                        <div class="col-sm-3">
+                            <div class="form-group">
+                                {!! Form::label('telephoneNumber', 'Telephone Number:') !!}
+                                {!! Form::text('telephoneNumber', $borrower->Telephone_Number, ['class' => 'form-control', 'placeholder' => '']) !!}
+                            </div>
+                        </div>
+                        <div class="col-sm-3">
+                            <div class="form-group">
+                                {!! Form::label('cellphoneNumber', 'Cellphone Number:') !!}
+                                {!! Form::text('cellphoneNumber', $borrower->Cellphone_Number, ['class' => 'form-control', 'placeholder' => '']) !!}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-3">
+                            <div class="form-group">
                                 {!! Form::label('gender', 'Gender:') !!}
                                 <select name="gender" id="gender" class="form-control" required>
                                     <option value="" selected disabled>Select an option...</option>
@@ -109,7 +129,7 @@
                                 </select>
                             </div>
                         </div>
-                        <div class="col-sm-6">
+                        <div class="col-sm-3">
                             <div class="form-group">
                                 {!! Form::label('type', 'Type:') !!}
                                 <select name="type" id="type" class="form-control" required>
@@ -119,6 +139,29 @@
                                 </select>
                             </div>
                         </div>
+                        <fieldset data-for="Student" disabled>
+                            <div class="col-sm-6">
+                                <div class="form-group">
+                                    {!! Form::label('yearLevel', 'Year Level:') !!}
+                                    <select name="yearLevel" id="yearLevel" class="form-control" required>
+                                        <option value="" selected disabled>Select an option...</option>
+                                        <option value="1st"{{ ($borrower->Year_Level == '1st' ? ' selected' : '') }}>1st Year</option>
+                                        <option value="2nd"{{ ($borrower->Year_Level == '2nd' ? ' selected' : '') }}>2nd Year</option>
+                                        <option value="3rd"{{ ($borrower->Year_Level == '3rd' ? ' selected' : '') }}>3rd Year</option>
+                                        <option value="4th"{{ ($borrower->Year_Level == '4th' ? ' selected' : '') }}>4th Year</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-sm-6">
+                                <div class="form-group">
+                                    {!! Form::label('course', 'Course:') !!}
+                                    <select name="course" id="course" class="form-control" required>
+                                        <option value="" selected disabled>Select an option...</option>
+                                        <option value="Bachelor of Science in Information Technology">Bachelor of Science in Information Technology</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </fieldset>
                     </div>
                     <div class="form-group text-right no-margin">
                         <input type="submit" class="btn btn-primary" value="Save Changes">
