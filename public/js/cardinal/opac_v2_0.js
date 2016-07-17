@@ -26,7 +26,7 @@ $(document).ready(function() {
             success: function(response) {
                 var output = '';
 
-                output += '<table class="table table-bordered table-striped">';
+                output += '<table id="books-table" class="table table-bordered table-striped">';
                 output += '<thead>';
                 output += '<tr>';
                 output += '<th>Call Number</th>';
@@ -81,6 +81,12 @@ $(document).ready(function() {
 
                 $('.presentation-loader').fadeOut(250).promise().done(function() {
                     $('#presentation-content').html(output);
+
+                    $('#books-table').dataTable({
+                        aoColumnDefs: [
+                            { bSearchable: false, bSortable: false, aTargets: [5] }
+                        ]
+                    });
                 });
             },
             error: function(arg0, arg1, arg2) {

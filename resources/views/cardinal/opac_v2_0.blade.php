@@ -19,6 +19,7 @@
 
         .presentation-title {
             font-size: 3em;
+            margin-bottom: 15px;
         }
 
         .presentation-body {
