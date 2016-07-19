@@ -139,7 +139,7 @@
                                 </select>
                             </div>
                         </div>
-                        <fieldset data-for="Student" disabled>
+                        <fieldset data-for="Student"{{ ($borrower->Type == 'Student' ? '' : ' disabled') }}>
                             <div class="col-sm-6">
                                 <div class="form-group">
                                     {!! Form::label('yearLevel', 'Year Level:') !!}

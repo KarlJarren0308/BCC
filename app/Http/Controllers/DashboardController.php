@@ -121,15 +121,21 @@ class DashboardController extends Controller
 
                 break;
             case 'authors':
-                return view('maintenance');
+                $data['authors'] = TblAuthors::get();
+
+                return view('dashboard.manage_records.authors', $data);
 
                 break;
             case 'publishers':
-                return view('maintenance');
+                $data['publishers'] = TblPublishers::get();
+                
+                return view('dashboard.manage_records.publishers', $data);
 
                 break;
             case 'categories':
-                return view('maintenance');
+                $data['categories'] = TblCategories::get();
+                
+                return view('dashboard.manage_records.categories', $data);
 
                 break;
             case 'borrowers':
@@ -198,10 +204,16 @@ class DashboardController extends Controller
 
                 break;
             case 'authors':
+                return view('dashboard.manage_records.add_authors');
+
                 break;
             case 'publishers':
+                return view('dashboard.manage_records.add_publishers');
+
                 break;
             case 'categories':
+                return view('dashboard.manage_records.add_categories');
+
                 break;
             case 'borrowers':
                 return view('dashboard.manage_records.add_borrowers');
@@ -245,10 +257,22 @@ class DashboardController extends Controller
 
                 break;
             case 'authors':
+                $data['author'] = TblAuthors::where('Author_ID', $id)->first();
+
+                return view('dashboard.manage_records.edit_authors', $data);
+
                 break;
             case 'publishers':
+                $data['publisher'] = TblPublishers::where('Publisher_ID', $id)->first();
+
+                return view('dashboard.manage_records.edit_publishers', $data);
+
                 break;
             case 'categories':
+                $data['category'] = TblCategories::where('Category_ID', $id)->first();
+
+                return view('dashboard.manage_records.edit_categories', $data);
+
                 break;
             case 'borrowers':
                 $data['borrower'] = TblAccounts::where('tbl_accounts.Owner_ID', $id)->where('tbl_accounts.Type', '!=', 'Librarian')
@@ -326,10 +350,46 @@ class DashboardController extends Controller
 
                 break;
             case 'authors':
+                $query = TblAuthors::where('Author_ID', $id)->delete();
+
+                if($query) {
+                    session()->flash('flash_status', 'success');
+                    session()->flash('flash_message', 'Author has been deleted.');
+                } else {
+                    session()->flash('flash_status', 'danger');
+                    session()->flash('flash_message', 'Oops! Failed to delete author. Please refresh the page and try again.');
+                }
+
+                return redirect()->route('dashboard.getManageRecords', $what);
+
                 break;
             case 'publishers':
+                $query = TblPublishers::where('Publisher_ID', $id)->delete();
+
+                if($query) {
+                    session()->flash('flash_status', 'success');
+                    session()->flash('flash_message', 'Publisher has been deleted.');
+                } else {
+                    session()->flash('flash_status', 'danger');
+                    session()->flash('flash_message', 'Oops! Failed to delete publisher. Please refresh the page and try again.');
+                }
+
+                return redirect()->route('dashboard.getManageRecords', $what);
+
                 break;
             case 'categories':
+                $query = TblCategories::where('Category_ID', $id)->delete();
+
+                if($query) {
+                    session()->flash('flash_status', 'success');
+                    session()->flash('flash_message', 'Category has been deleted.');
+                } else {
+                    session()->flash('flash_status', 'danger');
+                    session()->flash('flash_message', 'Oops! Failed to delete category. Please refresh the page and try again.');
+                }
+
+                return redirect()->route('dashboard.getManageRecords', $what);
+
                 break;
             case 'borrowers':
                 $query1 = TblBorrowers::where('Borrower_ID', $id)->delete();
@@ -364,6 +424,34 @@ class DashboardController extends Controller
             default:
                 break;
         }
+    }
+
+    public function getChangePassword($what, $id) {
+        if(!session()->has('username')) {
+            session()->flash('flash_status', 'danger');
+            session()->flash('flash_message', 'Oops! Please login first.');
+
+            return redirect()->route('cardinal.getIndex');
+        } else {
+            if(session()->get('type') != 'Librarian') {
+                session()->flash('flash_status', 'danger');
+                session()->flash('flash_message', 'Oops! You do not have to privilege to access the dashboard.');
+
+                return redirect()->route('cardinal.getOpac');
+            }
+        }
+
+        $data['what'] = $what;
+        $data['id'] = $id;
+        if($what == 'borrowers') {
+            $data['user'] = TblAccounts::where('tbl_accounts.Username', $id)->where('tbl_accounts.Type', '!=', 'Librarian')
+                ->leftJoin('tbl_borrowers', 'tbl_accounts.Owner_ID', '=', 'tbl_borrowers.Borrower_ID')
+            ->first();
+        } else {
+            $data['user'] = TblAccounts::where('tbl_accounts.Username', $id)->where('Type', 'Librarian')->join('tbl_librarians', 'tbl_accounts.Owner_ID', '=', 'tbl_librarians.Librarian_ID')->first();
+        }
+
+        return view('dashboard.change_password', $data);
     }
 
     public function getSystemSettings() {
@@ -423,6 +511,63 @@ class DashboardController extends Controller
         }
     }
 
+    public function postChangePassword($what, $id, Request $request) {
+        if(!session()->has('username')) {
+            session()->flash('flash_status', 'danger');
+            session()->flash('flash_message', 'Oops! Please login first.');
+
+            return redirect()->route('cardinal.getIndex');
+        } else {
+            if(session()->get('type') != 'Librarian') {
+                session()->flash('flash_status', 'danger');
+                session()->flash('flash_message', 'Oops! You do not have to privilege to access the dashboard.');
+
+                return redirect()->route('cardinal.getOpac');
+            }
+        }
+
+        if($request->input('newPassword') == $request->input('confirmNewPassword')) {
+            switch($what) {
+                case 'borrowers':
+                    $query = TblAccounts::where('Username', $id)->update([
+                        'Password' => md5($request->input('newPassword'))
+                    ]);
+
+                    if($query) {
+                        session()->flash('flash_status', 'success');
+                        session()->flash('flash_message', 'Password has been changed.');
+                    } else {
+                        session()->flash('flash_status', 'danger');
+                        session()->flash('flash_message', 'Oops! Failed to change password.');
+                    }
+
+                    return redirect()->route('dashboard.getManageRecords', $what);
+
+                    break;
+                case 'librarians':
+                    $query = TblAccounts::where('Username', $id)->update([
+                        'Password' => md5($request->input('newPassword'))
+                    ]);
+
+                    if($query) {
+                        session()->flash('flash_status', 'success');
+                        session()->flash('flash_message', 'Password has been changed.');
+                    } else {
+                        session()->flash('flash_status', 'danger');
+                        session()->flash('flash_message', 'Oops! Failed to change password.');
+                    }
+
+                    return redirect()->route('dashboard.getManageRecords', $what);
+
+                    break;
+                default:
+                    break;
+            }
+        } else {
+            // "New Password" and "Confirm New Password" fields don't match
+        }
+    }
+
     public function postAddRecord($what, Request $request) {
         if(!session()->has('username')) {
             session()->flash('flash_status', 'danger');
@@ -476,10 +621,10 @@ class DashboardController extends Controller
                         }
 
                         foreach(array_unique($request->input('authors')) as $author) {
-                            $query = TblBounds::insert(array(
+                            $query = TblBounds::insert([
                                 'Book_ID' => $bookID,
                                 'Author_ID' => $author
-                            ));
+                            ]);
 
                             if($query) {
                                 $addedAuthors++;
@@ -503,14 +648,73 @@ class DashboardController extends Controller
 
                 break;
             case 'authors':
+                $query = TblAuthors::where('First_Name', $request->input('firstName'))->where('Last_Name', $request->input('lastName'))->first();
+
+                if(!$query) {
+                    $query = TblAuthors::insert([
+                        'First_Name' => $request->input('firstName'),
+                        'Middle_Name' => $request->input('middleName'),
+                        'Last_Name' => $request->input('lastName')
+                    ]);
+
+                    if($query) {
+                        session()->flash('flash_status', 'success');
+                        session()->flash('flash_message', 'Author has been added.');
+                    } else {
+                        session()->flash('flash_status', 'danger');
+                        session()->flash('flash_message', 'Oops! Failed to add author. Please refresh the page and try again.');
+                    }
+                } else {
+                    session()->flash('flash_status', 'danger');
+                    session()->flash('flash_message', 'Oops! Author already exist.');
+                }
+
                 return redirect()->route('dashboard.getManageRecords', $what);
 
                 break;
             case 'publishers':
+                $query = TblPublishers::where('Publisher_Name', $request->input('publisherName'))->first();
+
+                if(!$query) {
+                    $query = TblPublishers::insert([
+                        'Publisher_Name' => $request->input('publisherName')
+                    ]);
+
+                    if($query) {
+                        session()->flash('flash_status', 'success');
+                        session()->flash('flash_message', 'Publisher has been added.');
+                    } else {
+                        session()->flash('flash_status', 'danger');
+                        session()->flash('flash_message', 'Oops! Failed to add publisher. Please refresh the page and try again.');
+                    }
+                } else {
+                    session()->flash('flash_status', 'danger');
+                    session()->flash('flash_message', 'Oops! Publisher already exist.');
+                }
+
                 return redirect()->route('dashboard.getManageRecords', $what);
 
                 break;
             case 'categories':
+                $query = TblCategories::where('Category_Name', $request->input('categoryName'))->first();
+
+                if(!$query) {
+                    $query = TblCategories::insert([
+                        'Category_Name' => $request->input('categoryName')
+                    ]);
+
+                    if($query) {
+                        session()->flash('flash_status', 'success');
+                        session()->flash('flash_message', 'Category has been added.');
+                    } else {
+                        session()->flash('flash_status', 'danger');
+                        session()->flash('flash_message', 'Oops! Failed to add category. Please refresh the page and try again.');
+                    }
+                } else {
+                    session()->flash('flash_status', 'danger');
+                    session()->flash('flash_message', 'Oops! Category already exist.');
+                }
+
                 return redirect()->route('dashboard.getManageRecords', $what);
 
                 break;
@@ -655,10 +859,10 @@ class DashboardController extends Controller
                         ]);
 
                         foreach(array_unique($request->input('authors')) as $author) {
-                            $query = TblBounds::insert(array(
+                            $query = TblBounds::insert([
                                 'Book_ID' => $id,
                                 'Author_ID' => $author
-                            ));
+                            ]);
 
                             if($query) {
                                 $addedAuthors++;
@@ -685,14 +889,73 @@ class DashboardController extends Controller
 
                 break;
             case 'authors':
+                $query = TblAuthors::where('First_Name', $request->input('firstName'))->where('Last_Name', $request->input('lastName'))->first();
+
+                if(!$query || ($query && $query->Author_ID == $id)) {
+                    $query = TblAuthors::where('Author_ID', $id)->update([
+                        'First_Name' => $request->input('firstName'),
+                        'Middle_Name' => $request->input('middleName'),
+                        'Last_Name' => $request->input('lastName')
+                    ]);
+
+                    if($query) {
+                        session()->flash('flash_status', 'success');
+                        session()->flash('flash_message', 'Author has been updated.');
+                    } else {
+                        session()->flash('flash_status', 'warning');
+                        session()->flash('flash_message', 'No changes has been made.');
+                    }
+                } else {
+                    session()->flash('flash_status', 'danger');
+                    session()->flash('flash_message', 'Oops! Author already exist.');
+                }
+
                 return redirect()->route('dashboard.getManageRecords', $what);
 
                 break;
             case 'publishers':
+                $query = TblPublishers::where('Publisher_Name', $request->input('publisherName'))->first();
+
+                if(!$query || ($query && $query->Publisher_ID == $id)) {
+                    $query = TblPublishers::where('Publisher_ID', $id)->update([
+                        'Publisher_Name' => $request->input('publisherName')
+                    ]);
+
+                    if($query) {
+                        session()->flash('flash_status', 'success');
+                        session()->flash('flash_message', 'Publisher has been updated.');
+                    } else {
+                        session()->flash('flash_status', 'warning');
+                        session()->flash('flash_message', 'No changes has been made.');
+                    }
+                } else {
+                    session()->flash('flash_status', 'danger');
+                    session()->flash('flash_message', 'Oops! Publisher already exist.');
+                }
+
                 return redirect()->route('dashboard.getManageRecords', $what);
 
                 break;
             case 'categories':
+                $query = TblCategories::where('Category_Name', $request->input('categoryName'))->first();
+
+                if(!$query || ($query && $query->Category_ID == $id)) {
+                    $query = TblCategories::where('Category_ID', $id)->update([
+                        'Category_Name' => $request->input('categoryName')
+                    ]);
+
+                    if($query) {
+                        session()->flash('flash_status', 'success');
+                        session()->flash('flash_message', 'Category has been updated.');
+                    } else {
+                        session()->flash('flash_status', 'warning');
+                        session()->flash('flash_message', 'No changes has been made.');
+                    }
+                } else {
+                    session()->flash('flash_status', 'danger');
+                    session()->flash('flash_message', 'Oops! Category already exist.');
+                }
+
                 return redirect()->route('dashboard.getManageRecords', $what);
 
                 break;

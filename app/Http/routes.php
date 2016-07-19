@@ -28,7 +28,7 @@ Route::get('system_settings', array('as' => 'dashboard.getSystemSettings', 'uses
 Route::get('add_record/{what}', array('as' => 'dashboard.getAddRecord', 'uses' => 'DashboardController@getAddRecord'));
 Route::get('edit_record/{what}/{id}', array('as' => 'dashboard.getEditRecord', 'uses' => 'DashboardController@getEditRecord'));
 Route::get('delete_record/{what}/{id}', array('as' => 'dashboard.getDeleteRecord', 'uses' => 'DashboardController@getDeleteRecord'));
-Route::get('force/change_password/{id}', array('as' => 'dashboard.getChangePassword', 'uses' => 'DashboardController@getChangePassword'));
+Route::get('force_change_password/{what}/{id}', array('as' => 'dashboard.getChangePassword', 'uses' => 'DashboardController@getChangePassword'));
 
 Route::post('opac/search', array('as' => 'cardinal.postSearchOpac', 'uses' => 'CardinalController@postSearchOpac'));
 Route::post('opac/reserve', array('as' => 'cardinal.postReserve', 'uses' => 'CardinalController@postReserve'));
@@ -38,5 +38,6 @@ Route::post('add_record/{what}', array('as' => 'dashboard.postAddRecord', 'uses'
 Route::post('generate_barcode', array('as' => 'dashboard.postAddBarcode', 'uses' => 'DashboardController@postAddBarcode'));
 Route::post('edit_record/{what}/{id}', array('as' => 'dashboard.postEditRecord', 'uses' => 'DashboardController@postEditRecord'));
 Route::post('system_settings/save', array('as' => 'dashboard.postSystemSettings', 'uses' => 'DashboardController@postSystemSettings'));
+Route::post('force_change_password/{what}/{id}', array('as' => 'dashboard.postChangePassword', 'uses' => 'DashboardController@postChangePassword'));
 
 Route::post('data/{key}', array('as' => 'data.postRequestData', 'uses' => 'DataController@postRequestData'));

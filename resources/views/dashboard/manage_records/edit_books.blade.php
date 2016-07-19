@@ -60,7 +60,7 @@
         <div id="page-wrapper">
             <div class="row">
                 <div class="col-lg-12">
-                    <h1 class="page-header">Edit Book Record</h1>
+                    <h1 class="page-header">Edit Book</h1>
                 </div>
             </div>
             <div class="text-left" style="margin-bottom: 25px;">

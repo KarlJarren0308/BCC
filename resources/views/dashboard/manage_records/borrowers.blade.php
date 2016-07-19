@@ -90,7 +90,7 @@
                             <td>{{ $borrower->Type }}</td>
                             <td class="text-center">
                                 @if(session()->has('username'))
-                                    <a href="{{ route('dashboard.getChangePassword', $borrower->Borrower_ID) }}" class="btn btn-info btn-xs">Change Password</a>
+                                    <a href="{{ route('dashboard.getChangePassword', ['borrowers', $borrower->Username]) }}" class="btn btn-info btn-xs">Change Password</a>
                                     <a href="{{ route('dashboard.getEditRecord', ['borrowers', $borrower->Borrower_ID]) }}" class="btn btn-success btn-xs">Edit</a>
                                     <a href="{{ route('dashboard.getDeleteRecord', ['borrowers', $borrower->Borrower_ID]) }}" class="btn btn-danger btn-xs">Delete</a>
                                 @endif

@@ -88,7 +88,7 @@
                             <td>{{ date('F d, Y', strtotime($librarian->Birth_Date)) }}</td>
                             <td class="text-center">
                                 @if(session()->has('username'))
-                                    <a href="{{ route('dashboard.getChangePassword', $librarian->Librarian_ID) }}" class="btn btn-info btn-xs">Change Password</a>
+                                    <a href="{{ route('dashboard.getChangePassword', ['librarians', $librarian->Username]) }}" class="btn btn-info btn-xs">Change Password</a>
                                     <a href="{{ route('dashboard.getEditRecord', ['librarians', $librarian->Librarian_ID]) }}" class="btn btn-success btn-xs">Edit</a>
                                     <a href="{{ route('dashboard.getDeleteRecord', ['librarians', $librarian->Librarian_ID]) }}" class="btn btn-danger btn-xs">Delete</a>
                                 @endif
