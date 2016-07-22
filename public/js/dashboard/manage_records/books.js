@@ -1,3 +1,13 @@
+function padZeros(number, length) {
+    var output = number.toString();
+
+    while(output.length < length) {
+        output = '0' + output;
+    }
+
+    return output;
+}
+
 $(document).ready(function() {
     $('#books-table').dataTable({
         aoColumnDefs: [
@@ -23,8 +33,8 @@ $(document).ready(function() {
                 info = '<table class="table table-bordered table-striped"><tbody>';
                 info += '<tr><td class="text-right" width="25%">Call Number:</td><td>' + response['data']['book']['Call_Number'] + '</td></tr>';
                 info += '<tr><td class="text-right" width="25%">Title:</td><td>' + response['data']['book']['Title'] + '</td></tr>';
+                info += '<tr><td class="text-right" width="25%">Description:</td><td>' + response['data']['book']['Description'] + '</td></tr>';
                 info += '<tr><td class="text-right" width="25%">Edition:</td><td>' + response['data']['book']['Edition'] + '</td></tr>';
-                info += '<tr><td class="text-right" width="25%">Collection Type:</td><td>' + response['data']['book']['Collection_Type'] + '</td></tr>';
                 info += '<tr><td class="text-right" width="25%">ISBN:</td><td>' + response['data']['book']['ISBN'] + '</td></tr>';
                 info += '<tr><td class="text-right" width="25%">Author(s):</td><td>';
 
@@ -68,5 +78,15 @@ $(document).ready(function() {
 
     onDynamicDataButtonClick('remove-author-button', function() {
         $(this).parent().parent().parent().remove();
+    });
+
+    $('input[name="numberOfCopies"]').on('change paste keyup', function() {
+        $('#generated-accession-numbers').text('');
+        
+        if($.isNumeric($(this).val())) {
+            for(var i = 0; i < $(this).val(); i++) {
+                $('#generated-accession-numbers').append('<div class="list-group-item">C' + padZeros(i + 1, 4) + '</div>');
+            }
+        }
     });
 });

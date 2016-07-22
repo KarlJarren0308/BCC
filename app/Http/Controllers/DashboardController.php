@@ -321,14 +321,14 @@ class DashboardController extends Controller
 
                     if($query) {
                         session()->flash('flash_status', 'success');
-                        session()->flash('flash_message', 'Book has been deleted.');
+                        session()->flash('flash_message', 'Accession Number has been deleted.');
                     } else {
                         session()->flash('flash_status', 'danger');
-                        session()->flash('flash_message', 'Oops! Failed to delete book. Please refresh the page and try again.');
+                        session()->flash('flash_message', 'Oops! Failed to delete accession number. Please refresh the page and try again.');
                     }
                 } else {
                     session()->flash('flash_status', 'danger');
-                    session()->flash('flash_message', 'Oops! Barcode doesn\'t exist anymore.');
+                    session()->flash('flash_message', 'Oops! Accession Number doesn\'t exist anymore.');
                 }
 
                 return redirect()->route('dashboard.getBarcodes', $barcode['Book_ID']);
@@ -486,14 +486,14 @@ class DashboardController extends Controller
 
         $addedBarcodes = 0;
 
-        $query = TblBarcodes::where('Book_ID', $request->input('id'))->orderBy('Barcode_Number', 'desc')->first();
-        $startCount = substr($query->Barcode_Number, 1);
+        $query = TblBarcodes::where('Book_ID', $request->input('id'))->orderBy('Accession_Number', 'desc')->first();
+        $startCount = substr($query->Accession_Number, 1);
 
         for($i = 0; $i < $request->input('numberOfCopies'); $i++) {
             $startCount++;
 
             $query = TblBarcodes::insert([
-                'Barcode_Number' => 'C' . sprintf('%04d', $startCount),
+                'Accession_Number' => 'C' . sprintf('%04d', $startCount),
                 'Book_ID' => $request->input('id')
             ]);
 
@@ -505,9 +505,9 @@ class DashboardController extends Controller
         }
 
         if($addedBarcodes > 0) {
-            return response()->json(array('status' => 'Success', 'message' => $addedBarcodes . ' barcode(s) has been added.'));
+            return response()->json(array('status' => 'Success', 'message' => 'Added: ' . $addedBarcodes . ' accession number(s).'));
         } else {
-            return response()->json(array('status' => 'Failed', 'message' => 'Oops! Failed to generate barcodes.'));
+            return response()->json(array('status' => 'Failed', 'message' => 'Oops! Failed to generate accession number.'));
         }
     }
 
@@ -593,12 +593,17 @@ class DashboardController extends Controller
                 } else {
                     $bookID = TblBooks::insertGetId([
                         'Title' => $request->input('title'),
-                        'Edition' => $request->input('edition'),
-                        'Collection_Type' => $request->input('collectionType'),
+                        'Description' => $request->input('description'),
+                        'Language' => $request->input('language'),
+                        'Date_Acquired' => $request->input('dateAcquired'),
                         'Call_Number' => $request->input('callNumber'),
-                        'ISBN' => $request->input('isbn'),
+                        'Edition' => $request->input('edition'),
                         'Location' => $request->input('location'),
                         'Copyright_Year' => $request->input('copyrightYear'),
+                        'Year_Published' => $request->input('yearPublished'),
+                        'Number_of_Pages' => $request->input('numberOfPages'),
+                        'Price' => $request->input('price'),
+                        'ISBN' => $request->input('isbn'),
                         'Publisher_ID' => $request->input('publisher'),
                         'Category_ID' => $request->input('category')
                     ]);
@@ -611,7 +616,7 @@ class DashboardController extends Controller
                             $startCount++;
 
                             $query = TblBarcodes::insert([
-                                'Barcode_Number' => 'C' . sprintf('%04d', $startCount),
+                                'Accession_Number' => 'C' . sprintf('%04d', $startCount),
                                 'Book_ID' => $bookID
                             ]);
 
@@ -848,12 +853,17 @@ class DashboardController extends Controller
 
                         $updateBook = TblBooks::where('Book_ID', $id)->update([
                             'Title' => $request->input('title'),
-                            'Edition' => $request->input('edition'),
-                            'Collection_Type' => $request->input('collectionType'),
+                            'Description' => $request->input('description'),
+                            'Language' => $request->input('language'),
+                            'Date_Acquired' => $request->input('dateAcquired'),
                             'Call_Number' => $request->input('callNumber'),
-                            'ISBN' => $request->input('isbn'),
+                            'Edition' => $request->input('edition'),
                             'Location' => $request->input('location'),
                             'Copyright_Year' => $request->input('copyrightYear'),
+                            'Year_Published' => $request->input('yearPublished'),
+                            'Number_of_Pages' => $request->input('numberOfPages'),
+                            'Price' => $request->input('bookPrice'),
+                            'ISBN' => $request->input('isbn'),
                             'Publisher_ID' => $request->input('publisher'),
                             'Category_ID' => $request->input('category')
                         ]);

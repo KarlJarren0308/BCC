@@ -116,8 +116,8 @@ $(document).ready(function() {
                     info = '<table class="table table-bordered table-striped"><tbody>';
                     info += '<tr><td class="text-right" width="25%">Call Number:</td><td>' + response['data']['book']['Call_Number'] + '</td></tr>';
                     info += '<tr><td class="text-right" width="25%">Title:</td><td>' + response['data']['book']['Title'] + '</td></tr>';
+                    info += '<tr><td class="text-right" width="25%">Description:</td><td>' + response['data']['book']['Description'] + '</td></tr>';
                     info += '<tr><td class="text-right" width="25%">Edition:</td><td>' + response['data']['book']['Edition'] + '</td></tr>';
-                    info += '<tr><td class="text-right" width="25%">Collection Type:</td><td>' + response['data']['book']['Collection_Type'] + '</td></tr>';
                     info += '<tr><td class="text-right" width="25%">ISBN:</td><td>' + response['data']['book']['ISBN'] + '</td></tr>';
                     info += '<tr><td class="text-right" width="25%">Author(s):</td><td>';
 

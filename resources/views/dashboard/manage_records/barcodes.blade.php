@@ -46,7 +46,7 @@
                         <li><a href="{{ route('dashboard.getLoanBooks') }}">Loan Books</a></li>
                         <li><a href="{{ route('dashboard.getReservedBooks') }}">Reserved Books</a></li>
                         <li><a href="{{ route('dashboard.getReceiveBooks') }}">Receive Books</a></li>
-                        <li><a class="active" href="{{ route('dashboard.getManageRecords', 'books') }}">Manage Book Records<span class="badge pull-right">Barcodes</span></a></li>
+                        <li><a class="active" href="{{ route('dashboard.getManageRecords', 'books') }}">Manage Book Records<span class="badge pull-right">A. N.</span></a></li>
                         <li><a href="{{ route('dashboard.getManageRecords', 'authors') }}">Manage Author Records</a></li>
                         <li><a href="{{ route('dashboard.getManageRecords', 'publishers') }}">Manage Publisher Records</a></li>
                         <li><a href="{{ route('dashboard.getManageRecords', 'categories') }}">Manage Categories Records</a></li>
@@ -60,7 +60,7 @@
         <div id="page-wrapper">
             <div class="row">
                 <div class="col-lg-12">
-                    <h1 class="page-header">Manage Barcodes</h1>
+                    <h1 class="page-header">Manage Accession Numbers</h1>
                 </div>
             </div>
             <div class="row">
@@ -90,12 +90,12 @@
                         @include('partials.flash_alert')
                     </div>
                     <div class="text-right gap-bottom">
-                        <button data-button="add-button" data-var-id="{{ $book->Book_ID }}" data-var-title="{{ $book->Title }}" class="btn btn-primary">Add Barcode</button>
+                        <button data-button="add-button" data-var-id="{{ $book->Book_ID }}" data-var-title="{{ $book->Title }}" class="btn btn-primary">Add Accession Number</button>
                     </div>
                     <table id="books-table" class="table table-bordered table-striped">
                         <thead>
                             <tr>
-                                <th>Barcode Number</th>
+                                <th>Accession Number</th>
                                 <th width="20%">Status</th>
                                 <th width="20%"></th>
                             </tr>
@@ -103,7 +103,7 @@
                         <tbody>
                             @foreach($barcodes as $barcode)
                                 <tr>
-                                    <td>{{ $barcode->Barcode_Number }}</td>
+                                    <td>{{ $barcode->Accession_Number }}</td>
                                     <td>{{ ucfirst($barcode->Status) }}</td>
                                     <td class="text-center">
                                         @if(session()->has('username'))

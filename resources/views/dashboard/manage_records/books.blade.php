@@ -77,7 +77,7 @@
                         <th>Edition</th>
                         <th>Copyright Year</th>
                         <th>Author(s)</th>
-                        <th width="20%"></th>
+                        <th width="30%"></th>
                     </tr>
                 </thead>
                 <tbody>
@@ -108,7 +108,7 @@
                             <td class="text-center">
                                 @if(session()->has('username'))
                                     <button data-button="view-button" data-var-id="{{ $book->Book_ID }}" class="btn btn-primary btn-xs">View Info</button>
-                                    <a href="{{ route('dashboard.getBarcodes', $book->Book_ID) }}" class="btn btn-info btn-xs">Barcodes</a>
+                                    <a href="{{ route('dashboard.getBarcodes', $book->Book_ID) }}" class="btn btn-info btn-xs">Accession Numbers</a>
                                     <a href="{{ route('dashboard.getEditRecord', ['books', $book->Book_ID]) }}" class="btn btn-success btn-xs">Edit</a>
                                     <a href="{{ route('dashboard.getDeleteRecord', ['books', $book->Book_ID]) }}" class="btn btn-danger btn-xs">Delete</a>
                                 @endif

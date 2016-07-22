@@ -40,6 +40,10 @@ hr {
     color: white;
 }
 
+.irresizable {
+    resize: none;
+}
+
 .no-margin {
     margin: 0;
 }

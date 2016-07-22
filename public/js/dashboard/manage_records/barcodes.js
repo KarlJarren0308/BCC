@@ -6,7 +6,7 @@ $(document).ready(function() {
     });
 
     onDataButtonClick('add-button', function() {
-        setModalContent('Add Barcode', '<form data-form="add-barcode-form"><input type="hidden" name="id" value="' + $(this).data('var-id') + '"><div class="form-group"><label for="">Book Title:</label><input type="text" class="form-control" value="' + $(this).data('var-title') + '" disabled></div><div class="form-group"><label for="numberOfCopies">Number of Copies to be Added:</label><input type="number" min="1" name="numberOfCopies" id="numberOfCopies" class="form-control" value="1"></div><div class="form-group text-right no-margin"><input type="submit" class="btn btn-primary" value="Add Barcode"></div></form>', '');
+        setModalContent('Add Accession Number', '<form data-form="add-barcode-form"><input type="hidden" name="id" value="' + $(this).data('var-id') + '"><div class="form-group"><label for="">Book Title:</label><input type="text" class="form-control" value="' + $(this).data('var-title') + '" disabled></div><div class="form-group"><label for="numberOfCopies">Number of Copies to be Added:</label><input type="number" min="1" name="numberOfCopies" id="numberOfCopies" class="form-control" value="1"></div><div class="form-group text-right no-margin"><input type="submit" class="btn btn-primary" value="Add Barcode"></div></form>', '');
         openModal();
     });
 
@@ -22,7 +22,7 @@ $(document).ready(function() {
             data: serializedForm,
             dataType: 'json',
             success: function(response) {
-                setModalContent('Add Barcode Status', response['message'], '');
+                setModalContent('Add Accession Number Status', response['message'], '');
 
                 setTimeout(function() {
                     closeModal();

@@ -69,10 +69,22 @@
             {!! Form::open(array('route' => ['dashboard.postEditRecord', 'books', $id])) !!}
                 <div class="enclosure">
                     <div class="row">
-                        <div class="col-sm-12">
+                        <div class="col-sm-6">
                             <div class="form-group">
-                                {!! Form::label('title', 'Book Title:') !!}
+                                {!! Form::label('title', 'Book Title: *') !!}
                                 {!! Form::text('title', $book->Title, ['class' => 'form-control', 'placeholder' => '', 'required' => 'required', 'autofocus' => 'autofocus']) !!}
+                            </div>
+                        </div>
+                        <div class="col-sm-3">
+                            <div class="form-group">
+                                {!! Form::label('language', 'Language: *') !!}
+                                {!! Form::text('language', $book->Language, ['class' => 'form-control', 'placeholder' => '', 'required' => 'required']) !!}
+                            </div>
+                        </div>
+                        <div class="col-sm-3">
+                            <div class="form-group">
+                                {!! Form::label('dateAcquired', 'Date Acquired: *') !!}
+                                {!! Form::date('dateAcquired', $book->Date_Acquired, ['class' => 'form-control', 'placeholder' => '', 'required' => 'required']) !!}
                             </div>
                         </div>
                     </div>
@@ -85,47 +97,54 @@
                         </div>
                         <div class="col-sm-4">
                             <div class="form-group">
-                                {!! Form::label('edition', 'Edition:') !!}
+                                {!! Form::label('edition', 'Edition: *') !!}
                                 {!! Form::text('edition', $book->Edition, ['class' => 'form-control', 'placeholder' => '', 'required' => 'required']) !!}
                             </div>
                         </div>
                         <div class="col-sm-4">
                             <div class="form-group">
-                                {!! Form::label('copyrightYear', 'Copyright Year:') !!}
-                                {!! Form::text('copyrightYear', $book->Copyright_Year, ['class' => 'form-control', 'placeholder' => '', 'required' => 'required']) !!}
-                            </div>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-sm-8">
-                            <div class="form-group">
                                 {!! Form::label('location', 'Location:') !!}
                                 {!! Form::text('location', $book->Location, ['class' => 'form-control', 'placeholder' => '']) !!}
                             </div>
                         </div>
-                        <div class="col-sm-4">
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-3">
                             <div class="form-group">
-                                {!! Form::label('collectionType', 'Collection Type:') !!}
-                                <select name="collectionType" id="collectionType" class="form-control" required>
-                                    <option value="" selected disabled>Select an option...</option>
-                                    <option value="Book"{{ ($book->Collection_Type == 'Book' ? ' selected' : '') }}>Book</option>
-                                    <option value="Magazine"{{ ($book->Collection_Type == 'Magazine' ? ' selected' : '') }}>Magazine</option>
-                                    <option value="Newspaper"{{ ($book->Collection_Type == 'Newspaper' ? ' selected' : '') }}>Newspaper</option>
-                                </select>
+                                {!! Form::label('copyrightYear', 'Copyright Year: *') !!}
+                                {!! Form::text('copyrightYear', $book->Copyright_Year, ['class' => 'form-control', 'maxlength' => '4', 'placeholder' => '', 'required' => 'required']) !!}
+                            </div>
+                        </div>
+                        <div class="col-sm-3">
+                            <div class="form-group">
+                                {!! Form::label('yearPublished', 'Year Published:') !!}
+                                {!! Form::text('yearPublished', $book->Year_Published, ['class' => 'form-control', 'maxlength' => '4', 'placeholder' => '']) !!}
+                            </div>
+                        </div>
+                        <div class="col-sm-3">
+                            <div class="form-group">
+                                {!! Form::label('numberOfPages', 'Number of Pages: *') !!}
+                                {!! Form::number('numberOfPages', $book->Number_of_Pages, ['class' => 'form-control', 'min' => '1', 'placeholder' => '', 'required' => 'required']) !!}
+                            </div>
+                        </div>
+                        <div class="col-sm-3">
+                            <div class="form-group">
+                                {!! Form::label('price', 'Book Price: *') !!}
+                                {!! Form::number('price', $book->Price, ['class' => 'form-control', 'min' => '1', 'placeholder' => '', 'required' => 'required']) !!}
                             </div>
                         </div>
                     </div>
                     <div class="row">
                         <div class="col-sm-4">
                             <div class="form-group">
-                                {!! Form::label('isbn', 'ISBN:') !!}
+                                {!! Form::label('isbn', 'ISBN: *') !!}
                                 {!! Form::text('isbn', $book->ISBN, ['class' => 'form-control', 'placeholder' => '', 'required' => 'required']) !!}
                             </div>
                         </div>
                         <div class="col-sm-4">
                             <div class="form-group">
-                                {!! Form::label('publisher', 'Publisher:') !!}
-                                <select name="publisher" id="publisher" class="form-control">
+                                {!! Form::label('publisher', 'Publisher: *') !!}
+                                <select name="publisher" id="publisher" class="form-control" required>
                                     <option value="" selected disabled>Select an option...</option>
                                     @foreach($publishers as $publisher)
                                         <option value="{{ $publisher->Publisher_ID }}"{{ ($publisher->Publisher_ID == $book->Publisher_ID ? ' selected' : '') }}>{{ $publisher->Publisher_Name }}</option>
@@ -135,8 +154,8 @@
                         </div>
                         <div class="col-sm-4">
                             <div class="form-group">
-                                {!! Form::label('category', 'Category:') !!}
-                                <select name="category" id="category" class="form-control">
+                                {!! Form::label('category', 'Category: *') !!}
+                                <select name="category" id="category" class="form-control" required>
                                     <option value="" selected disabled>Select an option...</option>
                                     @foreach($categories as $category)
                                         <option value="{{ $category->Category_ID }}"{{ ($category->Category_ID == $book->Category_ID ? ' selected' : '') }}>{{ $category->Category_Name }}</option>
@@ -145,39 +164,49 @@
                             </div>
                         </div>
                     </div>
-                    <div id="authors-well" class="well">
-                        <div class="text-right">
-                            <button type="button" class="btn btn-success btn-xs" data-button="add-author-button">Add Author</button>
-                        </div>
-                        @foreach($bounds as $key => $bound)
+                    <div class="row">
+                        <div class="col-sm-6">
                             <div class="form-group">
-                                <label for="author-{{ ($key + 1) }}">Author's Name:</label>
-                                @if($key != 0)
-                                    <div class="input-group">
-                                @endif
-                                <select name="authors[]" id="author-{{ ($key + 1) }}" class="form-control"{{ ($key == 0 ? ' required' : '') }}>
-                                    <option value="" selected disabled>Select an option...</option>
-                                    @foreach($authors as $author)
-                                        <option value="{{ $author->Author_ID }}"{{ ($bound->Author_ID == $author->Author_ID ? ' selected' : '') }}>
-                                            @if(strlen($author->Middle_Name) > 1)
-                                                {{ $author->First_Name . ' ' . substr($author->Middle_Name, 0, 1) . '. ' . $author->Last_Name }}
-                                            @else
-                                                {{ $author->First_Name . ' ' . $author->Last_Name }}
-                                            @endif
-                                        </option>
-                                    @endforeach
-                                </select>
-                                @if($key != 0)
-                                        <div class="input-group-btn">
-                                            <button type="button" class="btn btn-danger" data-button="remove-author-button">Remove</button>
-                                        </div>
-                                    </div>
-                                @endif
+                                {!! Form::label('description', 'Book Description:') !!}
+                                {!! Form::textarea('description', $book->Description, ['class' => 'form-control irresizable', 'placeholder' => '']) !!}
                             </div>
-                        @endforeach
+                        </div>
+                        <div class="col-sm-6">
+                            <div id="authors-well" class="well">
+                                <div class="text-right">
+                                    <button type="button" class="btn btn-success btn-xs" data-button="add-author-button">Add Author</button>
+                                </div>
+                                @foreach($bounds as $key => $bound)
+                                    <div class="form-group">
+                                        <label for="author-{{ ($key + 1) }}">Author's Name:</label>
+                                        @if($key != 0)
+                                            <div class="input-group">
+                                        @endif
+                                        <select name="authors[]" id="author-{{ ($key + 1) }}" class="form-control"{{ ($key == 0 ? ' required' : '') }}>
+                                            <option value="" selected disabled>Select an option...</option>
+                                            @foreach($authors as $author)
+                                                <option value="{{ $author->Author_ID }}"{{ ($bound->Author_ID == $author->Author_ID ? ' selected' : '') }}>
+                                                    @if(strlen($author->Middle_Name) > 1)
+                                                        {{ $author->First_Name . ' ' . substr($author->Middle_Name, 0, 1) . '. ' . $author->Last_Name }}
+                                                    @else
+                                                        {{ $author->First_Name . ' ' . $author->Last_Name }}
+                                                    @endif
+                                                </option>
+                                            @endforeach
+                                        </select>
+                                        @if($key != 0)
+                                                <div class="input-group-btn">
+                                                    <button type="button" class="btn btn-danger" data-button="remove-author-button">Remove</button>
+                                                </div>
+                                            </div>
+                                        @endif
+                                    </div>
+                                @endforeach
+                            </div>
+                        </div>
                     </div>
                     <div class="form-group text-right no-margin">
-                        <input type="submit" class="btn btn-primary" value="Save Changes">
+                        <input type="submit" class="btn btn-primary" value="Add Book">
                     </div>
                 </div>
             {!! Form::close() !!}
