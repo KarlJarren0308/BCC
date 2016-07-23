@@ -4,7 +4,7 @@ $(document).ready(function() {
             $('.presentation-header').animate({
                 'position': 'relative',
                 'top': '76px',
-                'left': '250px',
+                'left': '200px',
                 'margin-top': '0',
                 'margin-left': '0'
             }, 250);

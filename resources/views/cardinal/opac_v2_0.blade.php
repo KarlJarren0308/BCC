@@ -12,9 +12,9 @@
             top: 50%;
             left: calc(250px + 50%);
             margin-top: -60px;
-            margin-left: -375px;
+            margin-left: -425px;
             height: 60px;
-            width: 500px;
+            width: 600px;
         }
 
         .presentation-title {
