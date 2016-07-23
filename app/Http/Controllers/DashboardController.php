@@ -1065,7 +1065,41 @@ class DashboardController extends Controller
         }
     }
 
+    public function postLoanBooks(Request $request) {
+        if(!session()->has('username')) {
+            session()->flash('flash_status', 'danger');
+            session()->flash('flash_message', 'Oops! Please login first.');
+
+            return redirect()->route('cardinal.getIndex');
+        } else {
+            if(session()->get('type') != 'Librarian') {
+                session()->flash('flash_status', 'danger');
+                session()->flash('flash_message', 'Oops! You do not have to privilege to access the dashboard.');
+
+                return redirect()->route('cardinal.getOpac');
+            }
+        }
+
+        // TODO: Loan book using borrower's username and book's accession number.
+
+        return response()->json(array('status' => 'Success', 'message' => 'ok'));
+    }
+
     public function postSystemSettings(Request $request) {
+        if(!session()->has('username')) {
+            session()->flash('flash_status', 'danger');
+            session()->flash('flash_message', 'Oops! Please login first.');
+
+            return redirect()->route('cardinal.getIndex');
+        } else {
+            if(session()->get('type') != 'Librarian') {
+                session()->flash('flash_status', 'danger');
+                session()->flash('flash_message', 'Oops! You do not have to privilege to access the dashboard.');
+
+                return redirect()->route('cardinal.getOpac');
+            }
+        }
+
         if(!Storage::exists('settings.xml')) {
             Storage::put('settings.xml', '<?xml version="1.0" encoding="UTF-8"?><settings></settings>');
         }

@@ -34,6 +34,7 @@ Route::post('opac/search', array('as' => 'cardinal.postSearchOpac', 'uses' => 'C
 Route::post('opac/reserve', array('as' => 'cardinal.postReserve', 'uses' => 'CardinalController@postReserve'));
 Route::post('opac/cancel_reservation', array('as' => 'cardinal.postCancelReservation', 'uses' => 'CardinalController@postCancelReservation'));
 Route::post('login', array('as' => 'cardinal.postLogin', 'uses' => 'CardinalController@postLogin'));
+Route::post('loan_books', array('as' => 'dashboard.postLoanBooks', 'uses' => 'DashboardController@postLoanBooks'));
 Route::post('add_record/{what}', array('as' => 'dashboard.postAddRecord', 'uses' => 'DashboardController@postAddRecord'));
 Route::post('generate_barcode', array('as' => 'dashboard.postAddBarcode', 'uses' => 'DashboardController@postAddBarcode'));
 Route::post('edit_record/{what}/{id}', array('as' => 'dashboard.postEditRecord', 'uses' => 'DashboardController@postEditRecord'));

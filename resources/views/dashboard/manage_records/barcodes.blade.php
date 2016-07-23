@@ -127,14 +127,14 @@
             </div>
         </div>
     </div>
-    <div class="loadr">
+    <!-- <div class="loadr">
         <div class="loadr-dialog">
             <div class="text-center">
                 <span class="fa fa-spinner fa-4x fa-pulse"></span>
                 <h4 class="no-margin gap-top">Please Wait...</h4>
             </div>
         </div>
-    </div>
+    </div> -->
 @stop
 
 @section('post_ref')

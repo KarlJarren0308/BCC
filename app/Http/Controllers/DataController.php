@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 
 use App\Http\Requests;
 
+use App\TblAccounts;
 use App\TblBooks;
 use App\TblBounds;
 
@@ -19,6 +20,16 @@ class DataController extends Controller
         }
 
         switch($what) {
+            case '07489691941dcd1830a96d9f61121278':
+                // Request Borrower List
+
+                $borrowers = TblAccounts::where('tbl_accounts.Type', '!=', 'Librarian')
+                    ->leftJoin('tbl_borrowers', 'tbl_accounts.Owner_ID', '=', 'tbl_borrowers.Borrower_ID')
+                ->get();
+
+                return response()->json(array('status' => 'Success', 'data' => $borrowers));
+
+                break;
             case 'd4cf32e8303053a4d7ba0f0859297f83':
                 // Request Book Information
 
