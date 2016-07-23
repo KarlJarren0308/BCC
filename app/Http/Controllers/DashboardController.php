@@ -16,8 +16,6 @@ use App\TblCategories;
 use App\TblLibrarians;
 use App\TblPublishers;
 
-use Storage;
-
 date_default_timezone_set('Asia/Manila');
 
 class DashboardController extends Controller
@@ -468,6 +466,8 @@ class DashboardController extends Controller
                 return redirect()->route('cardinal.getOpac');
             }
         }
+
+        app('App\Http\Controllers\DataController')->initialize();
 
         $settingsFile = storage_path('app/public') . '/settings.xml';
         $data['settings'] = simplexml_load_file($settingsFile);
@@ -1100,20 +1100,24 @@ class DashboardController extends Controller
             }
         }
 
-        if(!Storage::exists('settings.xml')) {
-            Storage::put('settings.xml', '<?xml version="1.0" encoding="UTF-8"?><settings></settings>');
-        }
+        app('App\Http\Controllers\DataController')->initialize();
 
         $settingsFile = storage_path('app/public') . '/settings.xml';
         $xml = simplexml_load_file($settingsFile);
 
         foreach($xml as $item) {
-            if($item['name'] == 'opac_version') {
+            if(md5($item['name']) == $request->input('settingName')) {
                 $item['value'] = $request->input('version');
             }
         }
 
-        $xml->asXML($settingsFile);
+        if($xml->asXML($settingsFile)) {
+            session()->flash('flash_status', 'success');
+            session()->flash('flash_message', 'Changes has been saved.');
+        } else {
+            session()->flash('flash_status', 'danger');
+            session()->flash('flash_message', 'Oops! Failed to save changes. Please refresh the page and try again.');
+        }
 
         return redirect()->route('dashboard.getSystemSettings');
     }

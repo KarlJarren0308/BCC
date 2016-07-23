@@ -14,8 +14,6 @@ use App\TblLibrarians;
 use App\TblLoans;
 use App\TblReservations;
 
-use Storage;
-
 date_default_timezone_set('Asia/Manila');
 
 class CardinalController extends Controller
@@ -59,6 +57,8 @@ class CardinalController extends Controller
 
             return redirect()->route('cardinal.getIndex');
         }
+
+        app('App\Http\Controllers\DataController')->initialize();
 
         $settingsFile = storage_path('app/public') . '/settings.xml';
         $xml = simplexml_load_file($settingsFile);

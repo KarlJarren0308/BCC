@@ -10,10 +10,18 @@ use App\TblAccounts;
 use App\TblBooks;
 use App\TblBounds;
 
+use Storage;
+
 date_default_timezone_set('Asia/Manila');
 
 class DataController extends Controller
 {
+    public function initialize() {
+        if(!Storage::has('settings.xml')) {
+            Storage::put('settings.xml', '<?xml version="1.0" encoding="UTF-8"?><settings><setting name="opac_version" value="v1.0" /></settings>');
+        }
+    }
+
     public function postRequestData($what, Request $request) {
         if(!session()->has('username')) {
             return response()->json(array('status' => 'Failed', 'message' => 'Oops! Please login first...'));

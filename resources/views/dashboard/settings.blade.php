@@ -59,6 +59,9 @@
                     <h1 class="page-header">System Settings</h1>
                 </div>
             </div>
+            <div class="text-left gap-bottom">
+                @include('partials.flash_alert')
+            </div>
             <div class="row">
                 <div class="col-sm-4">
                     <div class="panel panel-red">
@@ -78,6 +81,7 @@
                                 </li>
                             </ul>
                             {!! Form::open(['route' => 'dashboard.postSystemSettings']) !!}
+                                <input type="hidden" name="settingName" value="{{ md5('opac_version') }}">
                                 <div class="form-group">
                                     <label for="version">Select a version:</label>
                                     <select class="form-control" name="version" id="version">
