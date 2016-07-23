@@ -58,7 +58,7 @@ class CardinalController extends Controller
             return redirect()->route('cardinal.getIndex');
         }
 
-        app('App\Http\Controllers\DataController')->initialize();
+        app('App\Http\Controllers\DataController')->checkSettings();
 
         $settingsFile = storage_path('app/public') . '/settings.xml';
         $xml = simplexml_load_file($settingsFile);

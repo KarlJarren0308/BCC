@@ -467,7 +467,7 @@ class DashboardController extends Controller
             }
         }
 
-        app('App\Http\Controllers\DataController')->initialize();
+        app('App\Http\Controllers\DataController')->checkSettings();
 
         $settingsFile = storage_path('app/public') . '/settings.xml';
         $data['settings'] = simplexml_load_file($settingsFile);
@@ -1100,7 +1100,7 @@ class DashboardController extends Controller
             }
         }
 
-        app('App\Http\Controllers\DataController')->initialize();
+        app('App\Http\Controllers\DataController')->checkSettings();
 
         $settingsFile = storage_path('app/public') . '/settings.xml';
         $xml = simplexml_load_file($settingsFile);

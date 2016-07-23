@@ -16,7 +16,7 @@ date_default_timezone_set('Asia/Manila');
 
 class DataController extends Controller
 {
-    public function initialize() {
+    public function checkSettings() {
         if(!Storage::has('settings.xml')) {
             Storage::put('settings.xml', '<?xml version="1.0" encoding="UTF-8"?><settings><setting name="opac_version" value="v1.0" /></settings>');
         }

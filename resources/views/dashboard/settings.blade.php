@@ -70,7 +70,7 @@
                         </div>
                         <div class="panel-body">
                             <p class="text-justify">Set the version of the OPAC you want to use.</p>
-                            <ul class="list-group">
+                            <ul class="list-group" style="overflow-y: scroll; padding-right: 5px; max-height: 175px;">
                                 <li class="list-group-item">
                                     <h4 class="list-group-item-heading">v1.0</h4>
                                     <p class="list-group-item-text">Lets you see all books and sort it. Search engine is included.</p>
