@@ -1,5 +1,9 @@
 @extends('template')
 
+@section('meta_tags')
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+@stop
+
 @section('content')
     <div id="wrapper">
         <nav class="navbar navbar-custom navbar-static-top" role="navigation" style="margin-bottom: 0">
@@ -60,7 +64,10 @@
                 </div>
             </div>
             <div class="row">
-                <div class="col-lg-3 col-md-6">
+                <div class="col-md-6">
+                    <canvas id="statistics-chart"></canvas>
+                </div>
+                <div class="col-md-3 col-sm-6">
                     <div class="panel panel-primary">
                         <div class="panel-heading">
                             <div class="row">
@@ -81,8 +88,6 @@
                             </div>
                         </a>
                     </div>
-                </div>
-                <div class="col-lg-3 col-md-6">
                     <div class="panel panel-green">
                         <div class="panel-heading">
                             <div class="row">
@@ -104,7 +109,7 @@
                         </a>
                     </div>
                 </div>
-                <div class="col-lg-3 col-md-6">
+                <div class="col-md-3 col-sm-6">
                     <div class="panel panel-yellow">
                         <div class="panel-heading">
                             <div class="row">
@@ -125,8 +130,6 @@
                             </div>
                         </a>
                     </div>
-                </div>
-                <div class="col-lg-3 col-md-6">
                     <div class="panel panel-red">
                         <div class="panel-heading">
                             <div class="row">
@@ -151,4 +154,18 @@
             </div>
         </div>
     </div>
+    <div class="modal fade">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header"></div>
+                <div class="modal-body"></div>
+                <div class="modal-footer"></div>
+            </div>
+        </div>
+    </div>
+@stop
+
+@section('post_ref')
+    <script src="/js/Chart.min.js"></script>
+    <script src="/js/dashboard/index.js"></script>
 @stop

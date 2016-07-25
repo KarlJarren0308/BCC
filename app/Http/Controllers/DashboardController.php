@@ -14,6 +14,7 @@ use App\TblBooks;
 use App\TblBounds;
 use App\TblCategories;
 use App\TblLibrarians;
+use App\TblLoans;
 use App\TblPublishers;
 
 date_default_timezone_set('Asia/Manila');
@@ -477,10 +478,10 @@ class DashboardController extends Controller
 
     public function postAddBarcode(Request $request) {
         if(!session()->has('username')) {
-            return response()->json(array('status' => 'Failed', 'message' => 'Oops! Please login first...'));
+            return response()->json(['status' => 'Failed', 'message' => 'Oops! Please login first...']);
         } else {
             if(session()->get('type') != 'Librarian') {
-                return response()->json(array('status' => 'Failed', 'message' => 'Oops! You do not have to privilege to access the dashboard.'));
+                return response()->json(['status' => 'Failed', 'message' => 'Oops! You do not have to privilege to access the dashboard.']);
             }
         }
 
@@ -505,9 +506,9 @@ class DashboardController extends Controller
         }
 
         if($addedBarcodes > 0) {
-            return response()->json(array('status' => 'Success', 'message' => 'Added: ' . $addedBarcodes . ' accession number(s).'));
+            return response()->json(['status' => 'Success', 'message' => 'Added: ' . $addedBarcodes . ' accession number(s).']);
         } else {
-            return response()->json(array('status' => 'Failed', 'message' => 'Oops! Failed to generate accession number.'));
+            return response()->json(['status' => 'Failed', 'message' => 'Oops! Failed to generate accession number.']);
         }
     }
 
@@ -1080,9 +1081,22 @@ class DashboardController extends Controller
             }
         }
 
-        // TODO: Loan book using borrower's username and book's accession number.
+        $availableBarcodes = [];
+        $query = TblBarcodes::where('Book_ID', $request->input('id'))->where('Status', 'available')->get();
 
-        return response()->json(array('status' => 'Success', 'message' => 'ok'));
+        if($query) {
+            $loanCounts = [];
+
+            foreach($query as $item) {
+                $barcode = TblLoans::where('Accession_Number', $item->Accession_Number)->where('Loan_Status', 'inactive')->count();
+
+                // TODO: Do something about the collected counts.
+            }
+
+            return response()->json(['status' => 'Success', 'message' => 'ok']);
+        } else {
+            return response()->json(['status' => 'Failed', 'message' => 'Oops! No more available copies.']);
+        }
     }
 
     public function postSystemSettings(Request $request) {

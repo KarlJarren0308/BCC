@@ -41,4 +41,5 @@ Route::post('edit_record/{what}/{id}', array('as' => 'dashboard.postEditRecord',
 Route::post('system_settings/save', array('as' => 'dashboard.postSystemSettings', 'uses' => 'DashboardController@postSystemSettings'));
 Route::post('force_change_password/{what}/{id}', array('as' => 'dashboard.postChangePassword', 'uses' => 'DashboardController@postChangePassword'));
 
+Route::post('data/initialize', array('as' => 'data.initialize', 'uses' => 'DataController@initialize'));
 Route::post('data/{key}', array('as' => 'data.postRequestData', 'uses' => 'DataController@postRequestData'));

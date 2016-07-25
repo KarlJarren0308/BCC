@@ -1,3 +1,11 @@
+function createChart(id, chartType, data, options) {
+    var canvasChart = new Chart($('#' + id), {
+        type: chartType,
+        data: data,
+        options: options
+    });
+}
+
 function openModal(backdrop) {
     if(backdrop == undefined) {
         backdrop = true;
