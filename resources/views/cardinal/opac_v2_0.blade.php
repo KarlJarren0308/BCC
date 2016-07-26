@@ -10,9 +10,9 @@
             position: absolute;
             text-align: center;
             top: 50%;
-            left: calc(250px + 50%);
+            left: 50%;
             margin-top: -60px;
-            margin-left: -425px;
+            margin-left: -300px;
             height: 60px;
             width: 600px;
         }

@@ -220,6 +220,7 @@ hr {
 
 #page-wrapper {
     border-left: none;
+    position: relative;
     padding-bottom: 25px;
     height: 100%;
 }

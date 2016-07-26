@@ -1,17 +1,12 @@
 $(document).ready(function() {
     onDataFormSubmit('search-form', function() {
         if($(window).width() > 768) {
-            $('.presentation-header').animate({
-                'position': 'relative',
-                'top': '76px',
-                'left': '200px',
+            $('.presentation-header').css('text-align', 'left').animate({
+                'position': 'absolute',
+                'top': '25px',
+                'left': '25px',
                 'margin-top': '0',
                 'margin-left': '0'
-            }, 250);
-
-            $('.presentation-header > form').animate({
-                'position': 'relative',
-                'margin-left': '-225px'
             }, 250);
         }
 
