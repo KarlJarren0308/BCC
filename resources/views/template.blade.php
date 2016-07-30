@@ -15,6 +15,7 @@
     <script src="{!! config('APP_URL') !!}/js/jquery.dataTables.min.js"></script>
     <script src="{!! config('APP_URL') !!}/js/dataTables.bootstrap.min.js"></script>
     <script src="{!! config('APP_URL') !!}/js/bootstrap.min.js"></script>
+    <script src="{!! config('APP_URL') !!}/js/bootstrapValidator.min.js"></script>
     <script src="{!! config('APP_URL') !!}/js/metisMenu.min.js"></script>
     <script src="{!! config('APP_URL') !!}/js/sb-admin-2.js"></script>
     <script src="{!! config('APP_URL') !!}/js/script.js"></script>

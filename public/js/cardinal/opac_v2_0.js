@@ -4,7 +4,6 @@ $(document).ready(function() {
             $('.presentation-header').css('text-align', 'left').animate({
                 'position': 'absolute',
                 'top': '25px',
-                'left': '25px',
                 'margin-top': '0',
                 'margin-left': '0'
             }, 250);

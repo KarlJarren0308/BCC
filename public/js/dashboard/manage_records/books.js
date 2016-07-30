@@ -15,6 +15,109 @@ $(document).ready(function() {
         ]
     });
 
+    validateDataForm('add-book-form', {
+        title: {
+            validators: {
+                regexp: {
+                    regexp: /^([a-z0-9%&!?,.-:\/\s])+$/i,
+                    message: 'The value must contain letters, numbers and the following symbol(s) only: .,-:'
+                }
+            }
+        },
+        callNumber: {
+            validators: {
+                regexp: {
+                    regexp: /^([a-z0-9.\s])+$/i,
+                    message: 'The value must contain letters, numbers and the following symbol(s) only: .,-:'
+                }
+            }
+        },
+        location: {
+            validators: {
+                regexp: {
+                    regexp: /^([a-z0-9,.\s])+$/i,
+                    message: 'The value must contain letters, numbers and the following symbol(s) only: .,-:'
+                }
+            }
+        },
+        copyrightYear: {
+            validators: {
+                numeric: {
+                    message: 'The value must contain numbers only.'
+                }
+            }
+        },
+        yearPublished: {
+            validators: {
+                numeric: {
+                    message: 'The value must contain numbers only.'
+                }
+            }
+        },
+        isbn: {
+            validators: {
+                isbn: {
+                    message: 'The value is not a valid ISBN.'
+                }
+            }
+        }
+    });
+
+    validateDataForm('edit-book-form', {
+        title: {
+            validators: {
+                regexp: {
+                    regexp: /^([a-z0-9%&!?,.-:\/\s])+$/i,
+                    message: 'The value must contain letters, numbers and the following symbol(s) only: .,-:'
+                }
+            }
+        },
+        callNumber: {
+            validators: {
+                regexp: {
+                    regexp: /^([a-z0-9.\s])+$/i,
+                    message: 'The value must contain letters, numbers and the following symbol(s) only: .,-:'
+                }
+            }
+        },
+        location: {
+            validators: {
+                regexp: {
+                    regexp: /^([a-z0-9,.\s])+$/i,
+                    message: 'The value must contain letters, numbers and the following symbol(s) only: .,-:'
+                }
+            }
+        },
+        copyrightYear: {
+            validators: {
+                numeric: {
+                    message: 'The value must contain numbers only.'
+                }
+            }
+        },
+        yearPublished: {
+            validators: {
+                numeric: {
+                    message: 'The value must contain numbers only.'
+                }
+            }
+        },
+        isbn: {
+            validators: {
+                isbn: {
+                    message: 'The value is not a valid ISBN.'
+                }
+            }
+        }
+        /*BookISBN: {
+            validators: {
+                notEmpty: {
+                    message: 'ISBN is required.'
+                }
+            }
+        }*/
+    });
+
     onDataButtonClick('view-button', function() {
         setModalLoader();
         openModal();

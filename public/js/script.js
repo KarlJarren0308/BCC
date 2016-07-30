@@ -62,3 +62,14 @@ function onDynamicDataButtonClick(dataButton, func) {
 function onDynamicDataFormSubmit(dataForm, func) {
     $('body').on('submit', '[data-form="' + dataForm + '"]', func);
 }
+
+function validateDataForm(dataForm, validations) {
+    $('[data-form="' + dataForm + '"]').bootstrapValidator({
+        icon: {
+            valid: 'glyphicon glyphicon-ok',
+            invalid: 'glyphicon glyphicon-remove',
+            validating: 'glyphicon glyphicon-refresh'
+        },
+        fields: validations
+    });
+}

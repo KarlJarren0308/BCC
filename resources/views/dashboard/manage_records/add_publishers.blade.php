@@ -62,7 +62,7 @@
             <div class="text-left" style="margin-bottom: 25px;">
                 <a href="{{ route('dashboard.getManageRecords', 'publishers') }}" class="btn btn-danger btn-xs"><span class="fa fa-arrow-left gap-right"></span>Go Back</a>
             </div>
-            {!! Form::open(array('route' => ['dashboard.postAddRecord', 'publishers'])) !!}
+            {!! Form::open(array('route' => ['dashboard.postAddRecord', 'publishers'], 'data-form' => 'add-publisher-form')) !!}
                 <div class="enclosure">
                     <div class="row">
                         <div class="col-sm-12">

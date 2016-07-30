@@ -66,19 +66,26 @@
             <div class="text-left" style="margin-bottom: 25px;">
                 <a href="{{ route('dashboard.getManageRecords', 'books') }}" class="btn btn-danger btn-xs"><span class="fa fa-arrow-left gap-right"></span>Go Back</a>
             </div>
-            {!! Form::open(array('route' => ['dashboard.postAddRecord', 'books'])) !!}
+            {!! Form::open(array('route' => ['dashboard.postAddRecord', 'books'], 'data-form' => 'add-book-form')) !!}
                 <div class="enclosure">
                     <div class="row">
                         <div class="col-sm-6">
                             <div class="form-group">
                                 {!! Form::label('title', 'Book Title: *') !!}
-                                {!! Form::text('title', null, ['class' => 'form-control', 'placeholder' => '', 'required' => 'required', 'autofocus' => 'autofocus']) !!}
+                                {!! Form::text('title', null, ['class' => 'form-control', 'placeholder' => '', 'autofocus' => 'autofocus']) !!}
                             </div>
                         </div>
                         <div class="col-sm-3">
                             <div class="form-group">
                                 {!! Form::label('language', 'Language: *') !!}
-                                {!! Form::text('language', null, ['class' => 'form-control', 'placeholder' => '', 'required' => 'required']) !!}
+                                <select name="language" id="language" class="form-control" required>
+                                    <option value="" selected disabled>Select an option...</option>
+                                    <option value="English">English Language</option>
+                                    <option value="Filipino">Filipino Language</option>
+                                    <option value="Japanese">Japanese Language</option>
+                                    <option value="Chinese">Chinese Language</option>
+                                    <option value="Korean">Korean Language</option>
+                                </select>
                             </div>
                         </div>
                         <div class="col-sm-3">
@@ -91,20 +98,125 @@
                     <div class="row">
                         <div class="col-sm-4">
                             <div class="form-group">
-                                {!! Form::label('callNumber', 'Call Number:') !!}
-                                {!! Form::text('callNumber', null, ['class' => 'form-control', 'placeholder' => '']) !!}
+                                {!! Form::label('callNumber', 'Call Number: *') !!}
+                                {!! Form::text('callNumber', null, ['class' => 'form-control', 'required' => 'required', 'placeholder' => '']) !!}
                             </div>
                         </div>
                         <div class="col-sm-4">
                             <div class="form-group">
                                 {!! Form::label('edition', 'Edition: *') !!}
-                                {!! Form::text('edition', null, ['class' => 'form-control', 'placeholder' => '', 'required' => 'required']) !!}
+                                <select name="edition" id="edition" class="form-control" required>
+                                    <option value="" selected disabled>Select an option...</option>
+                                    <option value="1st">1st</option>
+                                    <option value="2nd">2nd</option>
+                                    <option value="3rd">3rd</option>
+                                    <option value="4th">4th</option>
+                                    <option value="5th">5th</option>
+                                    <option value="6th">6th</option>
+                                    <option value="7th">7th</option>
+                                    <option value="8th">8th</option>
+                                    <option value="9th">9th</option>
+                                    <option value="1th">1th</option>
+                                    <option value="11th">11th</option>
+                                    <option value="12th">12th</option>
+                                    <option value="13th">13th</option>
+                                    <option value="14th">14th</option>
+                                    <option value="15th">15th</option>
+                                    <option value="16th">16th</option>
+                                    <option value="17th">17th</option>
+                                    <option value="18th">18th</option>
+                                    <option value="19th">19th</option>
+                                    <option value="20th">20th</option>
+                                    <option value="21th">21th</option>
+                                    <option value="22th">22th</option>
+                                    <option value="23th">23th</option>
+                                    <option value="24th">24th</option>
+                                    <option value="25th">25th</option>
+                                    <option value="26th">26th</option>
+                                    <option value="27th">27th</option>
+                                    <option value="28th">28th</option>
+                                    <option value="29th">29th</option>
+                                    <option value="30th">30th</option>
+                                    <option value="31th">31th</option>
+                                    <option value="32th">32th</option>
+                                    <option value="33th">33th</option>
+                                    <option value="34th">34th</option>
+                                    <option value="35th">35th</option>
+                                    <option value="36th">36th</option>
+                                    <option value="37th">37th</option>
+                                    <option value="38th">38th</option>
+                                    <option value="39th">39th</option>
+                                    <option value="40th">40th</option>
+                                    <option value="41th">41th</option>
+                                    <option value="42th">42th</option>
+                                    <option value="43th">43th</option>
+                                    <option value="44th">44th</option>
+                                    <option value="45th">45th</option>
+                                    <option value="46th">46th</option>
+                                    <option value="47th">47th</option>
+                                    <option value="48th">48th</option>
+                                    <option value="49th">49th</option>
+                                    <option value="50th">50th</option>
+                                    <option value="51th">51th</option>
+                                    <option value="52th">52th</option>
+                                    <option value="53th">53th</option>
+                                    <option value="54th">54th</option>
+                                    <option value="55th">55th</option>
+                                    <option value="56th">56th</option>
+                                    <option value="57th">57th</option>
+                                    <option value="58th">58th</option>
+                                    <option value="59th">59th</option>
+                                    <option value="60th">60th</option>
+                                    <option value="61th">61th</option>
+                                    <option value="62th">62th</option>
+                                    <option value="63th">63th</option>
+                                    <option value="64th">64th</option>
+                                    <option value="65th">65th</option>
+                                    <option value="66th">66th</option>
+                                    <option value="67th">67th</option>
+                                    <option value="68th">68th</option>
+                                    <option value="69th">69th</option>
+                                    <option value="70th">70th</option>
+                                    <option value="71th">71th</option>
+                                    <option value="72th">72th</option>
+                                    <option value="73th">73th</option>
+                                    <option value="74th">74th</option>
+                                    <option value="75th">75th</option>
+                                    <option value="76th">76th</option>
+                                    <option value="77th">77th</option>
+                                    <option value="78th">78th</option>
+                                    <option value="79th">79th</option>
+                                    <option value="80th">80th</option>
+                                    <option value="81th">81th</option>
+                                    <option value="82th">82th</option>
+                                    <option value="83th">83th</option>
+                                    <option value="84th">84th</option>
+                                    <option value="85th">85th</option>
+                                    <option value="86th">86th</option>
+                                    <option value="87th">87th</option>
+                                    <option value="88th">88th</option>
+                                    <option value="89th">89th</option>
+                                    <option value="90th">90th</option>
+                                    <option value="91th">91th</option>
+                                    <option value="92th">92th</option>
+                                    <option value="93th">93th</option>
+                                    <option value="94th">94th</option>
+                                    <option value="95th">95th</option>
+                                    <option value="96th">96th</option>
+                                    <option value="97th">97th</option>
+                                    <option value="98th">98th</option>
+                                    <option value="99th">99th</option>
+                                    <option value="100th">100th</option>
+                                </select>
                             </div>
                         </div>
                         <div class="col-sm-4">
                             <div class="form-group">
                                 {!! Form::label('location', 'Location:') !!}
-                                {!! Form::text('location', null, ['class' => 'form-control', 'placeholder' => '']) !!}
+                                <select name="location" id="location" class="form-control" required>
+                                    <option value="" selected disabled>Select an option...</option>
+                                    <option value="asd">asd</option>
+                                </select>
                             </div>
                         </div>
                     </div>

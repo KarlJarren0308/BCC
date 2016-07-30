@@ -66,7 +66,7 @@
             <div class="text-left" style="margin-bottom: 25px;">
                 <a href="{{ route('dashboard.getManageRecords', 'books') }}" class="btn btn-danger btn-xs"><span class="fa fa-arrow-left gap-right"></span>Go Back</a>
             </div>
-            {!! Form::open(array('route' => ['dashboard.postEditRecord', 'books', $id])) !!}
+            {!! Form::open(array('route' => ['dashboard.postEditRecord', 'books', $id], 'data-form' => 'edit-book-form')) !!}
                 <div class="enclosure">
                     <div class="row">
                         <div class="col-sm-6">
@@ -206,7 +206,7 @@
                         </div>
                     </div>
                     <div class="form-group text-right no-margin">
-                        <input type="submit" class="btn btn-primary" value="Add Book">
+                        <input type="submit" class="btn btn-primary" value="Save Changes">
                     </div>
                 </div>
             {!! Form::close() !!}
