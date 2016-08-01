@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use App\Http\Requests;
 
 use App\TblAccounts;
+use App\TblBarcodes;
 use App\TblBooks;
 use App\TblBounds;
 
@@ -51,6 +52,14 @@ class DataController extends Controller
                 $authors = TblBounds::where('tbl_bounds.Book_ID', $request->input('id'))->join('tbl_authors', 'tbl_bounds.Author_ID', '=', 'tbl_authors.Author_ID')->get();
 
                 return response()->json(['status' => 'Success', 'data' => ['book' => $book, 'authors' => $authors]]);
+
+                break;
+            case '531a84f73335d5abb30232cdbb7c2bd1':
+                // Request Last Barcode Entry
+
+                $barcode = TblBarcodes::orderBy('Accession_Number', 'desc')->first();
+
+                return response()->json(['status' => 'Success', 'data' => $barcode->Accession_Number]);
 
                 break;
             default:

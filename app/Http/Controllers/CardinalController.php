@@ -107,7 +107,7 @@ class CardinalController extends Controller
             return redirect()->route('cardinal.getIndex');
         }
 
-        $data['borrowed_books'] = TblLoans::where('tbl_loans.Username', session()->get('username'))->join('tbl_books', 'tbl_loans.Book_ID', '=', 'tbl_books.Book_ID')->leftJoin('tbl_receives', 'tbl_loans.Loan_ID', '=', 'tbl_receives.Reference_ID')->get();
+        $data['borrowed_books'] = TblLoans::where('tbl_loans.Username', session()->get('username'))->join('tbl_barcodes', 'tbl_loans.Accession_Number', '=', 'tbl_barcodes.Accession_Number')->join('tbl_books', 'tbl_barcodes.Book_ID', '=', 'tbl_books.Book_ID')->leftJoin('tbl_receives', 'tbl_loans.Loan_ID', '=', 'tbl_receives.Reference_ID')->get();
 
         return view('cardinal.borrowed_books', $data);
     }

@@ -73,3 +73,13 @@ function validateDataForm(dataForm, validations) {
         fields: validations
     });
 }
+
+/*
+ * Debugging Functions
+ */
+
+function ajaxError(arg0, arg1, arg2) {
+    var w = window.open();
+
+    $(w.document).html(arg0.responseText);
+}

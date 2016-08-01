@@ -51,12 +51,6 @@ $(document).ready(function() {
             dataType: 'json',
             success: function(response) {
                 setModalContent('Loan Book Status', response['message'], '');
-
-                setTimeout(function() {
-                    closeModal();
-
-                    location.reload();
-                }, 2000);
             }
         });
 

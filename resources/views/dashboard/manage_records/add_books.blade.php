@@ -72,7 +72,7 @@
                         <div class="col-sm-6">
                             <div class="form-group">
                                 {!! Form::label('title', 'Book Title: *') !!}
-                                {!! Form::text('title', null, ['class' => 'form-control', 'placeholder' => '', 'autofocus' => 'autofocus']) !!}
+                                {!! Form::text('title', null, ['class' => 'form-control', 'placeholder' => '', 'required' => 'required', 'autofocus' => 'autofocus']) !!}
                             </div>
                         </div>
                         <div class="col-sm-3">
@@ -212,10 +212,12 @@
                         </div>
                         <div class="col-sm-4">
                             <div class="form-group">
-                                {!! Form::label('location', 'Location:') !!}
+                                {!! Form::label('location', 'Location: *') !!}
                                 <select name="location" id="location" class="form-control" required>
                                     <option value="" selected disabled>Select an option...</option>
-                                    <option value="asd">asd</option>
+                                    <option value="Circulation">Circulation</option>
+                                    <option value="Reference">Reference</option>
+                                    <option value="Filipiniana">Filipiniana</option>
                                 </select>
                             </div>
                         </div>
@@ -223,8 +225,8 @@
                     <div class="row">
                         <div class="col-sm-3">
                             <div class="form-group">
-                                {!! Form::label('copyrightYear', 'Copyright Year: *') !!}
-                                {!! Form::text('copyrightYear', null, ['class' => 'form-control', 'maxlength' => '4', 'placeholder' => '', 'required' => 'required']) !!}
+                                {!! Form::label('copyrightYear', 'Copyright Year:') !!}
+                                {!! Form::text('copyrightYear', null, ['class' => 'form-control', 'maxlength' => '4', 'placeholder' => '']) !!}
                             </div>
                         </div>
                         <div class="col-sm-3">

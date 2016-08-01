@@ -103,11 +103,11 @@
                         <tbody>
                             @foreach($barcodes as $barcode)
                                 <tr>
-                                    <td>{{ $barcode->Accession_Number }}</td>
+                                    <td>{{ 'C' . sprintf('%04d', $barcode->Accession_Number) }}</td>
                                     <td>{{ ucfirst($barcode->Status) }}</td>
                                     <td class="text-center">
                                         @if(session()->has('username'))
-                                            <a href="{{ route('dashboard.getDeleteRecord', ['barcodes', $barcode->Classification_ID]) }}" class="btn btn-danger btn-xs">Delete</a>
+                                            <a href="{{ route('dashboard.getDeleteRecord', ['barcodes', $barcode->Accession_Number]) }}" class="btn btn-danger btn-xs">Delete</a>
                                         @endif
                                     </td>
                                 </tr>

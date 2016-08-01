@@ -17,6 +17,8 @@ use App\TblLibrarians;
 use App\TblLoans;
 use App\TblPublishers;
 
+use DB;
+
 date_default_timezone_set('Asia/Manila');
 
 class DashboardController extends Controller
@@ -93,7 +95,10 @@ class DashboardController extends Controller
             }
         }
 
-        return view('maintenance');
+        $data['bounds'] = TblBounds::join('tbl_authors', 'tbl_bounds.Author_ID', '=', 'tbl_authors.Author_ID')->get();
+        $data['books'] = TblLoans::join('tbl_accounts', 'tbl_loans.Username', '=', 'tbl_accounts.Username')->join('tbl_borrowers', 'tbl_accounts.Owner_ID', '=', 'tbl_borrowers.Borrower_ID')->join('tbl_barcodes', 'tbl_loans.Accession_Number', '=', 'tbl_barcodes.Accession_Number')->join('tbl_books', 'tbl_barcodes.Book_ID', '=', 'tbl_books.Book_ID')->get();
+
+        return view('dashboard.receive_books', $data);
     }
 
     public function getManageRecords($what) {
@@ -313,10 +318,10 @@ class DashboardController extends Controller
 
         switch($what) {
             case 'barcodes':
-                $barcode = TblBarcodes::where('Classification_ID', $id)->first();
+                $barcode = TblBarcodes::where('Accession_Number', $id)->first();
 
                 if($barcode) {
-                    $query = TblBarcodes::where('Classification_ID', $id)->delete();
+                    $query = TblBarcodes::where('Accession_Number', $id)->delete();
 
                     if($query) {
                         session()->flash('flash_status', 'success');
@@ -487,14 +492,8 @@ class DashboardController extends Controller
 
         $addedBarcodes = 0;
 
-        $query = TblBarcodes::where('Book_ID', $request->input('id'))->orderBy('Accession_Number', 'desc')->first();
-        $startCount = substr($query->Accession_Number, 1);
-
         for($i = 0; $i < $request->input('numberOfCopies'); $i++) {
-            $startCount++;
-
             $query = TblBarcodes::insert([
-                'Accession_Number' => 'C' . sprintf('%04d', $startCount),
                 'Book_ID' => $request->input('id')
             ]);
 
@@ -611,13 +610,9 @@ class DashboardController extends Controller
 
                     if($bookID) {
                         $addedAuthors = 0;
-                        $startCount = 0;
 
                         for($i = 0; $i < $request->input('numberOfCopies'); $i++) {
-                            $startCount++;
-
                             $query = TblBarcodes::insert([
-                                'Accession_Number' => 'C' . sprintf('%04d', $startCount),
                                 'Book_ID' => $bookID
                             ]);
 
@@ -863,7 +858,7 @@ class DashboardController extends Controller
                             'Copyright_Year' => $request->input('copyrightYear'),
                             'Year_Published' => $request->input('yearPublished'),
                             'Number_of_Pages' => $request->input('numberOfPages'),
-                            'Price' => $request->input('bookPrice'),
+                            'Price' => $request->input('price'),
                             'ISBN' => $request->input('isbn'),
                             'Publisher_ID' => $request->input('publisher'),
                             'Category_ID' => $request->input('category')
@@ -1082,20 +1077,44 @@ class DashboardController extends Controller
         }
 
         $availableBarcodes = [];
-        $query = TblBarcodes::where('Book_ID', $request->input('id'))->where('Status', 'available')->get();
 
-        if($query) {
-            $loanCounts = [];
+        $borrower = TblAccounts::where('tbl_accounts.Username', $request->input('borrower'))->where('tbl_accounts.Type', '!=', 'Librarian')
+            ->leftJoin('tbl_borrowers', 'tbl_accounts.Owner_ID', '=', 'tbl_borrowers.Borrower_ID')
+        ->first();
 
-            foreach($query as $item) {
-                $barcode = TblLoans::where('Accession_Number', $item->Accession_Number)->where('Loan_Status', 'inactive')->count();
-
-                // TODO: Do something about the collected counts.
+        if($borrower) {
+            if(strlen($borrower->Middle_Name) > 1) {
+                $borrowerName = $borrower->First_Name . ' ' . substr($borrower->Middle_Name, 0, 1) . '. ' . $borrower->Last_Name;
+            } else {
+                $borrowerName = $borrower->First_Name . ' ' . $borrower->Last_Name;
             }
 
-            return response()->json(['status' => 'Success', 'message' => 'ok']);
+            $query = TblBarcodes::where('Book_ID', $request->input('id'))->where('Status', 'available')->leftJoin('tbl_loans', 'tbl_barcodes.Accession_Number', '=', 'tbl_loans.Accession_Number')->select('tbl_barcodes.*', DB::raw('count(tbl_loans.Accession_Number) as Loan_Count'))->groupBy('tbl_barcodes.Accession_Number')->orderBy('Loan_Count')->orderBy('tbl_barcodes.Accession_Number')->first();
+
+            if($query) {
+                $barcode = $query->Accession_Number;
+
+                $query = TblLoans::insert([
+                    'Accession_Number' => $barcode,
+                    'Username' => $request->input('borrower'),
+                    'Loan_Date_Stamp' => date('Y-m-d'),
+                    'Loan_Time_Stamp' => date('H:i:s')
+                ]);
+
+                if($query) {
+                    $query = TblBarcodes::where('Accession_Number', $barcode)->update([
+                        'Status' => 'on-loan'
+                    ]);
+
+                    return response()->json(['status' => 'Success', 'message' => 'Loan Successful. You may now hand the book with an accession number of C' . sprintf('%04d', $barcode) . ' to the borrower, ' . $borrowerName . '.', 'data' => ['barcode' => $barcode, 'borrower' => $borrowerName]]);
+                } else {
+                    return response()->json(['status' => 'Failed', 'message' => 'Oops! No more available copies.']);
+                }
+            } else {
+                return response()->json(['status' => 'Failed', 'message' => 'Oops! No more available copies.']);
+            }
         } else {
-            return response()->json(['status' => 'Failed', 'message' => 'Oops! No more available copies.']);
+            return response()->json(['status' => 'Failed', 'message' => 'Oops! Borrower doesn\'t exist. Please refresh the page and try again.']);
         }
     }
 

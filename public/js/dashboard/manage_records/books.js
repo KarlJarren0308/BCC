@@ -54,6 +54,13 @@ $(document).ready(function() {
                 }
             }
         },
+        price: {
+            validators: {
+                numeric: {
+                    message: 'The value must contain numbers and a dot symbol only.'
+                }
+            }
+        },
         isbn: {
             validators: {
                 isbn: {
@@ -99,6 +106,13 @@ $(document).ready(function() {
             validators: {
                 numeric: {
                     message: 'The value must contain numbers only.'
+                }
+            }
+        },
+        price: {
+            validators: {
+                numeric: {
+                    message: 'The value must contain numbers and a dot symbol only.'
                 }
             }
         },
@@ -184,12 +198,29 @@ $(document).ready(function() {
     });
 
     $('input[name="numberOfCopies"]').on('change paste keyup', function() {
+        var numberOfCopies = $(this).val();
+
         $('#generated-accession-numbers').text('');
         
         if($.isNumeric($(this).val())) {
-            for(var i = 0; i < $(this).val(); i++) {
-                $('#generated-accession-numbers').append('<div class="list-group-item">C' + padZeros(i + 1, 4) + '</div>');
-            }
+            $.ajax({
+                url: '/data/531a84f73335d5abb30232cdbb7c2bd1',
+                method: 'POST',
+                headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
+                dataType: 'json',
+                success: function(response) {
+                    var lastBarcode = response['data'];
+
+                    for(var i = 0; i < numberOfCopies; i++) {
+                        $('#generated-accession-numbers').append('<div class="list-group-item">C' + padZeros(lastBarcode++, 4) + '</div>');
+                    }
+                },
+                error: function(arg0, arg1, arg2) {
+                    console.log(arg0.responseText);
+                }
+            });
+
+            return false;
         }
     });
 });
