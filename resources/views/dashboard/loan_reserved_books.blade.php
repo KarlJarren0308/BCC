@@ -64,6 +64,9 @@
                     <h1 class="page-header">Reserved Books</h1>
                 </div>
             </div>
+            <div class="text-left gap-bottom">
+                @include('partials.flash_alert')
+            </div>
             <table id="books-table" class="table table-bordered table-striped">
                 <thead>
                     <tr>

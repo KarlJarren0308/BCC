@@ -81,7 +81,7 @@ class DashboardController extends Controller
         }
 
         $data['bounds'] = TblBounds::join('tbl_authors', 'tbl_bounds.Author_ID', '=', 'tbl_authors.Author_ID')->get();
-        $data['books'] = TblReservations::join('tbl_accounts', 'tbl_reservations.Username', '=', 'tbl_accounts.Username')->join('tbl_borrowers', 'tbl_accounts.Owner_ID', '=', 'tbl_borrowers.Borrower_ID')->join('tbl_books', 'tbl_reservations.Book_ID', '=', 'tbl_books.Book_ID')->get();
+        $data['books'] = TblReservations::where('Reservation_Status', 'active')->join('tbl_accounts', 'tbl_reservations.Username', '=', 'tbl_accounts.Username')->join('tbl_borrowers', 'tbl_accounts.Owner_ID', '=', 'tbl_borrowers.Borrower_ID')->join('tbl_books', 'tbl_reservations.Book_ID', '=', 'tbl_books.Book_ID')->get();
 
         return view('dashboard.loan_reserved_books', $data);
     }
@@ -1196,6 +1196,73 @@ class DashboardController extends Controller
             }
         } else {
             return response()->json(['status' => 'Failed', 'message' => 'Oops! Borrower doesn\'t exist. Please refresh the page and try again.']);
+        }
+    }
+
+    public function postReservedBooks(Request $request) {
+        if(!session()->has('username')) {
+            session()->flash('flash_status', 'danger');
+            session()->flash('flash_message', 'Oops! Please login first.');
+
+            return redirect()->route('cardinal.getIndex');
+        } else {
+            if(session()->get('type') != 'Librarian') {
+                session()->flash('flash_status', 'danger');
+                session()->flash('flash_message', 'Oops! You do not have to privilege to access the dashboard.');
+
+                return redirect()->route('cardinal.getOpac');
+            }
+        }
+
+        $availableBarcodes = [];
+
+        $reservation = TblReservations::where('Reservation_ID', $request->input('id'))->first();
+
+        if($reservation) {
+            $borrower = TblAccounts::where('tbl_accounts.Username', $reservation->Username)->where('tbl_accounts.Type', '!=', 'Librarian')
+                ->leftJoin('tbl_borrowers', 'tbl_accounts.Owner_ID', '=', 'tbl_borrowers.Borrower_ID')
+            ->first();
+
+            if($borrower) {
+                if(strlen($borrower->Middle_Name) > 1) {
+                    $borrowerName = $borrower->First_Name . ' ' . substr($borrower->Middle_Name, 0, 1) . '. ' . $borrower->Last_Name;
+                } else {
+                    $borrowerName = $borrower->First_Name . ' ' . $borrower->Last_Name;
+                }
+
+                $query = TblBarcodes::where('Book_ID', $reservation->Book_ID)->where('Status', 'available')->leftJoin('tbl_loans', 'tbl_barcodes.Accession_Number', '=', 'tbl_loans.Accession_Number')->select('tbl_barcodes.*', DB::raw('count(tbl_loans.Accession_Number) as Loan_Count'))->groupBy('tbl_barcodes.Accession_Number')->orderBy('Loan_Count')->orderBy('tbl_barcodes.Accession_Number')->first();
+
+                if($query) {
+                    $barcode = $query->Accession_Number;
+
+                    $query = TblLoans::insert([
+                        'Accession_Number' => $barcode,
+                        'Username' => $reservation->Username,
+                        'Loan_Date_Stamp' => date('Y-m-d'),
+                        'Loan_Time_Stamp' => date('H:i:s')
+                    ]);
+
+                    if($query) {
+                        $query = TblBarcodes::where('Accession_Number', $barcode)->update([
+                            'Status' => 'on-loan'
+                        ]);
+
+                        $query = TblReservations::where('Reservation_ID', $request->input('id'))->update([
+                            'Reservation_Status' => 'inactive'
+                        ]);
+
+                        return response()->json(['status' => 'Success', 'message' => 'Loan Successful. You may now hand the book with an accession number of C' . sprintf('%04d', $barcode) . ' to the borrower, ' . $borrowerName . '.', 'data' => ['barcode' => $barcode, 'borrower' => $borrowerName]]);
+                    } else {
+                        return response()->json(['status' => 'Failed', 'message' => 'Oops! No more available copies.']);
+                    }
+                } else {
+                    return response()->json(['status' => 'Failed', 'message' => 'Oops! No more available copies.']);
+                }
+            } else {
+                return response()->json(['status' => 'Failed', 'message' => 'Oops! Borrower doesn\'t exist. Please refresh the page and try again.']);
+            }
+        } else {
+            return response()->json(['status' => 'Failed', 'message' => 'Oops! Reservation doesn\'t exist anymore.']);
         }
     }
 

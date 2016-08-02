@@ -15,9 +15,21 @@ $(document).ready(function() {
             url: '',
             method: 'POST',
             headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
+            data: {
+                id: dataVarID
+            },
             dataType: 'json',
             success: function(response) {
-                setModalContent('Reserved Book', '', '');
+                setModalContent('Reserved Book', response['message'], '');
+
+                setTimeout(function() {
+                    closeModal();
+
+                    location.reload();
+                }, 2000);
+            },
+            error: function(arg0, arg1, arg2) {
+                console.log(arg0.responseText);
             }
         });
 
