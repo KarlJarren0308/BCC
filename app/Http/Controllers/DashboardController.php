@@ -13,9 +13,11 @@ use App\TblBorrowers;
 use App\TblBooks;
 use App\TblBounds;
 use App\TblCategories;
+use App\TblHolidays;
 use App\TblLibrarians;
 use App\TblLoans;
 use App\TblPublishers;
+use App\TblReceives;
 
 use DB;
 
@@ -96,7 +98,9 @@ class DashboardController extends Controller
         }
 
         $data['bounds'] = TblBounds::join('tbl_authors', 'tbl_bounds.Author_ID', '=', 'tbl_authors.Author_ID')->get();
-        $data['books'] = TblLoans::join('tbl_accounts', 'tbl_loans.Username', '=', 'tbl_accounts.Username')->join('tbl_borrowers', 'tbl_accounts.Owner_ID', '=', 'tbl_borrowers.Borrower_ID')->join('tbl_barcodes', 'tbl_loans.Accession_Number', '=', 'tbl_barcodes.Accession_Number')->join('tbl_books', 'tbl_barcodes.Book_ID', '=', 'tbl_books.Book_ID')->get();
+        $data['loans'] = TblLoans::join('tbl_accounts', 'tbl_loans.Username', '=', 'tbl_accounts.Username')->join('tbl_borrowers', 'tbl_accounts.Owner_ID', '=', 'tbl_borrowers.Borrower_ID')->join('tbl_barcodes', 'tbl_loans.Accession_Number', '=', 'tbl_barcodes.Accession_Number')->join('tbl_books', 'tbl_barcodes.Book_ID', '=', 'tbl_books.Book_ID')->get();
+        $data['receives'] = TblReceives::get();
+        $data['holidays'] = TblHolidays::get();
 
         return view('dashboard.receive_books', $data);
     }
@@ -154,6 +158,12 @@ class DashboardController extends Controller
                 $data['librarians'] = TblAccounts::where('Type', 'Librarian')->join('tbl_librarians', 'tbl_accounts.Owner_ID', '=', 'tbl_librarians.Librarian_ID')->get();
 
                 return view('dashboard.manage_records.librarians', $data);
+
+                break;
+            case 'holidays':
+                $data['holidays'] = TblHolidays::get();
+
+                return view('dashboard.manage_records.holidays', $data);
 
                 break;
             default:
@@ -227,6 +237,10 @@ class DashboardController extends Controller
                 return view('dashboard.manage_records.add_librarians');
 
                 break;
+            case 'holidays':
+                return view('dashboard.manage_records.add_holidays');
+
+                break;
             default:
                 break;
         }
@@ -292,6 +306,12 @@ class DashboardController extends Controller
                 ->first();
 
                 return view('dashboard.manage_records.edit_librarians', $data);
+
+                break;
+            case 'holidays':
+                $data['holiday'] = TblHolidays::where('Holiday_ID', $id)->first();
+
+                return view('dashboard.manage_records.edit_holidays', $data);
 
                 break;
             default:
@@ -420,6 +440,20 @@ class DashboardController extends Controller
                 } else {
                     session()->flash('flash_status', 'danger');
                     session()->flash('flash_message', 'Oops! Failed to delete librarian. Please refresh the page and try again.');
+                }
+
+                return redirect()->route('dashboard.getManageRecords', $what);
+
+                break;
+            case 'holidays':
+                $query = TblHolidays::where('Holiday_ID', $id)->delete();
+
+                if($query) {
+                    session()->flash('flash_status', 'success');
+                    session()->flash('flash_message', 'Holiday has been deleted.');
+                } else {
+                    session()->flash('flash_status', 'danger');
+                    session()->flash('flash_message', 'Oops! Failed to delete holiday. Please refresh the page and try again.');
                 }
 
                 return redirect()->route('dashboard.getManageRecords', $what);
@@ -817,6 +851,24 @@ class DashboardController extends Controller
                 return redirect()->route('dashboard.getManageRecords', $what);
 
                 break;
+            case 'holidays':
+                $query = TblHolidays::insert([
+                    'Description' => $request->input('holidayDescription'),
+                    'Date_Stamp' => $request->input('dateStamp'),
+                    'Type' => $request->input('type')
+                ]);
+
+                if($query) {
+                    session()->flash('flash_status', 'success');
+                    session()->flash('flash_message', 'Holiday has been added.');
+                } else {
+                    session()->flash('flash_status', 'danger');
+                    session()->flash('flash_message', 'Oops! Failed to add holiday. Please refresh the page and try again.');
+                }
+                
+                return redirect()->route('dashboard.getManageRecords', $what);
+
+                break;
             default:
                 break;
         }
@@ -1051,6 +1103,24 @@ class DashboardController extends Controller
                 } else {
                     session()->flash('flash_status', 'danger');
                     session()->flash('flash_message', 'Oops! Librarian doesn\'t exist.');
+                }
+                
+                return redirect()->route('dashboard.getManageRecords', $what);
+
+                break;
+            case 'holidays':
+                $query = TblHolidays::where('Holiday_ID', $id)->update([
+                    'Description' => $request->input('holidayDescription'),
+                    'Date_Stamp' => $request->input('dateStamp'),
+                    'Type' => $request->input('type')
+                ]);
+
+                if($query) {
+                    session()->flash('flash_status', 'success');
+                    session()->flash('flash_message', 'Holiday has been updated.');
+                } else {
+                    session()->flash('flash_status', 'warning');
+                    session()->flash('flash_message', 'No changes has been made.');
                 }
                 
                 return redirect()->route('dashboard.getManageRecords', $what);
