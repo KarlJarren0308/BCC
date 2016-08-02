@@ -52,7 +52,7 @@
                         {!! Form::password('password', array('class' => 'form-control', 'placeholder' => 'Enter Password Here', 'required' => 'required')) !!}
                     </div>
                     <div class="align-text">
-                        <a class="btn btn-link fg-white" href="{{ route('cardinal.getForgotPassword') }}">Forgot Password</a>
+                        <!-- <a class="btn btn-link fg-white" href="{{ route('cardinal.getForgotPassword') }}">Forgot Password</a> -->
                         {!! Form::submit('Login', array('class' => 'btn btn-warning pull-right')) !!}
                     </div>
                 {!! Form::close() !!}
