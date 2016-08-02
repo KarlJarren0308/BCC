@@ -125,5 +125,3 @@
 @section('post_ref')
     <script src="/js/dashboard/loan_books.js"></script>
 @stop
-
-<!-- TODO -->

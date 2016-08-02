@@ -65,10 +65,16 @@
                 </div>
             </div>
             <div class="row">
-                <div class="col-md-6">
+                <div class="col-sm-12">
+                    <div class="btn-group">
+                        <a href="" class="btn btn-danger">Top 10 Borrowers</a>
+                        <a href="" class="btn btn-danger">Book Loans</a>
+                    </div>
+                </div>
+                <div class="col-sm-12">
                     <canvas id="statistics-chart"></canvas>
                 </div>
-                <div class="col-md-3 col-sm-6">
+                <!-- <div class="col-md-3 col-sm-6">
                     <div class="panel panel-primary">
                         <div class="panel-heading">
                             <div class="row">
@@ -151,7 +157,7 @@
                             </div>
                         </a>
                     </div>
-                </div>
+                </div> -->
             </div>
         </div>
     </div>

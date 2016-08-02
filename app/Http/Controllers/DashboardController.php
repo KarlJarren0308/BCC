@@ -18,6 +18,7 @@ use App\TblLibrarians;
 use App\TblLoans;
 use App\TblPublishers;
 use App\TblReceives;
+use App\TblReservations;
 
 use DB;
 
@@ -79,7 +80,10 @@ class DashboardController extends Controller
             }
         }
 
-        return view('maintenance');
+        $data['bounds'] = TblBounds::join('tbl_authors', 'tbl_bounds.Author_ID', '=', 'tbl_authors.Author_ID')->get();
+        $data['books'] = TblReservations::join('tbl_accounts', 'tbl_reservations.Username', '=', 'tbl_accounts.Username')->join('tbl_borrowers', 'tbl_accounts.Owner_ID', '=', 'tbl_borrowers.Borrower_ID')->join('tbl_books', 'tbl_reservations.Book_ID', '=', 'tbl_books.Book_ID')->get();
+
+        return view('dashboard.loan_reserved_books', $data);
     }
 
     public function getReceiveBooks() {
@@ -1159,24 +1163,31 @@ class DashboardController extends Controller
                 $borrowerName = $borrower->First_Name . ' ' . $borrower->Last_Name;
             }
 
-            $query = TblBarcodes::where('Book_ID', $request->input('id'))->where('Status', 'available')->leftJoin('tbl_loans', 'tbl_barcodes.Accession_Number', '=', 'tbl_loans.Accession_Number')->select('tbl_barcodes.*', DB::raw('count(tbl_loans.Accession_Number) as Loan_Count'))->groupBy('tbl_barcodes.Accession_Number')->orderBy('Loan_Count')->orderBy('tbl_barcodes.Accession_Number')->first();
+            $query1 = TblBarcodes::where('Book_ID', $request->input('id'))->where('Status', 'available')->count();
+            $query2 = TblReservations::where('Book_ID', $request->input('id'))->count();
 
-            if($query) {
-                $barcode = $query->Accession_Number;
-
-                $query = TblLoans::insert([
-                    'Accession_Number' => $barcode,
-                    'Username' => $request->input('borrower'),
-                    'Loan_Date_Stamp' => date('Y-m-d'),
-                    'Loan_Time_Stamp' => date('H:i:s')
-                ]);
+            if($query1 - $query2 > 0) {
+                $query = TblBarcodes::where('Book_ID', $request->input('id'))->where('Status', 'available')->leftJoin('tbl_loans', 'tbl_barcodes.Accession_Number', '=', 'tbl_loans.Accession_Number')->select('tbl_barcodes.*', DB::raw('count(tbl_loans.Accession_Number) as Loan_Count'))->groupBy('tbl_barcodes.Accession_Number')->orderBy('Loan_Count')->orderBy('tbl_barcodes.Accession_Number')->first();
 
                 if($query) {
-                    $query = TblBarcodes::where('Accession_Number', $barcode)->update([
-                        'Status' => 'on-loan'
+                    $barcode = $query->Accession_Number;
+
+                    $query = TblLoans::insert([
+                        'Accession_Number' => $barcode,
+                        'Username' => $request->input('borrower'),
+                        'Loan_Date_Stamp' => date('Y-m-d'),
+                        'Loan_Time_Stamp' => date('H:i:s')
                     ]);
 
-                    return response()->json(['status' => 'Success', 'message' => 'Loan Successful. You may now hand the book with an accession number of C' . sprintf('%04d', $barcode) . ' to the borrower, ' . $borrowerName . '.', 'data' => ['barcode' => $barcode, 'borrower' => $borrowerName]]);
+                    if($query) {
+                        $query = TblBarcodes::where('Accession_Number', $barcode)->update([
+                            'Status' => 'on-loan'
+                        ]);
+
+                        return response()->json(['status' => 'Success', 'message' => 'Loan Successful. You may now hand the book with an accession number of C' . sprintf('%04d', $barcode) . ' to the borrower, ' . $borrowerName . '.', 'data' => ['barcode' => $barcode, 'borrower' => $borrowerName]]);
+                    } else {
+                        return response()->json(['status' => 'Failed', 'message' => 'Oops! No more available copies.']);
+                    }
                 } else {
                     return response()->json(['status' => 'Failed', 'message' => 'Oops! No more available copies.']);
                 }
@@ -1185,6 +1196,43 @@ class DashboardController extends Controller
             }
         } else {
             return response()->json(['status' => 'Failed', 'message' => 'Oops! Borrower doesn\'t exist. Please refresh the page and try again.']);
+        }
+    }
+
+    public function postReceiveBooks(Request $request) {
+        if(!session()->has('username')) {
+            session()->flash('flash_status', 'danger');
+            session()->flash('flash_message', 'Oops! Please login first.');
+
+            return redirect()->route('cardinal.getIndex');
+        } else {
+            if(session()->get('type') != 'Librarian') {
+                session()->flash('flash_status', 'danger');
+                session()->flash('flash_message', 'Oops! You do not have to privilege to access the dashboard.');
+
+                return redirect()->route('cardinal.getOpac');
+            }
+        }
+
+        $query = TblLoans::where('Loan_ID', $request->input('id'))->update([
+            'Loan_Status' => 'inactive'
+        ]);
+
+        if($query) {
+            $query = TblReceives::insert([
+                'Receive_Date_Stamp' => date('Y-m-d'),
+                'Receive_Time_Stamp' => date('H:i:s'),
+                'Reference_ID' => $request->input('id'),
+                'Penalty' => $request->input('penalty')
+            ]);
+
+            if($query) {
+                return response()->json(['status' => 'Success', 'message' => 'Receive Successful.']);
+            } else {
+                return response()->json(['status' => 'Failed', 'message' => 'Oops! Failed to receive book. Please refresh the page and try again.']);
+            }
+        } else {
+            return response()->json(['status' => 'Failed', 'message' => 'Oops! Failed to receive book. Please refresh the page and try again.']);
         }
     }
 

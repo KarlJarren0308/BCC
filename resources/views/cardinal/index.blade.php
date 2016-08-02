@@ -51,9 +51,9 @@
                         {!! Form::label('password', 'Password:', array('class' => 'fg-yellow')) !!}
                         {!! Form::password('password', array('class' => 'form-control', 'placeholder' => 'Enter Password Here', 'required' => 'required')) !!}
                     </div>
-                    <div class="align-text">
+                    <div class="text-right">
                         <!-- <a class="btn btn-link fg-white" href="{{ route('cardinal.getForgotPassword') }}">Forgot Password</a> -->
-                        {!! Form::submit('Login', array('class' => 'btn btn-warning pull-right')) !!}
+                        {!! Form::submit('Login', array('class' => 'btn btn-warning')) !!}
                     </div>
                 {!! Form::close() !!}
                 @include('partials.flash_alert')

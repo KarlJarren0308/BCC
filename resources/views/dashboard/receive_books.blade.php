@@ -107,6 +107,9 @@
                     <h1 class="page-header">Receive Books</h1>
                 </div>
             </div>
+            <div class="text-left gap-bottom">
+                @include('partials.flash_alert')
+            </div>
             <table id="books-table" class="table table-bordered table-striped">
                 <thead>
                     <tr>
@@ -204,14 +207,16 @@
                                 @else
                                     @foreach($receives as $receive)
                                         @if($loan->Loan_ID == $receive->Reference_ID)
-                                            {{ $receive->Penalty }}
+                                            &#8369; {{ $receive->Penalty }}
                                         @endif
                                     @endforeach
                                 @endif
                             </td>
                             <td class="text-center">
                                 @if(session()->has('username'))
-                                    <button data-button="receive-book-button" data-var-id="{{ $loan->Book_ID }}" class="btn btn-primary btn-xs">Receive Book</button>
+                                    @if($loan->Loan_Status == 'active')
+                                        <button data-button="receive-book-button" data-var-id="{{ $loan->Loan_ID }}" data-var-penalty="{{ ($totalPenalty > 0 ? $totalPenalty : 0) }}" class="btn btn-primary btn-xs">Receive Book</button>
+                                    @endif
                                 @endif
                             </td>
                         </tr>
@@ -234,5 +239,3 @@
 @section('post_ref')
     <script src="/js/dashboard/receive_books.js"></script>
 @stop
-
-<!-- TODO -->
