@@ -124,6 +124,9 @@ class CardinalController extends Controller
 
     public function postSearchOpac(Request $request) {
         // Available and used only for OPAC Version 2.0
+        if(!session()->has('username')) {
+            return response()->json(array('status' => 'Failed', 'message' => 'Oops! Please login first...'));
+        }
 
         $data['bounds'] = TblBounds::join('tbl_authors', 'tbl_bounds.Author_ID', '=', 'tbl_authors.Author_ID')->get();
         $data['books'] = TblBooks::where('Title', 'like', '%' . $request->input('keyword') . '%')->get();
@@ -137,23 +140,43 @@ class CardinalController extends Controller
             return response()->json(array('status' => 'Failed', 'message' => 'Oops! Please login first...'));
         }
 
-        $query = TblReservations::where('Book_ID', $request->input('id'))->where('Username', session()->get('username'))->where('Reservation_Status', 'active')->first();
+        app('App\Http\Controllers\DataController')->checkSettings();
 
-        if(!$query) {
-            $query = TblReservations::insert(array(
-                'Book_ID' => $request->input('id'),
-                'Username' => session()->get('username'),
-                'Reservation_Date_Stamp' => date('Y-m-d'),
-                'Reservation_Time_Stamp' => date('H:i:s')
-            ));
+        $settingsFile = storage_path('app/public') . '/settings.xml';
+        $xml = simplexml_load_file($settingsFile);
+        $reservationCount = 1;
 
-            if($query) {
-                return response()->json(array('status' => 'Success', 'message' => 'You have successfully reserved a copy of this book.'));
+        foreach($xml as $item) {
+            if($item['name'] == 'reservation_count') {
+                $reservationCount = $item['value'];
+
+                break;
+            }
+        }
+
+        $query = TblReservations::where('Username', session()->get('username'))->where('Reservation_Status', 'active')->count();
+
+        if($query < $reservationCount) {
+            $query = TblReservations::where('Book_ID', $request->input('id'))->where('Username', session()->get('username'))->where('Reservation_Status', 'active')->first();
+
+            if(!$query) {
+                $query = TblReservations::insert(array(
+                    'Book_ID' => $request->input('id'),
+                    'Username' => session()->get('username'),
+                    'Reservation_Date_Stamp' => date('Y-m-d'),
+                    'Reservation_Time_Stamp' => date('H:i:s')
+                ));
+
+                if($query) {
+                    return response()->json(array('status' => 'Success', 'message' => 'You have successfully reserved a copy of this book.'));
+                } else {
+                    return response()->json(array('status' => 'Failed', 'message' => 'Oops! Failed to reserve a copy of this book.'));
+                }
             } else {
-                return response()->json(array('status' => 'Failed', 'message' => 'Oops! Failed to reserve a copy of this book.'));
+                return response()->json(array('status' => 'Failed', 'message' => 'Oops! You already reserved a copy of this book.'));
             }
         } else {
-            return response()->json(array('status' => 'Failed', 'message' => 'Oops! You already reserved a copy of this book.'));
+            return response()->json(array('status' => 'Failed', 'message' => 'Oops! You can only reserve ' . $reservationCount . ' book' . ($reservationCount > 1 ? 's' : '') . '.'));
         }
     }
 

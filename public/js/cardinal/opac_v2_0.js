@@ -37,6 +37,7 @@ $(document).ready(function() {
                 var isFirst;
                 var books = response['data']['books'];
                 var bounds = response['data']['bounds'];
+                var reservationCount = response['data']['reservation_count'];
 
                 for(var i = 0; i < books.length; i++) {
                     output += '<tr>';
