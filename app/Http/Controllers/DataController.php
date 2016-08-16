@@ -25,7 +25,7 @@ class DataController extends Controller
 
     public function checkSettings() {
         if(!Storage::has('settings.xml')) {
-            Storage::put('settings.xml', '<?xml version="1.0" encoding="UTF-8"?><settings><setting name="opac_version" value="v1.0" /></settings>');
+            Storage::put('settings.xml', '<?xml version="1.0" encoding="UTF-8"?><settings><setting name="reservation_count" value="1"/><setting name="opac_version" value="v1.0" /></settings>');
         }
     }
 
