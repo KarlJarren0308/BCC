@@ -63,18 +63,18 @@
             <div class="text-left" style="margin-bottom: 25px;">
                 <a href="{{ route('dashboard.getManageRecords', 'borrowers') }}" class="btn btn-danger btn-xs"><span class="fa fa-arrow-left gap-right"></span>Go Back</a>
             </div>
-            {!! Form::open(array('route' => ['dashboard.postAddRecord', 'borrowers'])) !!}
+            {!! Form::open(array('route' => ['dashboard.postAddRecord', 'borrowers'], 'data-form' => 'add-borrower-form')) !!}
                 <div class="enclosure">
                     <div class="row">
                         <div class="col-sm-6">
                             <div class="form-group">
-                                {!! Form::label('borrowerID', 'Borrower\'s ID:') !!}
+                                {!! Form::label('borrowerID', 'Borrower\'s ID: *') !!}
                                 {!! Form::text('borrowerID', null, ['class' => 'form-control', 'placeholder' => '', 'required' => 'required', 'autofocus' => 'autofocus']) !!}
                             </div>
                         </div>
                         <div class="col-sm-6">
                             <div class="form-group">
-                                {!! Form::label('birthDate', 'Birth Date:') !!}
+                                {!! Form::label('birthDate', 'Birth Date: *') !!}
                                 {!! Form::date('birthDate', null, ['class' => 'form-control', 'placeholder' => '', 'required' => 'required']) !!}
                             </div>
                         </div>
@@ -82,7 +82,7 @@
                     <div class="row">
                         <div class="col-sm-4">
                             <div class="form-group">
-                                {!! Form::label('firstName', 'First Name:') !!}
+                                {!! Form::label('firstName', 'First Name: *') !!}
                                 {!! Form::text('firstName', null, ['class' => 'form-control', 'placeholder' => '', 'required' => 'required']) !!}
                             </div>
                         </div>
@@ -94,7 +94,7 @@
                         </div>
                         <div class="col-sm-4">
                             <div class="form-group">
-                                {!! Form::label('lastName', 'Last Name:') !!}
+                                {!! Form::label('lastName', 'Last Name: *') !!}
                                 {!! Form::text('lastName', null, ['class' => 'form-control', 'placeholder' => '', 'required' => 'required']) !!}
                             </div>
                         </div>
@@ -102,7 +102,7 @@
                     <div class="row">
                         <div class="col-sm-6">
                             <div class="form-group">
-                                {!! Form::label('address', 'Address:') !!}
+                                {!! Form::label('address', 'Address: *') !!}
                                 {!! Form::text('address', null, ['class' => 'form-control', 'placeholder' => '', 'required' => 'required']) !!}
                             </div>
                         </div>
@@ -122,7 +122,7 @@
                     <div class="row">
                         <div class="col-sm-3">
                             <div class="form-group">
-                                {!! Form::label('gender', 'Gender:') !!}
+                                {!! Form::label('gender', 'Gender: *') !!}
                                 <select name="gender" id="gender" class="form-control" required>
                                     <option value="" selected disabled>Select an option...</option>
                                     <option value="Male">Male</option>
@@ -132,7 +132,7 @@
                         </div>
                         <div class="col-sm-3">
                             <div class="form-group">
-                                {!! Form::label('type', 'Type:') !!}
+                                {!! Form::label('type', 'Type: *') !!}
                                 <select name="type" id="type" class="form-control" required>
                                     <option value="" selected disabled>Select an option...</option>
                                     <option value="Student">Student</option>
@@ -143,21 +143,30 @@
                         <fieldset data-for="Student" disabled>
                             <div class="col-sm-6">
                                 <div class="form-group">
-                                    {!! Form::label('yearLevel', 'Year Level:') !!}
+                                    {!! Form::label('yearLevel', 'Year Level: *') !!}
                                     <select name="yearLevel" id="yearLevel" class="form-control" required>
                                         <option value="" selected disabled>Select an option...</option>
-                                        <option value="Student">Student</option>
-                                        <option value="Faculty">Faculty</option>
+                                        <option value="1st">1st Year</option>
+                                        <option value="2nd">2nd Year</option>
+                                        <option value="3rd">3rd Year</option>
+                                        <option value="4th">4th Year</option>
                                     </select>
                                 </div>
                             </div>
                             <div class="col-sm-6">
                                 <div class="form-group">
-                                    {!! Form::label('course', 'Course:') !!}
+                                    {!! Form::label('course', 'Course: *') !!}
                                     <select name="course" id="course" class="form-control" required>
                                         <option value="" selected disabled>Select an option...</option>
-                                        <option value="Student">Student</option>
-                                        <option value="Faculty">Faculty</option>
+                                        <option value="Bachelor of Science in Information Technology">Bachelor of Science in Accountancy</option>
+                                        <option value="Bachelor of Science in Information Technology">Bachelor of Science in Business Administration</option>
+                                        <option value="Bachelor of Science in Information Technology">Bachelor of Science in Civil Engineering</option>
+                                        <option value="Bachelor of Science in Information Technology">Bachelor of Science in Electrical Engineering</option>
+                                        <option value="Bachelor of Science in Information Technology">Bachelor of Science in Mechanical Engineering</option>
+                                        <option value="Bachelor of Science in Information Technology">Bachelor of Science in Computer Science</option>
+                                        <option value="Bachelor of Science in Information Technology">Bachelor of Science in Information Technology</option>
+                                        <option value="Bachelor of Science in Information Technology">Bachelor of Science in Tourism Management</option>
+                                        <option value="Bachelor of Science in Information Technology">Bachelor of Science in Hotel and Restaurant Management</option>
                                     </select>
                                 </div>
                             </div>

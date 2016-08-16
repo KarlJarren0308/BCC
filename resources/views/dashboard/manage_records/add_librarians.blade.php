@@ -68,13 +68,13 @@
                     <div class="row">
                         <div class="col-sm-6">
                             <div class="form-group">
-                                {!! Form::label('librarianID', 'Username:') !!}
+                                {!! Form::label('librarianID', 'Username: *') !!}
                                 {!! Form::text('librarianID', null, ['class' => 'form-control', 'placeholder' => '', 'required' => 'required', 'autofocus' => 'autofocus']) !!}
                             </div>
                         </div>
                         <div class="col-sm-6">
                             <div class="form-group">
-                                {!! Form::label('birthDate', 'Birth Date:') !!}
+                                {!! Form::label('birthDate', 'Birth Date: *') !!}
                                 {!! Form::date('birthDate', null, ['class' => 'form-control', 'placeholder' => '', 'required' => 'required']) !!}
                             </div>
                         </div>
@@ -82,7 +82,7 @@
                     <div class="row">
                         <div class="col-sm-4">
                             <div class="form-group">
-                                {!! Form::label('firstName', 'First Name:') !!}
+                                {!! Form::label('firstName', 'First Name: *') !!}
                                 {!! Form::text('firstName', null, ['class' => 'form-control', 'placeholder' => '', 'required' => 'required']) !!}
                             </div>
                         </div>
@@ -94,7 +94,7 @@
                         </div>
                         <div class="col-sm-4">
                             <div class="form-group">
-                                {!! Form::label('lastName', 'Last Name:') !!}
+                                {!! Form::label('lastName', 'Last Name: *') !!}
                                 {!! Form::text('lastName', null, ['class' => 'form-control', 'placeholder' => '', 'required' => 'required']) !!}
                             </div>
                         </div>
@@ -102,7 +102,7 @@
                     <div class="row">
                         <div class="col-sm-6">
                             <div class="form-group">
-                                {!! Form::label('gender', 'Gender:') !!}
+                                {!! Form::label('gender', 'Gender: *') !!}
                                 <select name="gender" id="gender" class="form-control" required>
                                     <option value="" selected disabled>Select an option...</option>
                                     <option value="Male">Male</option>

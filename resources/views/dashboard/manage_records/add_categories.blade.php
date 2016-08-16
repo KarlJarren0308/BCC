@@ -68,7 +68,7 @@
                     <div class="row">
                         <div class="col-sm-12">
                             <div class="form-group">
-                                {!! Form::label('categoryName', 'Category Name:') !!}
+                                {!! Form::label('categoryName', 'Category Name: *') !!}
                                 {!! Form::text('categoryName', null, ['class' => 'form-control', 'placeholder' => '', 'required' => 'required', 'autofocus' => 'autofocus']) !!}
                             </div>
                         </div>

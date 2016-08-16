@@ -1294,6 +1294,12 @@ class DashboardController extends Controller
             ]);
 
             if($query) {
+                $query = TblLoans::where('Loan_ID', $request->input('id'))->first();
+
+                TblBarcodes::where('Accession_Number', $query->Accession_Number)->update([
+                    'Status' => 'available'
+                ]);
+
                 return response()->json(['status' => 'Success', 'message' => 'Receive Successful.']);
             } else {
                 return response()->json(['status' => 'Failed', 'message' => 'Oops! Failed to receive book. Please refresh the page and try again.']);
@@ -1325,7 +1331,7 @@ class DashboardController extends Controller
 
         foreach($xml as $item) {
             if(md5($item['name']) == $request->input('settingName')) {
-                $item['value'] = $request->input('version');
+                $item['value'] = $request->input('settingValue');
             }
         }
 

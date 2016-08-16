@@ -68,8 +68,28 @@
                     <div class="row">
                         <div class="col-sm-12">
                             <div class="form-group">
-                                {!! Form::label('publisherName', 'Publisher\'s Name:') !!}
+                                {!! Form::label('publisherName', 'Publisher\'s Name: *') !!}
                                 {!! Form::text('publisherName', null, ['class' => 'form-control', 'placeholder' => '', 'required' => 'required', 'autofocus' => 'autofocus']) !!}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <div class="form-group">
+                                {!! Form::label('publisherAddress', 'Address: *') !!}
+                                {!! Form::text('publisherAddress', null, ['class' => 'form-control', 'placeholder' => '', 'required' => 'required']) !!}
+                            </div>
+                        </div>
+                        <div class="col-sm-3">
+                            <div class="form-group">
+                                {!! Form::label('publisherTelephoneNumber', 'Telephone Number: *') !!}
+                                {!! Form::text('publisherTelephoneNumber', null, ['class' => 'form-control', 'placeholder' => '', 'required' => 'required']) !!}
+                            </div>
+                        </div>
+                        <div class="col-sm-3">
+                            <div class="form-group">
+                                {!! Form::label('publisherEmailAddress', 'E-mail Address:') !!}
+                                {!! Form::text('publisherEmailAddress', null, ['class' => 'form-control', 'placeholder' => '']) !!}
                             </div>
                         </div>
                     </div>

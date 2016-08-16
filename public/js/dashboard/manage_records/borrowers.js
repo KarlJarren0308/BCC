@@ -5,6 +5,124 @@ $(document).ready(function() {
         ]
     });
 
+    validateDataForm('add-borrower-form', {
+        borrowerID: {
+            validators: {
+                regexp: {
+                    regexp: /^([a-z])+$/i,
+                    message: 'The value must contain letters only.'
+                }
+            }
+        },
+        firstName: {
+            validators: {
+                regexp: {
+                    regexp: /^([a-z\s])+$/i,
+                    message: 'The value must contain letters only.'
+                }
+            }
+        },
+        middleName: {
+            validators: {
+                regexp: {
+                    regexp: /^([a-z\s])+$/i,
+                    message: 'The value must contain letters only.'
+                }
+            }
+        },
+        lastName: {
+            validators: {
+                regexp: {
+                    regexp: /^([a-z\s])+$/i,
+                    message: 'The value must contain letters only.'
+                }
+            }
+        },
+        address: {
+            validators: {
+                regexp: {
+                    regexp: /^([a-z0-9,.-\s])+$/i,
+                    message: 'The value must contain letters, numbers and the following symbol(s) only: ,.-'
+                }
+            }
+        },
+        telephoneNumber: {
+            validators: {
+                regexp: {
+                    regexp: /^([0-9]){7}$/i,
+                    message: 'The value must be a valid telephone number.'
+                }
+            }
+        },
+        cellphoneNumber: {
+            validators: {
+                regexp: {
+                    regexp: /^(\+63|63|0)([0-9]){10}$/i,
+                    message: 'The value must be a valid cellphone number.'
+                }
+            }
+        }
+    });
+
+    validateDataForm('edit-borrower-form', {
+        borrowerID: {
+            validators: {
+                regexp: {
+                    regexp: /^([a-z])+$/i,
+                    message: 'The value must contain letters only.'
+                }
+            }
+        },
+        firstName: {
+            validators: {
+                regexp: {
+                    regexp: /^([a-z\s])+$/i,
+                    message: 'The value must contain letters only.'
+                }
+            }
+        },
+        middleName: {
+            validators: {
+                regexp: {
+                    regexp: /^([a-z\s])+$/i,
+                    message: 'The value must contain letters only.'
+                }
+            }
+        },
+        lastName: {
+            validators: {
+                regexp: {
+                    regexp: /^([a-z\s])+$/i,
+                    message: 'The value must contain letters only.'
+                }
+            }
+        },
+        address: {
+            validators: {
+                regexp: {
+                    regexp: /^([a-z0-9,.-\s])+$/i,
+                    message: 'The value must contain letters, numbers and the following symbol(s) only: ,.-'
+                }
+            }
+        },
+        telephoneNumber: {
+            validators: {
+                regexp: {
+                    regexp: /^([0-9]){7}$/i,
+                    message: 'The value must be a valid telephone number.'
+                }
+            }
+        },
+        cellphoneNumber: {
+            validators: {
+                regexp: {
+                    regexp: /^(\+63|63|0)([0-9]){10}$/i,
+                    message: 'The value must be a valid cellphone number.'
+                }
+            }
+        }
+    });
+
     $('select[name="type"]').change(function() {
         switch($(this).val()) {
             case 'Faculty':

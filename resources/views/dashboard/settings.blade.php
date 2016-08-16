@@ -82,21 +82,44 @@
                                 </li>
                             </ul>
                             {!! Form::open(['route' => 'dashboard.postSystemSettings']) !!}
+                                @foreach($settings as $item)
+                                    @if($item['name'] == 'opac_version')
+                                        <?php $version = $item['value']; ?>
+                                    @endif
+                                @endforeach
                                 <input type="hidden" name="settingName" value="{{ md5('opac_version') }}">
                                 <div class="form-group">
-                                    <label for="version">Select a version:</label>
-                                    <select class="form-control" name="version" id="version">
-                                        <?php
-                                            foreach($settings as $item) {
-                                                if($item['name'] == 'opac_version') {
-                                                    $version = $item['value'];
-                                                }
-                                            }
-                                        ?>
+                                    <label for="settingValue">Select a version:</label>
+                                    <select class="form-control" name="settingValue" id="settingValue" required>
                                         <option value="" selected disabled>Select an option...</option>
                                         <option value="v1.0"{{ ($version == 'v1.0' ? ' selected' : '') }}>v1.0</option>
                                         <option value="v2.0"{{ ($version == 'v2.0' ? ' selected' : '') }}>v2.0</option>
                                     </select>
+                                </div>
+                                <div class="form-group text-right">
+                                    <input type="submit" class="btn btn-danger" value="Save Changes">
+                                </div>
+                            {!! Form::close() !!}
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm-4">
+                    <div class="panel panel-red">
+                        <div class="panel-heading">
+                            <strong class="panel-title">Online Public Access Catalog Reservation Count</strong>
+                        </div>
+                        <div class="panel-body">
+                            <p class="text-justify">Set how many books can a borrower reserve.</p>
+                            {!! Form::open(['route' => 'dashboard.postSystemSettings']) !!}
+                                @foreach($settings as $item)
+                                    @if($item['name'] == 'reservation_count')
+                                        <?php $reservationCount = $item['value']; ?>
+                                    @endif
+                                @endforeach
+                                <input type="hidden" name="settingName" value="{{ md5('reservation_count') }}">
+                                <div class="form-group">
+                                    <label for="settingValue">Set the reservation count:</label>
+                                    {!! Form::number('settingValue', $reservationCount, ['class' => 'form-control', 'min' => '1', 'placeholder' => '', 'required' => 'required']) !!}
                                 </div>
                                 <div class="form-group text-right">
                                     <input type="submit" class="btn btn-danger" value="Save Changes">

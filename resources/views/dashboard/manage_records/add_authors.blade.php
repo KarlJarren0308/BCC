@@ -68,7 +68,7 @@
                     <div class="row">
                         <div class="col-sm-4">
                             <div class="form-group">
-                                {!! Form::label('firstName', 'First Name:') !!}
+                                {!! Form::label('firstName', 'First Name: *') !!}
                                 {!! Form::text('firstName', null, ['class' => 'form-control', 'placeholder' => '', 'required' => 'required', 'autofocus' => 'autofocus']) !!}
                             </div>
                         </div>
@@ -80,7 +80,7 @@
                         </div>
                         <div class="col-sm-4">
                             <div class="form-group">
-                                {!! Form::label('lastName', 'Last Name:') !!}
+                                {!! Form::label('lastName', 'Last Name: *') !!}
                                 {!! Form::text('lastName', null, ['class' => 'form-control', 'placeholder' => '', 'required' => 'required']) !!}
                             </div>
                         </div>

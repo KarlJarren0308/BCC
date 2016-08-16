@@ -63,7 +63,7 @@
             <div class="text-left" style="margin-bottom: 25px;">
                 <a href="{{ route('dashboard.getManageRecords', 'holidays') }}" class="btn btn-danger btn-xs"><span class="fa fa-arrow-left gap-right"></span>Go Back</a>
             </div>
-            {!! Form::open(array('route' => ['dashboard.postEditRecord', 'holidays', $id])) !!}
+            {!! Form::open(array('route' => ['dashboard.postEditRecord', 'holidays', $id], 'data-form' => 'edit-holiday-form')) !!}
                 <div class="enclosure">
                     <div class="row">
                         <div class="col-sm-12">
@@ -83,7 +83,7 @@
                         <div class="col-sm-6">
                             <div class="form-group">
                                 {!! Form::label('type', 'Holiday Type: *') !!}
-                                <select name="type" id="type" class="form-control">
+                                <select name="type" id="type" class="form-control" required>
                                     <option value="" selected disabled>Select an option...</option>
                                     <option value="Regular"{{ ($holiday->Type == 'Regular' ? ' selected' : '') }}>Regular Holiday</option>
                                     <option value="Special"{{ ($holiday->Type == 'Special' ? ' selected' : '') }}>Special Holiday</option>

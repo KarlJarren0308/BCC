@@ -207,7 +207,7 @@
                                 @else
                                     @foreach($receives as $receive)
                                         @if($loan->Loan_ID == $receive->Reference_ID)
-                                            &#8369; {{ $receive->Penalty }}
+                                            &#8369; {{ $receive->Penalty }}.00
                                         @endif
                                     @endforeach
                                 @endif

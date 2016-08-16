@@ -13,6 +13,29 @@ $(document).ready(function() {
                     message: 'The value must contain letters only.'
                 }
             }
+        },
+        publisherAddress: {
+            validators: {
+                regexp: {
+                    regexp: /^([a-z\s])+$/i,
+                    message: 'The value must contain letters only.'
+                }
+            }
+        },
+        publisherTelephoneNumber: {
+            validators: {
+                regexp: {
+                    regexp: /^([0-9]){7}$/i,
+                    message: 'The value must be a valid telephone number.'
+                }
+            }
+        },
+        publisherEmailAddress: {
+            validators: {
+                emailAddress: {
+                    message: 'The value must be a valid e-mail address.'
+                }
+            }
         }
     });
 
@@ -22,6 +45,29 @@ $(document).ready(function() {
                 regexp: {
                     regexp: /^([a-z\s])+$/i,
                     message: 'The value must contain letters only.'
+                }
+            }
+        },
+        publisherAddress: {
+            validators: {
+                regexp: {
+                    regexp: /^([a-z\s])+$/i,
+                    message: 'The value must contain letters only.'
+                }
+            }
+        },
+        publisherTelephoneNumber: {
+            validators: {
+                regexp: {
+                    regexp: /^([0-9]){7}$/i,
+                    message: 'The value must be a valid telephone number.'
+                }
+            }
+        },
+        publisherEmailAddress: {
+            validators: {
+                emailAddress: {
+                    message: 'The value must be a valid e-mail address.'
                 }
             }
         }
