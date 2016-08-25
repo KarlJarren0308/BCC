@@ -67,7 +67,20 @@ $(document).ready(function() {
 
                     output += '</td>';
                     output += '<td class="text-center">';
-                    output += '<button data-button="view-button" data-var-id="' + books[i]['Book_ID'] + '" class="btn btn-primary btn-xs">View Info</button>&nbsp;<button data-button="reserve-button" data-var-id="' + books[i]['Book_ID'] + '" class="btn btn-danger btn-xs">Reserve</button>';
+                    output += '<button data-button="view-button" data-var-id="' + books[i]['Book_ID'] + '" class="btn btn-primary btn-xs">View Info</button>';
+
+                    var authType = atob($('meta[name="authentication-type"]').attr('content')).split(';');
+
+                    if(authType[1] == $('meta[name="csrf-token"]').attr('content')) {
+                        if(authType[0] != 'b3fffe64a853a26fc40957a64e5ca366') {
+                            output += '&nbsp;<button data-button="reserve-button" data-var-id="' + books[i]['Book_ID'] + '" class="btn btn-danger btn-xs">Reserve</button>';
+                        } else {
+                            console.log('Oops! Reservation module not available for Librarians.');
+                        }
+                    } else {
+                        console.log('Oops! Authentication Failed.');
+                    }
+
                     output += '</td>';
                     output += '</tr>';
                 }

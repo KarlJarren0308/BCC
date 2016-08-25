@@ -2,6 +2,7 @@
 
 @section('meta_tags')
     <meta name="csrf-token" content="{{ csrf_token() }}">
+    <meta name="authentication-type" content="{{ base64_encode(md5(session()->get('type')) . ';' . csrf_token()) }}">
 @stop
 
 @section('pre_ref')
@@ -91,7 +92,9 @@
                             <div class="text-left">{{ session()->get('type') }}</div>
                         </li>
                         <li><a href="{{ route('cardinal.getOpac') }}">Online Public Access Catalog</a></li>
-                        <li><a href="{{ route('cardinal.getReservations') }}">My Reservations</a></li>
+                        @if(session()->get('type') != 'Librarian')
+                            <li><a href="{{ route('cardinal.getReservations') }}">My Reservations</a></li>
+                        @endif
                         <li><a href="{{ route('cardinal.getBorrowedBooks') }}">Borrowed Books</a></li>
                     </ul>
                 </div>

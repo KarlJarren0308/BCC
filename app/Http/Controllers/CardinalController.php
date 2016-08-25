@@ -30,7 +30,7 @@ class CardinalController extends Controller
         return view('cardinal.index');
     }
 
-    public function getAccountInformation() {
+    public function getAccountInformation($username = null) {
         if(!session()->has('username')) {
             session()->flash('flash_status', 'danger');
             session()->flash('flash_message', 'Oops! Please login first.');
@@ -38,8 +38,14 @@ class CardinalController extends Controller
             return redirect()->route('cardinal.getIndex');
         }
 
-        $query = TblAccounts::where('Username', session()->get('username'))->first();
+        if($username == null) {
+            return redirect()->route('cardinal.getAccountInformation', session()->get('username'));
+        }
+
+        $query = TblAccounts::where('Username', $username)->first();
         $data['account'] = $query;
+        $data['loan_history'] = TblLoans::where('tbl_loans.Username', $username)->join('tbl_barcodes', 'tbl_loans.Accession_Number', '=', 'tbl_barcodes.Accession_Number')->join('tbl_books', 'tbl_barcodes.Book_ID', '=', 'tbl_books.Book_ID')->leftJoin('tbl_receives', 'tbl_loans.Loan_ID', '=', 'tbl_receives.Reference_ID')->select('*', 'tbl_receives.Reference_ID as Receive_Reference_ID')->get();
+        $data['reservation_history'] = TblReservations::where('tbl_reservations.Username', $username)->join('tbl_books', 'tbl_reservations.Book_ID', '=', 'tbl_books.Book_ID')->get();
         
         if($query->Type == 'Librarian') {
             $data['user'] = TblLibrarians::where('Librarian_ID', $query->Owner_ID)->first();
@@ -92,6 +98,13 @@ class CardinalController extends Controller
             session()->flash('flash_message', 'Oops! Please login first.');
 
             return redirect()->route('cardinal.getIndex');
+        } else {
+            if(session()->get('type') == 'Librarian') {
+                session()->flash('flash_status', 'warning');
+                session()->flash('flash_message', 'Oops! Reservation module is for borrowers only.');
+
+                return redirect()->route('cardinal.getOpac');
+            }
         }
 
         $data['reservations'] = TblReservations::where('tbl_reservations.Username', session()->get('username'))->join('tbl_books', 'tbl_reservations.Book_ID', '=', 'tbl_books.Book_ID')->leftJoin('tbl_loans', 'tbl_reservations.Reservation_ID', '=', 'tbl_loans.Reference_ID')->get();

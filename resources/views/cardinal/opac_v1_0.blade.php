@@ -45,7 +45,9 @@
                             <div class="text-left">{{ session()->get('type') }}</div>
                         </li>
                         <li><a href="{{ route('cardinal.getOpac') }}">Online Public Access Catalog</a></li>
-                        <li><a href="{{ route('cardinal.getReservations') }}">My Reservations</a></li>
+                        @if(session()->get('type') != 'Librarian')
+                            <li><a href="{{ route('cardinal.getReservations') }}">My Reservations</a></li>
+                        @endif
                         <li><a href="{{ route('cardinal.getBorrowedBooks') }}">Borrowed Books</a></li>
                     </ul>
                 </div>
@@ -96,7 +98,9 @@
                             <td class="text-center">
                                 @if(session()->has('username'))
                                     <button data-button="view-button" data-var-id="{{ $book->Book_ID }}" class="btn btn-primary btn-xs">View Info</button>
-                                    <button data-button="reserve-button" data-var-id="{{ $book->Book_ID }}" class="btn btn-danger btn-xs">Reserve</button>
+                                    @if(session()->get('type') != 'Librarian')
+                                        <button data-button="reserve-button" data-var-id="{{ $book->Book_ID }}" class="btn btn-danger btn-xs">Reserve</button>
+                                    @endif
                                 @endif
                             </td>
                         </tr>

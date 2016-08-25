@@ -8,6 +8,10 @@ hr {
     margin-bottom: 15px;
 }
 
+hr.line-dark {
+    border: 1px solid #333;
+}
+
 .bg-red {
     background: #dd1e2f;
 }
