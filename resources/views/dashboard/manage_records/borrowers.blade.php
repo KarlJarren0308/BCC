@@ -81,11 +81,13 @@
                         <tr>
                             <td>{{ $borrower->Username }}</td>
                             <td>
-                                @if(strlen($borrower->Middle_Name) > 1)
-                                    {{ $borrower->First_Name . ' ' . substr($borrower->Middle_Name, 0, 1) . '. ' . $borrower->Last_Name }}
-                                @else
-                                    {{ $borrower->First_Name . ' ' . $borrower->Last_Name }}
-                                @endif
+                                <a href="{{ route('cardinal.getAccountInformation', $borrower->Username) }}">
+                                    @if(strlen($borrower->Middle_Name) > 1)
+                                        {{ $borrower->First_Name . ' ' . substr($borrower->Middle_Name, 0, 1) . '. ' . $borrower->Last_Name }}
+                                    @else
+                                        {{ $borrower->First_Name . ' ' . $borrower->Last_Name }}
+                                    @endif
+                                </a>
                             </td>
                             <td>{{ date('F d, Y', strtotime($borrower->Birth_Date)) }}</td>
                             <td>{{ $borrower->Type }}</td>
