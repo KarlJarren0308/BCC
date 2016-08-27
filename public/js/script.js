@@ -55,6 +55,10 @@ function onDataFormSubmit(dataForm, func) {
     $('[data-form="' + dataForm + '"]').submit(func);
 }
 
+function onDataInputKeyUp(dataInput, func) {
+    $('[data-input="' + dataInput + '"]').submit(func);
+}
+
 function onDynamicDataButtonClick(dataButton, func) {
     $('body').on('click', '[data-button="' + dataButton + '"]', func);
 }

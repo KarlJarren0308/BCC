@@ -64,51 +64,28 @@
                     <h1 class="page-header">Loan Books</h1>
                 </div>
             </div>
-            <table id="books-table" class="table table-bordered table-striped">
-                <thead>
-                    <tr>
-                        <th>Call Number</th>
-                        <th>Title</th>
-                        <th>Edition</th>
-                        <th>Copyright Year</th>
-                        <th>Author(s)</th>
-                        <th width="15%"></th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @foreach($books as $book)
-                        <tr>
-                            <td>{{ $book->Call_Number }}</td>
-                            <td>{{ $book->Title }}</td>
-                            <td>{{ $book->Edition }}</td>
-                            <td>{{ $book->Copyright_Year }}</td>
-                            <td>
-                                <?php $isFirst = true; ?>
-                                @foreach($bounds as $bound)
-                                    @if($bound->Book_ID == $book->Book_ID)
-                                        @if($isFirst)
-                                            <?php $isFirst = false; ?>
-                                        @else
-                                            <br>
-                                        @endif
-
-                                        @if(strlen($bound->Middle_Name) > 1)
-                                            {{ $bound->First_Name . ' ' . substr($bound->Middle_Name, 0, 1) . '. ' . $bound->Last_Name }}
-                                        @else
-                                            {{ $bound->First_Name . ' ' . $bound->Last_Name }}
-                                        @endif
-                                    @endif
-                                @endforeach
-                            </td>
-                            <td class="text-center">
-                                @if(session()->has('username'))
-                                    <button data-button="loan-book-button" data-var-id="{{ $book->Book_ID }}" data-var-title="{{ $book->Title }}" class="btn btn-primary btn-xs">Loan Book</button>
-                                @endif
-                            </td>
-                        </tr>
-                    @endforeach
-                </tbody>
-            </table>
+            <div class="row">
+                <div class="col-sm-6">
+                    <div class="col-sm-6">
+                        <div class="form-group">
+                            <label for="">Search Borrower:</label>
+                            <input type="text" class="form-control" data-input="search-borrower-input">
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm-6">
+                    <div class="col-sm-6">
+                        <div class="form-group">
+                            <label for="">Search Book:</label>
+                            <input type="text" class="form-control" data-input="search-book-input">
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-sm-6"></div>
+                <div class="col-sm-6"></div>
+            </div>
         </div>
     </div>
     <div class="modal fade">
