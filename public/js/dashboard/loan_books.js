@@ -1,56 +1,36 @@
 $(document).ready(function() {
-    $('#books-table').dataTable({
-        aoColumnDefs: [
-            { bSearchable: false, bSortable: false, aTargets: [5] }
-        ]
-    });
-
-    onDataButtonClick('loan-book-button', function() {
-        setModalLoader();
-        openModal();
-
-        var dataVarID = $(this).data('var-id');
-        var dataVarTitle = $(this).data('var-title');
+    onDataButtonClick('search-borrower-button', function() {
+        showCrankLoader('borrower-list-crank');
 
         $.ajax({
-            url: '/data/07489691941dcd1830a96d9f61121278',
+            url: '/data/e22d6930d5a3d304e7f190fc75c3d43c',
             method: 'POST',
             headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
+            data: $(this).serialize(),
             dataType: 'json',
             success: function(response) {
-                var info = '<option value="" selected disabled>Select an option...</option>';
-                var name = '';
+                var output = '';
 
-                for(var i = 0; i < response['data'].length; i++) {
-                    if(response['data'][i]['Middle_Name'].length > 1) {
-                        name = response['data'][i]['First_Name'] + ' ' + response['data'][i]['Middle_Name'].substring(0, 1) + '. ' + response['data'][i]['Last_Name'];
-                    } else {
-                        name = response['data'][i]['First_Name'] + ' ' + response['data'][i]['Last_Name'];
-                    }
-
-                    info += '<option value="' + response['data'][i]['Username'] + '">' + name + '</option>';
-                }
-
-                setModalContent('Loan Book', '<form data-form="loan-form"><input type="hidden" name="id" value="' + dataVarID + '"><div class="form-group"><label for="">Book Title:</label><input type="text" class="form-control" value="' + dataVarTitle + '" disabled></div><div class="form-group"><label for="borrower">Borrower:</label><select name="borrower" id="borrower" class="form-control" required>' + info + '</select></div><div class="form-group text-right no-margin"><input type="submit" class="btn btn-primary" value="Loan Book"></div></form>', '');
+                $('#search-borrower-list').html(output);
             }
         });
 
         return false;
     });
 
-    onDynamicDataFormSubmit('loan-form', function() {
-        var serializedForm = $(this).serialize();
-
-        setModalLoader();
+    onDataButtonClick('search-book-button', function() {
+        showCrankLoader('book-list-crank');
 
         $.ajax({
-            url: '/loan_books',
+            url: '/data/ac5196ad2cc23d528a09e0d171cebbe4',
             method: 'POST',
             headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
-            data: serializedForm,
+            data: $(this).serialize(),
             dataType: 'json',
             success: function(response) {
-                setModalContent('Loan Book Status', response['message'], '');
+                var output = '';
+
+                $('#search-book-list').html(output);
             }
         });
 

@@ -47,6 +47,14 @@ function unsetModalContent() {
     $('.modal .modal-footer').html('');
 }
 
+function showCrankLoader(id) {
+    $('#' + id + '.crank-loader').fadeIn(250);
+}
+
+function hideCrankLoader(id) {
+    $('#' + id + '.crank-loader').fadeOut(250);
+}
+
 function onDataButtonClick(dataButton, func) {
     $('[data-button="' + dataButton + '"]').click(func);
 }

@@ -62,6 +62,18 @@ class DataController extends Controller
                 return response()->json(['status' => 'Success', 'data' => $barcode->Accession_Number]);
 
                 break;
+            case 'e22d6930d5a3d304e7f190fc75c3d43c':
+                // Request Loan Borrower Information
+
+                return 'Loan Borrower Information';
+
+                break;
+            case 'ac5196ad2cc23d528a09e0d171cebbe4':
+                // Request Loan Book Information
+
+                return 'Loan Book Information';
+
+                break;
             default:
                 return response()->json(['status' => 'Failed', 'message' => 'Oops! Insufficient request data.']);
 
