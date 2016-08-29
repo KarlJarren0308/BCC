@@ -14,6 +14,13 @@ $(document).ready(function() {
                 }
             }
         },
+        birthDate: {
+            validators: {
+                date: {
+                    message: 'Borrower should be 15 year old and above. The date value should be in DD/MM/YYYY format.'
+                }
+            }
+        },
         firstName: {
             validators: {
                 regexp: {
@@ -70,6 +77,13 @@ $(document).ready(function() {
                 regexp: {
                     regexp: /^([a-z0-9-])+$/i,
                     message: 'The value must contain letters, numbers, and a dash symbol only.'
+                }
+            }
+        },
+        birthDate: {
+            validators: {
+                date: {
+                    message: 'Borrower should be 15 year old and above. The date value should be in DD/MM/YYYY format.'
                 }
             }
         },

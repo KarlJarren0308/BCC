@@ -1,6 +1,7 @@
 $(document).ready(function() {
     $('#books-table').dataTable({
         aoColumnDefs: [
+            { bSearchable: false, bSortable: false, aTargets: [0] },
             { bSearchable: false, bSortable: false, aTargets: [2] }
         ]
     });

@@ -9,6 +9,14 @@ function padZeros(number, length) {
 }
 
 $(document).ready(function() {
+    $(function() {
+        if($('input[name="acquisitionMethod"]:checked').val() == 'Purchased') {
+            $('input[name="price"]').prop('disabled', false);
+        } else {
+            $('input[name="price"]').prop('disabled', true);
+        }
+    });
+
     $('#books-table').dataTable({
         aoColumnDefs: [
             { bSearchable: false, bSortable: false, aTargets: [5] }
@@ -24,6 +32,14 @@ $(document).ready(function() {
                 }
             }
         },
+        edition: {
+            validators: {
+                regexp: {
+                    regexp: /^[1-9]*(1st|2nd|3rd|[4-9|0]th)$/i,
+                    message: 'The value should be a valid ordinal number.'
+                }
+            }
+        },
         location: {
             validators: {
                 regexp: {
@@ -36,6 +52,10 @@ $(document).ready(function() {
             validators: {
                 numeric: {
                     message: 'The value must contain numbers only.'
+                },
+                lessThan: {
+                    value: currentYear,
+                    message: 'The value should on or before this year.'
                 }
             }
         },
@@ -43,6 +63,10 @@ $(document).ready(function() {
             validators: {
                 numeric: {
                     message: 'The value must contain numbers only.'
+                },
+                lessThan: {
+                    value: currentYear,
+                    message: 'The value should on or before this year.'
                 }
             }
         },
@@ -71,6 +95,14 @@ $(document).ready(function() {
                 }
             }
         },
+        edition: {
+            validators: {
+                regexp: {
+                    regexp: /^[1-9]*(1st|2nd|3rd|[4-9|0]th)$/i,
+                    message: 'The value should be a valid ordinal number.'
+                }
+            }
+        },
         location: {
             validators: {
                 regexp: {
@@ -83,6 +115,10 @@ $(document).ready(function() {
             validators: {
                 numeric: {
                     message: 'The value must contain numbers only.'
+                },
+                lessThan: {
+                    value: currentYear,
+                    message: 'The value should on or before this year.'
                 }
             }
         },
@@ -90,6 +126,10 @@ $(document).ready(function() {
             validators: {
                 numeric: {
                     message: 'The value must contain numbers only.'
+                },
+                lessThan: {
+                    value: currentYear,
+                    message: 'The value should on or before this year.'
                 }
             }
         },
@@ -205,6 +245,19 @@ $(document).ready(function() {
             });
 
             return false;
+        }
+    });
+
+    $('input[name="acquisitionMethod"]').change(function() {
+        switch($(this).val()) {
+            case 'Donated':
+                $('input[name="price"]').prop('disabled', true);
+                break;
+            case 'Purchased':
+                $('input[name="price"]').prop('disabled', false);
+                break;
+            default:
+                break;
         }
     });
 });

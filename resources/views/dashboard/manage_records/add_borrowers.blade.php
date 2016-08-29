@@ -75,7 +75,7 @@
                         <div class="col-sm-6">
                             <div class="form-group">
                                 {!! Form::label('birthDate', 'Birth Date: *') !!}
-                                {!! Form::date('birthDate', null, ['class' => 'form-control', 'placeholder' => '', 'required' => 'required']) !!}
+                                {!! Form::date('birthDate', null, ['class' => 'form-control', 'placeholder' => '', 'maxlength' => '10', 'required' => 'required']) !!}
                             </div>
                         </div>
                     </div>
@@ -191,5 +191,8 @@
 @stop
 
 @section('post_ref')
+    <script>
+        var maxBirthDate = {{ date('d/m/Y', strtotime('-15 years', strtotime(date('Y-m-d')))) }};
+    </script>
     <script src="/js/dashboard/manage_records/borrowers.js"></script>
 @stop

@@ -1,9 +1,9 @@
 function activateLoanButton() {
-    $('[data-button="loan-button"]').removeAttr('disabled');
+    $('[data-button="loan-button"]').prop('disabled', false);
 }
 
 function deactivateLoanButton() {
-    $('[data-button="loan-button"]').attr('disabled', true);
+    $('[data-button="loan-button"]').prop('disabled', true);
 }
 
 $(document).ready(function() {

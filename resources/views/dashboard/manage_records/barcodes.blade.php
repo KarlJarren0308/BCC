@@ -65,28 +65,28 @@
                 </div>
             </div>
             <div class="row">
-                <div class="col-sm-7">
+                <div class="col-sm-6">
                     <div class="text-left" style="margin-bottom: 25px;">
                         <a href="{{ route('dashboard.getManageRecords', 'books') }}" class="btn btn-danger btn-xs"><span class="fa fa-arrow-left gap-right"></span>Go Back</a>
                     </div>
                     <table class="table table-bordered table-striped">
                         <tbody>
                             <tr>
-                                <td class="text-right" width="25%"><strong>Book Title:</strong></td>
+                                <td class="text-right" width="30%"><strong>Book Title:</strong></td>
                                 <td>{{ $book->Title }}</td>
                             </tr>
                             <tr>
-                                <td class="text-right" width="25%"><strong>Edition:</strong></td>
+                                <td class="text-right" width="30%"><strong>Edition:</strong></td>
                                 <td>{{ $book->Edition }}</td>
                             </tr>
                             <tr>
-                                <td class="text-right" width="25%"><strong>Copyright Year:</strong></td>
+                                <td class="text-right" width="30%"><strong>Copyright Year:</strong></td>
                                 <td>{{ $book->Copyright_Year }}</td>
                             </tr>
                         </tbody>
                     </table>
                 </div>
-                <div class="col-sm-5">
+                <div class="col-sm-6">
                     <div class="text-left gap-bottom">
                         @include('partials.flash_alert')
                     </div>
@@ -96,6 +96,7 @@
                     <table id="books-table" class="table table-bordered table-striped">
                         <thead>
                             <tr>
+                                <th>Barcode Sticker</th>
                                 <th>Accession Number</th>
                                 <th width="20%">Status</th>
                                 <th width="20%"></th>
@@ -104,6 +105,10 @@
                         <tbody>
                             @foreach($barcodes as $barcode)
                                 <tr>
+                                    <td class="text-center">
+                                        <img src="data:image/png;base64,{{ DNS1D::getBarcodePNG('C' . sprintf('%04d', $barcode->Accession_Number), 'C39+', 1, 50) }}">
+                                        <div style="padding: 2px;">{{ 'C' . sprintf('%04d', $barcode->Accession_Number) }}</div>
+                                    </td>
                                     <td>{{ 'C' . sprintf('%04d', $barcode->Accession_Number) }}</td>
                                     <td>{{ ucfirst($barcode->Status) }}</td>
                                     <td class="text-center">
