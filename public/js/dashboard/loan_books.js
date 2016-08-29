@@ -12,6 +12,8 @@ $(document).ready(function() {
     var bookTitle = '';
     var bookStatus = '';
     var borrower = '';
+    var borrowerID = '';
+    var bookID = '';
 
     onDataFormSubmit('search-borrower-form', function() {
         $('#search-borrower-list').html('');
@@ -64,6 +66,7 @@ $(document).ready(function() {
 
                     arg0 = true;
                     borrower = name;
+                    borrowerID = response['data']['borrower']['Username'];
                 } else {
                     output += '<div class="item">';
                     output += '<div class="item-body">' + response['message'] + '</div>';
@@ -148,6 +151,7 @@ $(document).ready(function() {
                     arg1 = true;
                     bookTitle = response['data']['book']['Title'];
                     bookStatus = response['data']['book']['Status'];
+                    bookID = response['data']['book']['Book_ID'];
                 } else {
                     output += '<div class="item">';
                     output += '<div class="item-body">' + response['message'] + '</div>';
@@ -175,7 +179,11 @@ $(document).ready(function() {
         if(arg0) {
             if(arg1) {
                 if(bookStatus == 'available') {
-                    setModalContent('Loan Status', 'Are you want to lend this book to the borrower?<br><table class="table"><tbody><tr><td class="text-right" width="30%">Book:</td><td>' + bookTitle + '</td></tr><tr><td class="text-right">Borrower:</td><td>' + borrower + '</td></tr></tbody></table>', '<button class="btn btn-danger" data-button="yes-button">Yes</button>&nbsp;<button class="btn btn-default" data-button="no-button">No</button>');
+                    console.log('Book ID: ' + bookID);
+                    console.log('Borrower ID: ' + borrowerID);
+
+                    setModalContent('Loan Status', 'Are you want to lend this book to the borrower?<br><br><table class="table table-striped table-bordered"><tbody><tr><td class="text-right">Borrower:</td><td>' + borrower + '</td></tr><tr><td class="text-right" width="30%">Book:</td><td>' + bookTitle + '</td></tr></tbody></table>', '<button class="btn btn-danger" data-button="yes-button">Yes</button>&nbsp;<button class="btn btn-default" data-button="no-button">No</button>');
+                    openModal('static');
                 } else {
                     setModalContent('Loan Status', 'Oops! This book is currently on-loan.', '');
                 }
@@ -185,5 +193,13 @@ $(document).ready(function() {
         } else {
             setModalContent('Loan Status', 'You motherfucka hacker.', '');
         }
+    });
+
+    onDynamicDataButtonClick('yes-button', function() {
+        setModalLoader();
+    });
+
+    onDynamicDataButtonClick('no-button', function() {
+        closeModal();
     });
 });
