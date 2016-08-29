@@ -10,6 +10,8 @@ use App\TblAccounts;
 use App\TblBarcodes;
 use App\TblBooks;
 use App\TblBounds;
+use App\TblLoans;
+use App\TblReceives;
 
 use Storage;
 
@@ -25,7 +27,7 @@ class DataController extends Controller
 
     public function checkSettings() {
         if(!Storage::has('settings.xml')) {
-            Storage::put('settings.xml', '<?xml version="1.0" encoding="UTF-8"?><settings><setting name="reservation_count" value="1"/><setting name="opac_version" value="v1.0" /></settings>');
+            Storage::put('settings.xml', '<?xml version="1.0" encoding="UTF-8"?><settings><setting name="reservation_count" value="1"/><setting name="reservation_period" value="2"/><setting name="loan_period" value="1<setting name="opac_version" value="v1.0" /></settings>');
         }
     }
 
@@ -64,14 +66,43 @@ class DataController extends Controller
                 break;
             case 'e22d6930d5a3d304e7f190fc75c3d43c':
                 // Request Loan Borrower Information
+                $ctr = 0;
 
-                return 'Loan Borrower Information';
+                $this->checkSettings();
+
+                $settingsFile = storage_path('app/public') . '/settings.xml';
+                $data['settings'] = simplexml_load_file($settingsFile);
+
+                $data['borrower'] = TblAccounts::where('Username', $request->input('searchKeyword'))->join('tbl_borrowers', 'tbl_accounts.Owner_ID', '=', 'tbl_borrowers.Borrower_ID')->first();
+
+                if($data['borrower']) {
+                    $ctr++;
+                }
+
+                $data['loan_history'] = TblLoans::where('Username', $request->input('searchKeyword'))->get();
+
+                if($ctr > 0) {
+                    return response()->json(['status' => 'Success', 'message' => '1 borrower found.', 'data' => $data]);
+                } else {
+                    return response()->json(['status' => 'Failed', 'message' => 'No results found.']);
+                }
 
                 break;
             case 'ac5196ad2cc23d528a09e0d171cebbe4':
                 // Request Loan Book Information
 
-                return 'Loan Book Information';
+                if(strlen($request->input('searchKeyword')) == 5 && strtoupper(substr($request->input('searchKeyword'), 0, 1)) == 'C') {
+                    $data['book'] = TblBarcodes::where('tbl_barcodes.Accession_Number', (int) substr($request->input('searchKeyword'), 1))->join('tbl_books', 'tbl_barcodes.Book_ID', '=' ,'tbl_books.Book_ID')->first();
+                    $data['authors'] = TblBounds::where('tbl_bounds.Book_ID', $data['book']['Book_ID'])->join('tbl_authors', 'tbl_bounds.Author_ID', '=', 'tbl_authors.Author_ID')->get();
+
+                    if($data['book']) {
+                        return response()->json(['status' => 'Success', 'message' => ' book(s) found.', 'data' => $data]);
+                    } else {
+                        return response()->json(['status' => 'Failed', 'message' => 'No results found.']);
+                    }
+                } else {
+                    return response()->json(['status' => 'Failed', 'message' => 'Invalid Accession Number.']);
+                }
 
                 break;
             default:

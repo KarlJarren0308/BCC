@@ -128,6 +128,54 @@
                         </div>
                     </div>
                 </div>
+                <div class="col-sm-4">
+                    <div class="panel panel-red">
+                        <div class="panel-heading">
+                            <strong class="panel-title">Online Public Access Catalog Reservation Period</strong>
+                        </div>
+                        <div class="panel-body">
+                            <p class="text-justify">Set how many days a reservation has before expiring.</p>
+                            {!! Form::open(['route' => 'dashboard.postSystemSettings']) !!}
+                                @foreach($settings as $item)
+                                    @if($item['name'] == 'reservation_period')
+                                        <?php $reservationPeriod = $item['value']; ?>
+                                    @endif
+                                @endforeach
+                                <input type="hidden" name="settingName" value="{{ md5('reservation_period') }}">
+                                <div class="form-group">
+                                    <label for="settingValue">Set the reservation period:</label>
+                                    {!! Form::number('settingValue', $reservationCount, ['class' => 'form-control', 'min' => '1', 'placeholder' => '', 'required' => 'required']) !!}
+                                </div>
+                                <div class="form-group text-right">
+                                    <input type="submit" class="btn btn-danger" value="Save Changes">
+                                </div>
+                            {!! Form::close() !!}
+                        </div>
+                    </div>
+                    <div class="panel panel-red">
+                        <div class="panel-heading">
+                            <strong class="panel-title">Online Public Access Catalog Loan Period</strong>
+                        </div>
+                        <div class="panel-body">
+                            <p class="text-justify">Set how many days a loaned book has before computation of penalty starts.</p>
+                            {!! Form::open(['route' => 'dashboard.postSystemSettings']) !!}
+                                @foreach($settings as $item)
+                                    @if($item['name'] == 'loan_period')
+                                        <?php $loanPeriod = $item['value']; ?>
+                                    @endif
+                                @endforeach
+                                <input type="hidden" name="settingName" value="{{ md5('loan_period') }}">
+                                <div class="form-group">
+                                    <label for="settingValue">Set the loan period:</label>
+                                    {!! Form::number('settingValue', $reservationCount, ['class' => 'form-control', 'min' => '1', 'placeholder' => '', 'required' => 'required']) !!}
+                                </div>
+                                <div class="form-group text-right">
+                                    <input type="submit" class="btn btn-danger" value="Save Changes">
+                                </div>
+                            {!! Form::close() !!}
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>

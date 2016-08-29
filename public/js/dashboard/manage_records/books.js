@@ -16,14 +16,6 @@ $(document).ready(function() {
     });
 
     validateDataForm('add-book-form', {
-        title: {
-            validators: {
-                regexp: {
-                    regexp: /^([a-z0-9%&!?,.-:\/\s])+$/i,
-                    message: 'The value must contain letters, numbers and the following symbol(s) only: .,-:'
-                }
-            }
-        },
         callNumber: {
             validators: {
                 regexp: {
@@ -71,14 +63,6 @@ $(document).ready(function() {
     });
 
     validateDataForm('edit-book-form', {
-        title: {
-            validators: {
-                regexp: {
-                    regexp: /^([a-z0-9%&!?,.-:\/\s])+$/i,
-                    message: 'The value must contain letters, numbers and the following symbol(s) only: .,-:'
-                }
-            }
-        },
         callNumber: {
             validators: {
                 regexp: {

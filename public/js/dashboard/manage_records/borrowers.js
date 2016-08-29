@@ -9,8 +9,8 @@ $(document).ready(function() {
         borrowerID: {
             validators: {
                 regexp: {
-                    regexp: /^([a-z])+$/i,
-                    message: 'The value must contain letters only.'
+                    regexp: /^([a-z0-9-])+$/i,
+                    message: 'The value must contain letters, numbers, and a dash symbol only.'
                 }
             }
         },
@@ -68,8 +68,8 @@ $(document).ready(function() {
         borrowerID: {
             validators: {
                 regexp: {
-                    regexp: /^([a-z])+$/i,
-                    message: 'The value must contain letters only.'
+                    regexp: /^([a-z0-9-])+$/i,
+                    message: 'The value must contain letters, numbers, and a dash symbol only.'
                 }
             }
         },

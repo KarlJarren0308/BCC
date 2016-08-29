@@ -11,6 +11,29 @@
             margin-top: 100px;
             text-align: center;
         }
+
+        #search-borrower-list,
+        #search-book-list {
+            margin: 25px 0;
+            overflow-y: scroll;
+            max-height: 300px;
+        }
+
+        #search-borrower-list > .item,
+        #search-book-list > .item {
+            background: #eee;
+            border-left: 5px solid #d9534f;
+            margin-bottom: 2px;
+        }
+
+        #search-borrower-list > .item > .item-body,
+        #search-book-list > .item > .item-body {
+            padding: 1rem 1.5rem;
+        }
+
+        #search-book-list > .item:nth-child(even) {
+            background: white;
+        }
     </style>
 @stop
 
@@ -80,40 +103,47 @@
                         <label for="">Search Borrower:</label>
                     </div>
                     <div class="col-sm-12">
-                        <div class="form-inline">
+                        <form class="form-inline" data-form="search-borrower-form">
                             <div class="form-group">
-                                <input type="text" class="form-control" data-input="search-borrower-input">
+                                <input type="text" name="searchKeyword" class="form-control" required autofocus>
                             </div>
                             <div class="form-group">
-                                <input type="submit" class="btn btn-danger" value="Search" data-button="search-borrower-button">
+                                <input type="submit" class="btn btn-danger" value="Search">
                             </div>
-                        </div>
+                        </form>
                     </div>
                     <div id="borrower-list-crank" class="crank-loader">
                         <span class="fa fa-spinner fa-pulse fa-4x" style="color: #d9534f;"></span>
                         <h3 style="color: #d9534f; margin: 10px 0;">Searching...</h3>
                     </div>
-                    <div id="search-borrower-list" class="col-sm-12" style="margin-top: 25px;"></div>
+                    <div id="search-borrower-list" class="col-sm-12"></div>
                 </div>
                 <div class="col-sm-6">
                     <div class="col-sm-12">
                         <label for="">Search Book:</label>
                     </div>
                     <div class="col-sm-12">
-                        <div class="form-inline">
+                        <form class="form-inline" data-form="search-book-form">
                             <div class="form-group">
-                                <input type="text" class="form-control" data-input="search-book-input">
+                                <input type="text" name="searchKeyword" class="form-control" maxlength="5" required>
                             </div>
                             <div class="form-group">
-                                <input type="submit" class="btn btn-danger" value="Search" data-button="search-book-button">
+                                <input type="submit" class="btn btn-danger" value="Search">
                             </div>
-                        </div>
+                        </form>
                     </div>
                     <div id="book-list-crank" class="crank-loader">
                         <span class="fa fa-spinner fa-pulse fa-4x" style="color: #d9534f;"></span>
                         <h3 style="color: #d9534f; margin: 10px 0;">Searching...</h3>
                     </div>
-                    <div id="search-book-list" class="col-sm-12" style="margin-top: 25px;"></div>
+                    <div id="search-book-list" class="col-sm-12"></div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-sm-12">
+                    <div class="text-right">
+                        <button class="btn btn-danger" data-button="loan-button" disabled>Loan Book to Borrower</button>
+                    </div>
                 </div>
             </div>
         </div>

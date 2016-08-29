@@ -52,7 +52,7 @@ function showCrankLoader(id) {
 }
 
 function hideCrankLoader(id) {
-    $('#' + id + '.crank-loader').fadeOut(250);
+    return $('#' + id + '.crank-loader').fadeOut(250);
 }
 
 function onDataButtonClick(dataButton, func) {
