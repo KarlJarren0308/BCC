@@ -91,6 +91,17 @@ class DataController extends Controller
             case 'ac5196ad2cc23d528a09e0d171cebbe4':
                 // Request Loan Book Information
 
+                $this->checkSettings();
+
+                $settingsFile = storage_path('app/public') . '/settings.xml';
+                $xml = simplexml_load_file($settingsFile);
+
+                foreach($xml as $item) {
+                    if($item['name'] == 'loan_limit') {
+                        $data['loan_limit'] = $item['value'];
+                    }
+                }
+
                 if(strlen($request->input('searchKeyword')) == 5 && strtoupper(substr($request->input('searchKeyword'), 0, 1)) == 'C') {
                     $data['book'] = TblBarcodes::where('tbl_barcodes.Accession_Number', (int) substr($request->input('searchKeyword'), 1))->join('tbl_books', 'tbl_barcodes.Book_ID', '=' ,'tbl_books.Book_ID')->first();
                     $data['authors'] = TblBounds::where('tbl_bounds.Book_ID', $data['book']['Book_ID'])->join('tbl_authors', 'tbl_bounds.Author_ID', '=', 'tbl_authors.Author_ID')->get();

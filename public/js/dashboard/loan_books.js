@@ -14,6 +14,8 @@ $(document).ready(function() {
     var borrower = '';
     var borrowerID = '';
     var bookID = '';
+    var onLoans = 0;
+    var loanLimit = 1;
 
     onDataFormSubmit('search-borrower-form', function() {
         $('#search-borrower-list').html('');
@@ -44,6 +46,8 @@ $(document).ready(function() {
                         }
                     }
 
+                    onLoans = response['data']['loan_history'].length;
+
                     output += '<div class="item" data-value="' + response['data']['borrower']['Username'] + '">';
                     output += '<div class="item-body">';
                     output += '<h6 class="no-margin">' + response['data']['borrower']['Type'] + ' - ' + response['data']['borrower']['Username'] + '</h6>';
@@ -56,7 +60,7 @@ $(document).ready(function() {
                     output += '</tr>';
                     output += '<tr>';
                     output += '<td class="text-right">Number of books loaned:</td>';
-                    output += '<td>' + response['data']['loan_history'].length + '</td>';
+                    output += '<td>' + onLoans + '</td>';
                     output += '</tr>';
                     output += '</tbody>';
                     output += '</table>';
@@ -107,6 +111,8 @@ $(document).ready(function() {
                 var isFirst = true;
 
                 if(response['status'] == 'Success') {
+                    loanLimit = response['data']['loan_limit'];
+
                     output += '<div class="item">';
                     output += '<div class="item-body">';
                     output += '<h6 class="no-margin">' + response['data']['book']['Edition'] + ' Edition</h6>';
@@ -179,19 +185,24 @@ $(document).ready(function() {
         if(arg0) {
             if(arg1) {
                 if(bookStatus == 'available') {
-                    console.log('Book ID: ' + bookID);
-                    console.log('Borrower ID: ' + borrowerID);
-
-                    setModalContent('Loan Status', 'Are you want to lend this book to the borrower?<br><br><table class="table table-striped table-bordered"><tbody><tr><td class="text-right">Borrower:</td><td>' + borrower + '</td></tr><tr><td class="text-right" width="30%">Book:</td><td>' + bookTitle + '</td></tr></tbody></table>', '<button class="btn btn-danger" data-button="yes-button">Yes</button>&nbsp;<button class="btn btn-default" data-button="no-button">No</button>');
-                    openModal('static');
+                    if(onLoans < loanLimit) {
+                        setModalContent('Loan Status', 'Are you want to lend this book to the borrower?<br><br><table class="table table-striped table-bordered"><tbody><tr><td class="text-right">Borrower:</td><td>' + borrower + '</td></tr><tr><td class="text-right" width="30%">Book:</td><td>' + bookTitle + '</td></tr></tbody></table>', '<button class="btn btn-danger" data-button="yes-button">Yes</button>&nbsp;<button class="btn btn-default" data-button="no-button">No</button>');
+                        openModal('static');
+                    } else {
+                        setModalContent('Loan Status', 'Oops! Borrower has reached the loan limit.', '');
+                        openModal();
+                    }
                 } else {
                     setModalContent('Loan Status', 'Oops! This book is currently on-loan.', '');
+                    openModal();
                 }
             } else {
                 setModalContent('Loan Status', 'You motherfucka hacker.', '');
+                openModal();
             }
         } else {
             setModalContent('Loan Status', 'You motherfucka hacker.', '');
+            openModal();
         }
     });
 
