@@ -197,6 +197,28 @@ $(document).ready(function() {
 
     onDynamicDataButtonClick('yes-button', function() {
         setModalLoader();
+
+        $.ajax({
+            url: '/loan_books',
+            method: 'POST',
+            headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
+            data: {
+                id: bookID,
+                borrower: borrowerID
+            },
+            dataType: 'json',
+            success: function(response) {
+                setModalContent('Loan Books Status', response['message'], '');
+
+                setTimeout(function() {
+                    closeModal();
+
+                    location.reload();
+                }, 2000);
+            }
+        });
+
+        return false;
     });
 
     onDynamicDataButtonClick('no-button', function() {
