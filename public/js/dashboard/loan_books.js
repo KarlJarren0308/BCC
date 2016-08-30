@@ -12,6 +12,7 @@ $(document).ready(function() {
     var bookTitle = '';
     var bookStatus = '';
     var borrower = '';
+    var borrowerType = '';
     var borrowerID = '';
     var bookID = '';
     var onLoans = 0;
@@ -71,6 +72,7 @@ $(document).ready(function() {
                     arg0 = true;
                     borrower = name;
                     borrowerID = response['data']['borrower']['Username'];
+                    borrowerType = response['data']['borrower']['Type'];
                 } else {
                     output += '<div class="item">';
                     output += '<div class="item-body">' + response['message'] + '</div>';
@@ -185,12 +187,17 @@ $(document).ready(function() {
         if(arg0) {
             if(arg1) {
                 if(bookStatus == 'available') {
-                    if(onLoans < loanLimit) {
+                    if(borrowerType == 'Student') {
+                        if(onLoans < loanLimit) {
+                            setModalContent('Loan Status', 'Are you want to lend this book to the borrower?<br><br><table class="table table-striped table-bordered"><tbody><tr><td class="text-right">Borrower:</td><td>' + borrower + '</td></tr><tr><td class="text-right" width="30%">Book:</td><td>' + bookTitle + '</td></tr></tbody></table>', '<button class="btn btn-danger" data-button="yes-button">Yes</button>&nbsp;<button class="btn btn-default" data-button="no-button">No</button>');
+                            openModal('static');
+                        } else {
+                            setModalContent('Loan Status', 'Oops! Borrower has reached the loan limit.', '');
+                            openModal();
+                        }
+                    } else {
                         setModalContent('Loan Status', 'Are you want to lend this book to the borrower?<br><br><table class="table table-striped table-bordered"><tbody><tr><td class="text-right">Borrower:</td><td>' + borrower + '</td></tr><tr><td class="text-right" width="30%">Book:</td><td>' + bookTitle + '</td></tr></tbody></table>', '<button class="btn btn-danger" data-button="yes-button">Yes</button>&nbsp;<button class="btn btn-default" data-button="no-button">No</button>');
                         openModal('static');
-                    } else {
-                        setModalContent('Loan Status', 'Oops! Borrower has reached the loan limit.', '');
-                        openModal();
                     }
                 } else {
                     setModalContent('Loan Status', 'Oops! This book is currently on-loan.', '');
