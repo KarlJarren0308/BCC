@@ -113,7 +113,7 @@ $(document).ready(function() {
                 var isFirst = true;
 
                 if(response['status'] == 'Success') {
-                    loanLimit = response['data']['loan_limit'];
+                    loanLimit = response['data']['loan_limit'][0];
 
                     output += '<div class="item">';
                     output += '<div class="item-body">';
