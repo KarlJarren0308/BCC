@@ -8,7 +8,7 @@ $(document).ready(function() {
     });
 
     onDataButtonClick('delete-button', function() {
-        setModalContent('Loan Status', 'Do you really want to delete this book? This action cannot be undone.<br><div class="form-group"><input type="text" maxlength="1000" id="reason-field"></div>', '<button class="btn btn-danger" data-button="yes-button">Yes</button>&nbsp;<button class="btn btn-default" data-button="no-button">No</button>');
+        setModalContent('Loan Status', 'Do you really want to delete this book? This action cannot be undone.<br><br><div class="form-group"><label for="">Reason for Weeding: *</label><input type="text" class="form-control" maxlength="1000" id="reason-field"></div>', '<button class="btn btn-danger" data-button="yes-button">Yes</button>&nbsp;<button class="btn btn-default" data-button="no-button">No</button>');
         openModal('static');
 
         id = $(this).data('var-id');
