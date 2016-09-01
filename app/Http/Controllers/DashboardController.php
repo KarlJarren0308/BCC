@@ -127,7 +127,7 @@ class DashboardController extends Controller
         switch($what) {
             case 'books':
                 $data['bounds'] = TblBounds::join('tbl_authors', 'tbl_bounds.Author_ID', '=', 'tbl_authors.Author_ID')->get();
-                $data['books'] = TblBooks::whereNull('tbl_weeding.Weeding_ID')->leftJoin('tbl_weeding', 'tbl_books.Book_ID', '=', 'tbl_weeding.Book_ID')->select('tbl_books.*')->get();
+                $data['books'] = TblBooks::whereNull('tbl_weeding.Book_ID')->leftJoin('tbl_weeding', 'tbl_books.Book_ID', '=', 'tbl_weeding.Book_ID')->select('tbl_books.*')->get();
 
                 return view('dashboard.manage_records.books', $data);
 
