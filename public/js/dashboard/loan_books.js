@@ -189,14 +189,14 @@ $(document).ready(function() {
                 if(bookStatus == 'available') {
                     if(borrowerType == 'Student') {
                         if(onLoans < loanLimit) {
-                            setModalContent('Loan Status', 'Are you want to lend this book to the borrower?<br><br><table class="table table-striped table-bordered"><tbody><tr><td class="text-right">Borrower:</td><td>' + borrower + '</td></tr><tr><td class="text-right" width="30%">Book:</td><td>' + bookTitle + '</td></tr></tbody></table>', '<button class="btn btn-danger" data-button="yes-button">Yes</button>&nbsp;<button class="btn btn-default" data-button="no-button">No</button>');
+                            setModalContent('Loan Status', 'Do you want to lend this book to the borrower?<br><br><table class="table table-striped table-bordered"><tbody><tr><td class="text-right">Borrower:</td><td>' + borrower + '</td></tr><tr><td class="text-right" width="30%">Book:</td><td>' + bookTitle + '</td></tr></tbody></table>', '<button class="btn btn-danger" data-button="yes-button">Yes</button>&nbsp;<button class="btn btn-default" data-button="no-button">No</button>');
                             openModal('static');
                         } else {
                             setModalContent('Loan Status', 'Oops! Borrower has reached the loan limit.', '');
                             openModal();
                         }
                     } else {
-                        setModalContent('Loan Status', 'Are you want to lend this book to the borrower?<br><br><table class="table table-striped table-bordered"><tbody><tr><td class="text-right">Borrower:</td><td>' + borrower + '</td></tr><tr><td class="text-right" width="30%">Book:</td><td>' + bookTitle + '</td></tr></tbody></table>', '<button class="btn btn-danger" data-button="yes-button">Yes</button>&nbsp;<button class="btn btn-default" data-button="no-button">No</button>');
+                        setModalContent('Loan Status', 'Do you want to lend this book to the borrower?<br><br><table class="table table-striped table-bordered"><tbody><tr><td class="text-right">Borrower:</td><td>' + borrower + '</td></tr><tr><td class="text-right" width="30%">Book:</td><td>' + bookTitle + '</td></tr></tbody></table>', '<button class="btn btn-danger" data-button="yes-button">Yes</button>&nbsp;<button class="btn btn-default" data-button="no-button">No</button>');
                         openModal('static');
                     }
                 } else {

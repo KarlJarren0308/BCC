@@ -53,6 +53,8 @@
                         <li><a href="{{ route('dashboard.getManageRecords', 'borrowers') }}">Manage Borrowers</a></li>
                         <li><a href="{{ route('dashboard.getManageRecords', 'librarians') }}">Manage Librarians</a></li>
                         <li><a href="{{ route('dashboard.getManageRecords', 'holidays') }}">Manage Holidays</a></li>
+                        <li><a href="{{ route('dashboard.getManageRecords', 'weeding') }}">Weeding Books</a></li>
+                        <li><a href="{{ route('dashboard.getManageRecords', 'reports') }}">Generate Reports</a></li>
                         <li><a href="{{ route('dashboard.getSystemSettings') }}">System Settings</a></li>
                     </ul>
                 </div>
@@ -111,7 +113,7 @@
                                     <button data-button="view-button" data-var-id="{{ $book->Book_ID }}" class="btn btn-primary btn-xs">View Info</button>
                                     <a href="{{ route('dashboard.getBarcodes', $book->Book_ID) }}" class="btn btn-info btn-xs">Accession Numbers</a>
                                     <a href="{{ route('dashboard.getEditRecord', ['books', $book->Book_ID]) }}" class="btn btn-success btn-xs">Edit</a>
-                                    <a href="{{ route('dashboard.getDeleteRecord', ['books', $book->Book_ID]) }}" class="btn btn-danger btn-xs">Delete</a>
+                                    <a href="{{ route('dashboard.getDeleteRecord', ['weeding', $book->Book_ID]) }}" class="btn btn-danger btn-xs">Weed Book</a>
                                 @endif
                             </td>
                         </tr>

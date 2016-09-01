@@ -19,8 +19,10 @@ use App\TblLoans;
 use App\TblPublishers;
 use App\TblReceives;
 use App\TblReservations;
+use App\TblWeeding;
 
 use DB;
+use PDF;
 
 date_default_timezone_set('Asia/Manila');
 
@@ -127,7 +129,7 @@ class DashboardController extends Controller
         switch($what) {
             case 'books':
                 $data['bounds'] = TblBounds::join('tbl_authors', 'tbl_bounds.Author_ID', '=', 'tbl_authors.Author_ID')->get();
-                $data['books'] = TblBooks::get();
+                $data['books'] = TblBooks::where('tbl_weeding.Book_ID', null)->leftJoin('tbl_weeding', 'tbl_books.Book_ID', '=', 'tbl_weeding.Book_ID')->get();
 
                 return view('dashboard.manage_records.books', $data);
 
@@ -168,6 +170,16 @@ class DashboardController extends Controller
                 $data['holidays'] = TblHolidays::get();
 
                 return view('dashboard.manage_records.holidays', $data);
+
+                break;
+            case 'reports':
+                return view('dashboard.manage_records.reports');
+
+                break;
+            case 'weeding':
+                $data['weeding'] = TblWeeding::join('tbl_books', 'tbl_weeding.Book_ID', '=', 'tbl_books.Book_ID')->get();
+
+                return view('dashboard.manage_records.weeding', $data);
 
                 break;
             default:
@@ -363,12 +375,19 @@ class DashboardController extends Controller
 
                 break;
             case 'books':
-                $query1 = TblBarcodes::where('Book_ID', $id)->delete();
-                $query2 = TblBooks::where('Book_ID', $id)->delete();
+                $query = TblWeeding::where('Book_ID', $id)->delete();
 
-                if($query1 && $query2) {
-                    session()->flash('flash_status', 'success');
-                    session()->flash('flash_message', 'Book has been deleted.');
+                if($query) {
+                    $query1 = TblBarcodes::where('Book_ID', $id)->delete();
+                    $query2 = TblBooks::where('Book_ID', $id)->delete();
+
+                    if($query1 && $query2) {
+                        session()->flash('flash_status', 'success');
+                        session()->flash('flash_message', 'Book has been deleted.');
+                    } else {
+                        session()->flash('flash_status', 'danger');
+                        session()->flash('flash_message', 'Oops! Failed to delete book. Please refresh the page and try again.');
+                    }
                 } else {
                     session()->flash('flash_status', 'danger');
                     session()->flash('flash_message', 'Oops! Failed to delete book. Please refresh the page and try again.');
@@ -463,9 +482,54 @@ class DashboardController extends Controller
                 return redirect()->route('dashboard.getManageRecords', $what);
 
                 break;
+            case 'weeding':
+                $query = TblWeeding::insert([
+                    'Book_ID' => $id,
+                    'Date_Weeded' => date('Y-m-d')
+                ]);
+
+                if($query) {
+                    session()->flash('flash_status', 'success');
+                    session()->flash('flash_message', 'Book has been weeded.');
+                } else {
+                    session()->flash('flash_status', 'danger');
+                    session()->flash('flash_message', 'Oops! Failed to weed book. Please refresh the page and try again.');
+                }
+
+                return redirect()->route('dashboard.getManageRecords', 'books');
+
+                break;
             default:
                 break;
         }
+    }
+
+    public function getRecoverBook($id) {
+        if(!session()->has('username')) {
+            session()->flash('flash_status', 'danger');
+            session()->flash('flash_message', 'Oops! Please login first.');
+
+            return redirect()->route('cardinal.getIndex');
+        } else {
+            if(session()->get('type') != 'Librarian') {
+                session()->flash('flash_status', 'danger');
+                session()->flash('flash_message', 'Oops! You do not have to privilege to access the dashboard.');
+
+                return redirect()->route('cardinal.getOpac');
+            }
+        }
+
+        $query = TblWeeding::where('Book_ID', $id)->delete();
+
+        if($query) {
+            session()->flash('flash_status', 'success');
+            session()->flash('flash_message', 'Book has been recovered.');
+        } else {
+            session()->flash('flash_status', 'danger');
+            session()->flash('flash_message', 'Oops! Failed to recover book. Please refresh the page and try again.');
+        }
+
+        return redirect()->route('dashboard.getManageRecords', 'weeding');
     }
 
     public function getChangePassword($what, $id) {
@@ -1308,6 +1372,70 @@ class DashboardController extends Controller
             }
         } else {
             return response()->json(['status' => 'Failed', 'message' => 'Oops! Failed to receive book. Please refresh the page and try again.']);
+        }
+    }
+
+    public function postGenerateReport($what, Request $request) {
+        if(!session()->has('username')) {
+            session()->flash('flash_status', 'danger');
+            session()->flash('flash_message', 'Oops! Please login first.');
+
+            return redirect()->route('cardinal.getIndex');
+        } else {
+            if(session()->get('type') != 'Librarian') {
+                session()->flash('flash_status', 'danger');
+                session()->flash('flash_message', 'Oops! You do not have to privilege to access the dashboard.');
+
+                return redirect()->route('cardinal.getOpac');
+            }
+        }
+
+        switch($what) {
+            case 'list_of_books':
+                $data['from'] = date('Y-m-d', strtotime($request->input('from')));;
+                $data['to'] = date('Y-m-d', strtotime($request->input('to')));;
+                $data['books'] = TblBooks::whereBetween('Date_Acquired', array($data['from'], $data['to']))->get();
+                $data['books_count'] = TblBooks::whereBetween('Date_Acquired', array($data['from'], $data['to']))->count();
+
+                $pdf = PDF::loadView('reports.list_of_books', $data);
+
+                return $pdf->stream('BCC_List_of_Books_Report.pdf');
+
+                break;
+            case 'list_of_borrowed_books':
+                $data['from'] = date('Y-m-d', strtotime($request->input('from')));;
+                $data['to'] = date('Y-m-d', strtotime($request->input('to')));;
+                $data['books'] = TblLoans::whereBetween('tbl_loans.Loan_Date_Stamp', array($data['from'], $data['to']))
+                    ->join('tbl_barcodes', 'tbl_loans.Accession_Number', '=', 'tbl_barcodes.Accession_Number')
+                    ->join('tbl_books', 'tbl_barcodes.Book_ID', '=', 'tbl_books.Book_ID')
+                    ->join('tbl_accounts', 'tbl_loans.Username', '=', 'tbl_accounts.Username')
+                    ->join('tbl_borrowers', 'tbl_accounts.Owner_ID', '=', 'tbl_borrowers.Borrower_ID')
+                ->get();
+                $data['books_count'] = TblLoans::whereBetween('tbl_books.Date_Acquired', array($data['from'], $data['to']))->join('tbl_barcodes', 'tbl_loans.Accession_Number', '=', 'tbl_barcodes.Accession_Number')->join('tbl_books', 'tbl_barcodes.Book_ID', '=', 'tbl_books.Book_ID')->count();
+
+                $pdf = PDF::loadView('reports.list_of_borrowed_books', $data);
+
+                return $pdf->stream('BCC_List_of_Borrowed_Books_Report.pdf');
+
+                break;
+            case 'list_of_unreturned_books':
+                $data['from'] = date('Y-m-d', strtotime($request->input('from')));;
+                $data['to'] = date('Y-m-d', strtotime($request->input('to')));;
+                $data['books'] = TblLoans::whereBetween('tbl_loans.Loan_Date_Stamp', array($data['from'], $data['to']))->where('tbl_receives.Reference_ID', null)
+                    ->join('tbl_barcodes', 'tbl_loans.Accession_Number', '=', 'tbl_barcodes.Accession_Number')
+                    ->join('tbl_books', 'tbl_barcodes.Book_ID', '=', 'tbl_books.Book_ID')
+                    ->join('tbl_accounts', 'tbl_loans.Username', '=', 'tbl_accounts.Username')
+                    ->join('tbl_borrowers', 'tbl_accounts.Owner_ID', '=', 'tbl_borrowers.Borrower_ID')
+                    ->leftJoin('tbl_receives', 'tbl_loans.Loan_ID', '=', 'tbl_receives.Reference_ID')
+                ->get();
+
+                $pdf = PDF::loadView('reports.list_of_unreturned_books', $data);
+
+                return $pdf->stream('BCC_List_of_Unreturned_Books_Report.pdf');
+
+                break;
+            default:
+                break;
         }
     }
 

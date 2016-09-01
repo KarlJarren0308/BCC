@@ -28,6 +28,7 @@ Route::get('system_settings', ['as' => 'dashboard.getSystemSettings', 'uses' => 
 Route::get('add_record/{what}', ['as' => 'dashboard.getAddRecord', 'uses' => 'DashboardController@getAddRecord']);
 Route::get('edit_record/{what}/{id}', ['as' => 'dashboard.getEditRecord', 'uses' => 'DashboardController@getEditRecord']);
 Route::get('delete_record/{what}/{id}', ['as' => 'dashboard.getDeleteRecord', 'uses' => 'DashboardController@getDeleteRecord']);
+Route::get('recover_book/{id}', ['as' => 'dashboard.getRecoverBook', 'uses' => 'DashboardController@getRecoverBook']);
 Route::get('force_change_password/{what}/{id}', ['as' => 'dashboard.getChangePassword', 'uses' => 'DashboardController@getChangePassword']);
 
 Route::post('opac/search', ['as' => 'cardinal.postSearchOpac', 'uses' => 'CardinalController@postSearchOpac']);
@@ -40,6 +41,7 @@ Route::post('receive_books', ['as' => 'dashboard.postReceiveBooks', 'uses' => 'D
 Route::post('add_record/{what}', ['as' => 'dashboard.postAddRecord', 'uses' => 'DashboardController@postAddRecord']);
 Route::post('generate_barcode', ['as' => 'dashboard.postAddBarcode', 'uses' => 'DashboardController@postAddBarcode']);
 Route::post('edit_record/{what}/{id}', ['as' => 'dashboard.postEditRecord', 'uses' => 'DashboardController@postEditRecord']);
+Route::post('generate_report/{what}', ['as' => 'dashboard.postGenerateReport', 'uses' => 'DashboardController@postGenerateReport']);
 Route::post('system_settings/save', ['as' => 'dashboard.postSystemSettings', 'uses' => 'DashboardController@postSystemSettings']);
 Route::post('force_change_password/{what}/{id}', ['as' => 'dashboard.postChangePassword', 'uses' => 'DashboardController@postChangePassword']);
 
