@@ -169,7 +169,7 @@
                                 <input type="hidden" name="settingName" value="{{ md5('loan_period') }}">
                                 <div class="form-group">
                                     <label for="settingValue">Set the loan period:</label>
-                                    {!! Form::number('settingValue', $reservationCount, ['class' => 'form-control', 'min' => '1', 'placeholder' => '', 'required' => 'required']) !!}
+                                    {!! Form::number('settingValue', $loanPeriod, ['class' => 'form-control', 'min' => '1', 'placeholder' => '', 'required' => 'required']) !!}
                                 </div>
                                 <div class="form-group text-right">
                                     <input type="submit" class="btn btn-danger" value="Save Changes">
