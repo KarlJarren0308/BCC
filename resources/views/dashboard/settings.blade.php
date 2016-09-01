@@ -1,6 +1,12 @@
 @extends('template')
 
 @section('content')
+    <?php
+        $version = 0;
+        $reservationCount = 0;
+        $reservationPeriod = 0;
+        $loanPeriod = 0;
+    ?>
     <div id="wrapper">
         <nav class="navbar navbar-custom navbar-static-top" role="navigation" style="margin-bottom: 0">
             <div class="navbar-header">
