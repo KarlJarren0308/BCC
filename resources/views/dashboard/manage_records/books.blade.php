@@ -134,5 +134,8 @@
 @stop
 
 @section('post_ref')
+    <script>
+        var currentYear = {{ date('Y') }};
+    </script>
     <script src="/js/dashboard/manage_records/books.js"></script>
 @stop
