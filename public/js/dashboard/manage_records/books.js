@@ -235,8 +235,8 @@ $(document).ready(function() {
                 success: function(response) {
                     var lastBarcode = response['data'];
 
-                    for(var i = 0; i < numberOfCopies; i++) {
-                        $('#generated-accession-numbers').append('<div class="list-group-item">C' + padZeros(lastBarcode++, 4) + '</div>');
+                    for(var i = 1; i <= numberOfCopies; i++) {
+                        $('#generated-accession-numbers').append('<div class="list-group-item">C' + padZeros(lastBarcode+i, 4) + '</div>');
                     }
                 },
                 error: function(arg0, arg1, arg2) {
