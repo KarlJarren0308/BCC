@@ -1,3 +1,7 @@
+function logAjaxError(arg0, arg1, ar2) {
+    console.log(arg0.responseText);
+}
+
 function activateLoanButton() {
     $('[data-button="loan-button"]').prop('disabled', false);
 }
@@ -90,7 +94,8 @@ $(document).ready(function() {
                         deactivateLoanButton();
                     }
                 });
-            }
+            },
+            error: logAjaxError
         });
 
         return false;
