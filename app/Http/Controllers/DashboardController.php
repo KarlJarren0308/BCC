@@ -3,9 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-
 use App\Http\Requests;
-
 use App\TblAccounts;
 use App\TblAuthors;
 use App\TblBarcodes;
@@ -129,7 +127,7 @@ class DashboardController extends Controller
         switch($what) {
             case 'books':
                 $data['bounds'] = TblBounds::join('tbl_authors', 'tbl_bounds.Author_ID', '=', 'tbl_authors.Author_ID')->get();
-                $data['books'] = TblBooks::where('tbl_weeding.Book_ID', null)->leftJoin('tbl_weeding', 'tbl_books.Book_ID', '=', 'tbl_weeding.Book_ID')->get();
+                $data['books'] = TblBooks::whereNull('tbl_weeding.Weeding_ID')->leftJoin('tbl_weeding', 'tbl_books.Book_ID', '=', 'tbl_weeding.Book_ID')->select('tbl_books.*')->get();
 
                 return view('dashboard.manage_records.books', $data);
 
