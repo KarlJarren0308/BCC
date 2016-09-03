@@ -1231,11 +1231,10 @@ class DashboardController extends Controller
             $query2 = TblReservations::where('Book_ID', $request->input('id'))->count();
 
             if($query1 - $query2 > 0) {
-                $query = TblBarcodes::where('Book_ID', $request->input('id'))->where('Status', 'available')->leftJoin('tbl_loans', 'tbl_barcodes.Accession_Number', '=', 'tbl_loans.Accession_Number')->select('tbl_barcodes.*', DB::raw('count(tbl_loans.Accession_Number) as Loan_Count'))->groupBy('tbl_barcodes.Accession_Number')->orderBy('Loan_Count')->orderBy('tbl_barcodes.Accession_Number')->first();
+                $barcode = $request->input('accession');
+                $query = TblBarcodes::where('tbl_barcodes.Accession_Number', $barcode)->where('tbl_barcodes.Status', 'available')->leftJoin('tbl_loans', 'tbl_barcodes.Accession_Number', '=', 'tbl_loans.Accession_Number')->select('tbl_barcodes.*', DB::raw('count(tbl_loans.Accession_Number) as Loan_Count'))->groupBy('tbl_barcodes.Accession_Number')->orderBy('Loan_Count')->orderBy('tbl_barcodes.Accession_Number')->first();
 
                 if($query) {
-                    $barcode = $query->Accession_Number;
-
                     $query = TblLoans::insert([
                         'Accession_Number' => $barcode,
                         'Username' => $request->input('borrower'),
@@ -1250,10 +1249,10 @@ class DashboardController extends Controller
 
                         return response()->json(['status' => 'Success', 'message' => 'Loan Successful. You may now hand the book with an accession number of C' . sprintf('%04d', $barcode) . ' to the borrower, ' . $borrowerName . '.', 'data' => ['barcode' => $barcode, 'borrower' => $borrowerName]]);
                     } else {
-                        return response()->json(['status' => 'Failed', 'message' => 'Oops! No more available copies.']);
+                        return response()->json(['status' => 'Failed', 'message' => 'Oops! Failed to loan book.']);
                     }
                 } else {
-                    return response()->json(['status' => 'Failed', 'message' => 'Oops! No more available copies.']);
+                    return response()->json(['status' => 'Failed', 'message' => 'Oops! This accession number has been deleted.']);
                 }
             } else {
                 return response()->json(['status' => 'Failed', 'message' => 'Oops! No more available copies.']);

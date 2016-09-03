@@ -164,6 +164,15 @@ hr.line-dark {
     padding: 0 25px;
 }
 
+.list-group.beautify > .list-group-item {
+    border-radius: 0;
+    border-top: none;
+    border-bottom: none;
+    border-left: 4px solid #d9534f;
+    border-right: none;
+    box-shadow: 0 1px 1px rgba(25, 40, 35, 0.5);
+}
+
 .modal-header {
     background: #dd1e2f;
     border-radius: 5px 5px 0 0;

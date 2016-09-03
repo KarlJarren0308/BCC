@@ -20,6 +20,7 @@
     <script src="/js/bootstrap-select.min.js"></script>
     <script src="/js/metisMenu.min.js"></script>
     <script src="/js/sb-admin-2.js"></script>
+    <script src="/js/moment.js"></script>
     <script src="/js/script.js"></script>
 @yield('pre_ref')
 </head>

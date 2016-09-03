@@ -100,7 +100,7 @@
                 </div>
             </div>
             <div class="row">
-                <div class="col-sm-6">
+                <div class="col-sm-4">
                     <div class="col-sm-12">
                         <label for="">Search Borrower:</label>
                     </div>
@@ -120,7 +120,7 @@
                     </div>
                     <div id="search-borrower-list" class="col-sm-12"></div>
                 </div>
-                <div class="col-sm-6">
+                <div class="col-sm-4">
                     <div class="col-sm-12">
                         <label for="">Search Book:</label>
                     </div>
@@ -139,6 +139,17 @@
                         <h3 style="color: #d9534f; margin: 10px 0;">Searching...</h3>
                     </div>
                     <div id="search-book-list" class="col-sm-12"></div>
+                </div>
+                <div class="col-sm-4">
+                    <div class="well">
+                        <h3 style="margin-top: 0;">Borrower</h3>
+                        <div id="borrower-block" class="list-group beautify"></div>
+                    </div>
+                    <div class="well">
+                        <h3 style="margin-top: 0;">Cart</h3>
+                        <div id="books-block" class="list-group beautify"></div>
+                    </div>
+                    <br>
                 </div>
             </div>
             <div class="row">

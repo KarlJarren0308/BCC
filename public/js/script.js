@@ -90,8 +90,9 @@ function validateDataForm(dataForm, validations) {
  * Debugging Functions
  */
 
-function ajaxError(arg0, arg1, arg2) {
-    var w = window.open();
+function logAjaxError(arg0, arg1, ar2) {
+    var tab = window.open();
 
-    $(w.document).html(arg0.responseText);
+    tab.document.write(arg0.responseText);
+    console.log(arg0.responseText);
 }
