@@ -233,20 +233,20 @@ $(document).ready(function() {
 
         if(!$.isEmptyObject(borrowerInfo)) {
             if(bookInfo.length > 0) {
+                output += 'Do you want to lend the following book to ' + borrowerInfo['full_name'] + '?<br><br><table class="table table-striped table-bordered"><thead><tr><th>Book Title</th><th>Accession Number</th></tr></thead><tbody>';
+
+                for(var i = 0; i < bookInfo.length; i++) {
+                    output += '<tr>';
+                    output += '<td>' + bookInfo[i]['title'] + '</td>';
+                    output += '<td>C' + padZeros(bookInfo[i]['accession'], 4) + '</td>';
+                    output += '</tr>';
+                }
+
+                output += '</tbody></table>';
+
                 if(borrowerInfo['type'] == 'Student') {
                     if(onLoans < loanLimit) {
                         if(onLoans + bookInfo.length <= loanLimit) {
-                            output += 'Do you want to lend the following book to ' + borrowerInfo['full_name'] + '?<br><br><table class="table table-striped table-bordered"><thead><tr><th>Book Title</th><th>Accession Number</th></tr></thead><tbody>';
-
-                            for(var i = 0; i < bookInfo.length; i++) {
-                                output += '<tr>';
-                                output += '<td>' + bookInfo[i]['title'] + '</td>';
-                                output += '<td>C' + padZeros(bookInfo[i]['accession'], 4) + '</td>';
-                                output += '</tr>';
-                            }
-
-                            output += '</tbody></table>';
-
                             setModalContent('Loan Status', output, '<button class="btn btn-danger" data-button="yes-button">Yes</button>&nbsp;<button class="btn btn-default" data-button="no-button">No</button>');
                             openModal('static');
                         } else {
@@ -258,7 +258,7 @@ $(document).ready(function() {
                         openModal();
                     }
                 } else {
-                    setModalContent('Loan Status', 'Do you want to lend this book to the borrower?<br><br><table class="table table-striped table-bordered"><tbody><tr><td class="text-right">Borrower:</td><td>' + borrower + '</td></tr><tr><td class="text-right" width="30%">Book:</td><td>' + bookTitle + '</td></tr></tbody></table>', '<button class="btn btn-danger" data-button="yes-button">Yes</button>&nbsp;<button class="btn btn-default" data-button="no-button">No</button>');
+                    setModalContent('Loan Status', output, '<button class="btn btn-danger" data-button="yes-button">Yes</button>&nbsp;<button class="btn btn-default" data-button="no-button">No</button>');
                     openModal('static');
                 }
             } else {
@@ -272,64 +272,63 @@ $(document).ready(function() {
     });
 
     onDynamicDataButtonClick('yes-button', function() {
-        var successfullyLoanedBooks = [];
         var output = '';
         var receipt = '';
-        var ctr = 0;
 
         setModalLoader();
 
-        for(var i = 0; i < bookInfo.length; i++) {
-            $.ajax({
-                url: '/loan_books',
-                method: 'POST',
-                headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
-                data: {
-                    id: bookInfo[i]['id'],
-                    accession: bookInfo[i]['accession'],
-                    borrower: borrowerInfo['username']
-                },
-                dataType: 'json',
-                success: function(response) {
-                    closeModal();
-                    if(response['status'] == 'Success') {
-                        successfullyLoanedBooks.push(response['data']['barcode']);
+        $.ajax({
+            url: '/loan_books',
+            method: 'POST',
+            headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
+            data: {
+                borrower: borrowerInfo['username'],
+                accessions: bookInfo
+            },
+            dataType: 'json',
+            success: function(response) {
+                if(response['status'] == 'Success') {
+                    output += '<table class="table table-striped table-bordered"><thead><tr><th>Book Title</th><th>Accession Number</th></tr></thead><tbody>';
 
-                        ctr++;
+                    for(var j = 0; j < response['data']['barcodes'].length; j++) {
+                        for(var k = 0; k < bookInfo.length; k++) {
+                            if(bookInfo[k]['accession'] == response['data']['barcodes'][j]) {
+                                output += '<tr>';
+                                output += '<td>' + bookInfo[k]['title'] + '</td>';
+                                output += '<td>C' + padZeros(bookInfo[k]['accession'], 4) + '</td>';
+                                output += '</tr>';
+
+                                receipt += '<li>' + bookInfo[k]['title'] + ' [C' + padZeros(bookInfo[k]['accession'], 4) + ']</li>';
+                            }
+                        }
                     }
-                }
-            });
-        }
 
-        if(ctr > 0) {
-            output += '<table class="table table-striped table-bordered"><thead><tr><th>Book Title</th><th>Accession Number</th></tr></thead><tbody>';
+                    output += '</tbody></table>';
 
-            for(var j = 0; j < successfullyLoanedBooks.length; j++) {
-                for(var k = 0; k < bookInfo.length; k++) {
-                    if(bookInfo[k]['accession'] == successfullyLoanedBooks[j]) {
-                        output += '<tr>';
-                        output += '<td>' + bookInfo[k]['title'] + '</td>';
-                        output += '<td>' + bookInfo[k]['accession'] + '</td>';
-                        output += '</tr>';
+                    setModalContent('Loan Books Status', 'The following book(s) has been successfully loaned:<br>' + output, '<button class="btn btn-danger btn-sm" data-button="print-button">Print Receipt</button>');
 
-                        receipt += '<li>' + bookInfo[k]['title'] + ' [' + bookInfo[k]['accession'] + ']</li>';
-                    }
+                    $('[data-button="print-button"]').click(function() {
+                        var tab = window.open();
+
+                        tab.document.write('<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><title>Binangonan Catholic College</title><style>.block { border: 1px solid #ddd; display: inline-block; font-family: "Helvetica"; font-size: 12px; padding: 10px 15px; width: 200px; } .header >.school-name { font-size: 18px; text-align: center; } .header >.system-type { font-size: 10px; text-align: center; } .body { margin-top: 15px; } .body >.entry-info { text-indent: -15px; padding-left: 15px; } ul { margin-top: 2px; }</style></head><body><div class="block"><div class="header"><div class="school-name">Binangonan Catholic College</div><div class="system-type">Library System</div></div><div class="body"><div class="entry-info"><strong>Borrower ID: </strong>' + borrowerInfo['username'] + '</div><div class="entry-info"><strong>Borrower: </strong>' + borrowerInfo['full_name'] + '</div><div class="entry-info"><strong>Type: </strong>' + borrowerInfo['type'] + '</div><br><br><strong>Borrower Book(s):</strong><ul>' + receipt + '</ul><div class="entry-info"><strong>Date Borrowed: </strong>' + moment().format('MMMM DD, YYYY') + '</div></div></div></body></html>');
+                        tab.print();
+                        tab.close();
+
+                        $('.modal').click(function() {
+                            location.reload();
+                            
+                            $('.modal').modal('hide');
+                        });
+
+                        $('.modal .modal-content').click(function(e) {
+                            e.stopPropagation();
+                        });
+                    });
+                } else {
+                    setModalContent('Loan Books Status', response['message'], '');
                 }
             }
-
-            output += '</tbody></table>';
-
-            setModalContent('Loan Books Status', 'The following book(s) has been successfully loaned: ' + output, '<button class="btn btn-danger btn-sm" data-button="print-button">Print Receipt</button>');
-            openModal('static');
-
-            $('[data-button="print-button"]').click(function() {
-                var tab = window.open();
-
-                tab.document.write('<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><title>Binangonan Catholic College</title><style>.block { border: 1px solid #ddd; display: inline-block; font-family: "Helvetica"; font-size: 12px; padding: 10px 15px; width: 200px; } .header > .school-name { font-size: 18px; text-align: center; } .header > .system-type { font-size: 10px; text-align: center; } .body { margin-top: 15px; } .body > .entry-info { text-indent: -15px; padding-left: 15px; } ul { margin-top: 2px; }</style></head><body><div class="block"><div class="header"><div class="school-name">Binangonan Catholic College</div><div class="system-type">Library System</div></div><div class="body"><div class="entry-info">Borrower ID: <strong>' + borrowerInfo['username'] + '</strong></div><div class="entry-info">Borrower: <strong>' + borrowerInfo['full_name'] + '</strong></div><div class="entry-info">Type: <strong>' + borrowerInfo['type'] + '</strong></div><br><br><strong>Borrower Book(s):</strong><ul>' + receipt + '</ul><div class="entry-info">Date Borrowed: <strong>' + moment().format('MMMM DD, YYYY') + '</strong></div></div></div></body></html>');
-                tab.print();
-                tab.close();
-            });
-        }
+        });
 
         return false;
     });

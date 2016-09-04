@@ -77,7 +77,7 @@
                         <div class="col-sm-6">
                             <div class="form-group">
                                 {!! Form::label('birthDate', 'Birth Date: *') !!}
-                                {!! Form::text('birthDate', $borrower->Birth_Date, ['class' => 'form-control', 'placeholder' => '', 'maxlength' => '10', 'required' => 'required']) !!}
+                                {!! Form::date('birthDate', $borrower->Birth_Date, ['class' => 'form-control', 'placeholder' => '', 'maxlength' => '10', 'required' => 'required']) !!}
                             </div>
                         </div>
                     </div>

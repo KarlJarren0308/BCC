@@ -1,16 +1,17 @@
 $(document).ready(function() {
     $('#books-table').dataTable({
         aoColumnDefs: [
-            { bSearchable: false, bSortable: false, aTargets: [5] }
+            { bSearchable: false, bSortable: false, aTargets: [7] },
+            { bVisible: false, aTargets: [8] }
         ]
     });
 
-    onDataButtonClick('receive-book-button', function() {
+    onDynamicDataButtonClick('receive-book-button', function() {
         var dataVarID = $(this).data('var-id');
         var dataVarPenalty = $(this).data('var-penalty');
 
         setModalLoader();
-        openModal();
+        openModal('static');
 
         $.ajax({
             url: '/receive_books',

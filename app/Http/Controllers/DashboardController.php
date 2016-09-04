@@ -391,7 +391,7 @@ class DashboardController extends Controller
                     session()->flash('flash_message', 'Oops! Failed to delete book. Please refresh the page and try again.');
                 }
 
-                return redirect()->route('dashboard.getManageRecords', $what);
+                return redirect()->route('dashboard.getManageRecords', 'weeding');
 
                 break;
             case 'authors':
@@ -579,6 +579,58 @@ class DashboardController extends Controller
         $data['settings'] = simplexml_load_file($settingsFile);
 
         return view('dashboard.settings', $data);
+    }
+
+    public function postDeleteRecord($what, $id, Request $request) {
+        if(!session()->has('username')) {
+            session()->flash('flash_status', 'danger');
+            session()->flash('flash_message', 'Oops! Please login first.');
+
+            return redirect()->route('cardinal.getIndex');
+        } else {
+            if(session()->get('type') != 'Librarian') {
+                session()->flash('flash_status', 'danger');
+                session()->flash('flash_message', 'Oops! You do not have to privilege to access the dashboard.');
+
+                return redirect()->route('cardinal.getOpac');
+            }
+        }
+
+        $data['id'] = $id;
+
+        switch($what) {
+            case 'barcodes':
+                $query = TblWeeding::insert([
+                    'Accession_Number' => $request->input('reason'),
+                    'Book_ID' => $id,
+                    'Reason' => $request->input('reason'),
+                    'Date_Weeded' => date('Y-m-d')
+                ]);
+
+                if($query) {
+                    return response()->json(['status' => 'success', 'message' => 'Book has been weeded.']);
+                } else {
+                    return response()->json(['status' => 'danger', 'message' => 'Oops! Failed to weed book. Please refresh the page and try again.']);
+                }
+
+                break;
+            case 'books':
+                $query = TblWeeding::insert([
+                    'Book_ID' => $id,
+                    'Reason' => $request->input('reason'),
+                    'Date_Weeded' => date('Y-m-d')
+                ]);
+
+                if($query) {
+                    return response()->json(['status' => 'success', 'message' => 'Book has been weeded.']);
+                } else {
+                    return response()->json(['status' => 'danger', 'message' => 'Oops! Failed to weed book. Please refresh the page and try again.']);
+                }
+
+                break;
+            default:
+                break;
+        }
     }
 
     public function postAddBarcode(Request $request) {
@@ -1215,6 +1267,7 @@ class DashboardController extends Controller
         }
 
         $availableBarcodes = [];
+        $barcodes = [];
 
         $borrower = TblAccounts::where('tbl_accounts.Username', $request->input('borrower'))->where('tbl_accounts.Type', '!=', 'Librarian')
             ->leftJoin('tbl_borrowers', 'tbl_accounts.Owner_ID', '=', 'tbl_borrowers.Borrower_ID')
@@ -1227,35 +1280,43 @@ class DashboardController extends Controller
                 $borrowerName = $borrower->First_Name . ' ' . $borrower->Last_Name;
             }
 
-            $query1 = TblBarcodes::where('Book_ID', $request->input('id'))->where('Status', 'available')->count();
-            $query2 = TblReservations::where('Book_ID', $request->input('id'))->count();
+            $barcodes = $request->input('accessions');
+            $ctr = 0;
 
-            if($query1 - $query2 > 0) {
-                $barcode = $request->input('accession');
-                $query = TblBarcodes::where('tbl_barcodes.Accession_Number', $barcode)->where('tbl_barcodes.Status', 'available')->leftJoin('tbl_loans', 'tbl_barcodes.Accession_Number', '=', 'tbl_loans.Accession_Number')->select('tbl_barcodes.*', DB::raw('count(tbl_loans.Accession_Number) as Loan_Count'))->groupBy('tbl_barcodes.Accession_Number')->orderBy('Loan_Count')->orderBy('tbl_barcodes.Accession_Number')->first();
+            foreach($barcodes as $barcode) {
+                $query1 = TblBarcodes::where('Book_ID', $barcode['id'])->where('Status', 'available')->count();
+                $query2 = TblReservations::where('Book_ID', $barcode['id'])->count();
 
-                if($query) {
-                    $query = TblLoans::insert([
-                        'Accession_Number' => $barcode,
-                        'Username' => $request->input('borrower'),
-                        'Loan_Date_Stamp' => date('Y-m-d'),
-                        'Loan_Time_Stamp' => date('H:i:s')
-                    ]);
+                if($query1 - $query2 > 0) {
+                    $query = TblBarcodes::where('tbl_barcodes.Accession_Number', $barcode['accession'])->where('tbl_barcodes.Status', 'available')->leftJoin('tbl_loans', 'tbl_barcodes.Accession_Number', '=', 'tbl_loans.Accession_Number')->select('tbl_barcodes.*', DB::raw('count(tbl_loans.Accession_Number) as Loan_Count'))->groupBy('tbl_barcodes.Accession_Number')->orderBy('Loan_Count')->orderBy('tbl_barcodes.Accession_Number')->first();
 
                     if($query) {
-                        $query = TblBarcodes::where('Accession_Number', $barcode)->update([
-                            'Status' => 'on-loan'
+                        $query = TblLoans::insert([
+                            'Accession_Number' => $barcode['accession'],
+                            'Username' => $request->input('borrower'),
+                            'Loan_Date_Stamp' => date('Y-m-d'),
+                            'Loan_Time_Stamp' => date('H:i:s')
                         ]);
 
-                        return response()->json(['status' => 'Success', 'message' => 'Loan Successful. You may now hand the book with an accession number of C' . sprintf('%04d', $barcode) . ' to the borrower, ' . $borrowerName . '.', 'data' => ['barcode' => $barcode, 'borrower' => $borrowerName]]);
-                    } else {
-                        return response()->json(['status' => 'Failed', 'message' => 'Oops! Failed to loan book.']);
+                        if($query) {
+                            $query = TblBarcodes::where('Accession_Number', $barcode['accession'])->update([
+                                'Status' => 'on-loan'
+                            ]);
+
+                            if($query) {
+                                array_push($availableBarcodes, $barcode['accession']);
+
+                                $ctr++;
+                            }
+                        }
                     }
-                } else {
-                    return response()->json(['status' => 'Failed', 'message' => 'Oops! This accession number has been deleted.']);
                 }
+            }
+
+            if($ctr > 0) {
+                return response()->json(['status' => 'Success', 'message' => 'Loan Successful. You may now hand the book(s) to the borrower, ' . $borrowerName . '.', 'data' => ['barcodes' => $availableBarcodes, 'borrower' => $borrowerName]]);
             } else {
-                return response()->json(['status' => 'Failed', 'message' => 'Oops! No more available copies.']);
+                return response()->json(['status' => 'Failed', 'message' => 'Oops! Failed to loan book.']);
             }
         } else {
             return response()->json(['status' => 'Failed', 'message' => 'Oops! Borrower doesn\'t exist. Please refresh the page and try again.']);

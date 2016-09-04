@@ -93,7 +93,7 @@
                             <td class="text-center">
                                 @if($item->Weeding_Status == 'pending')
                                     <a href="{{ route('dashboard.getRecoverBook', $item->Book_ID) }}" class="btn btn-info btn-xs">Recover</a>
-                                    <button data-button="delete-button" data-var-id="{{ $item->Book_ID }}" class="btn btn-primary btn-xs">Delete</button>
+                                    <a href="{{ route('dashboard.getDeleteRecord', ['books', $item->Book_ID]) }}" class="btn btn-danger btn-xs">Delete</a>
                                 @endif
                             </td>
                         </tr>

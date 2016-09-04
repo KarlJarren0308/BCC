@@ -41,6 +41,7 @@ Route::post('receive_books', ['as' => 'dashboard.postReceiveBooks', 'uses' => 'D
 Route::post('add_record/{what}', ['as' => 'dashboard.postAddRecord', 'uses' => 'DashboardController@postAddRecord']);
 Route::post('generate_barcode', ['as' => 'dashboard.postAddBarcode', 'uses' => 'DashboardController@postAddBarcode']);
 Route::post('edit_record/{what}/{id}', ['as' => 'dashboard.postEditRecord', 'uses' => 'DashboardController@postEditRecord']);
+Route::post('delete_record/{what}/{id}', ['as' => 'dashboard.postDeleteRecord', 'uses' => 'DashboardController@postDeleteRecord']);
 Route::post('generate_report/{what}', ['as' => 'dashboard.postGenerateReport', 'uses' => 'DashboardController@postGenerateReport']);
 Route::post('system_settings/save', ['as' => 'dashboard.postSystemSettings', 'uses' => 'DashboardController@postSystemSettings']);
 Route::post('force_change_password/{what}/{id}', ['as' => 'dashboard.postChangePassword', 'uses' => 'DashboardController@postChangePassword']);

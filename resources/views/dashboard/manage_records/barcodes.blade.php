@@ -115,7 +115,8 @@
                                     <td>{{ ucfirst($barcode->Status) }}</td>
                                     <td class="text-center">
                                         @if(session()->has('username'))
-                                            <a href="{{ route('dashboard.getDeleteRecord', ['barcodes', $barcode->Accession_Number]) }}" class="btn btn-danger btn-xs">Delete</a>
+                                            <!-- <a href="{{ route('dashboard.getDeleteRecord', ['barcodes', $barcode->Accession_Number]) }}" class="btn btn-danger btn-xs">Delete</a> -->
+                                            <button data-button="delete-button" data-var-id="{{ $barcode->Book_ID }}" data-var-accession="{{ $barcode->Accession_Number }}" class="btn btn-danger btn-xs">Weed Book</button>
                                         @endif
                                     </td>
                                 </tr>

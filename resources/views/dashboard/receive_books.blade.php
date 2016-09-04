@@ -123,6 +123,7 @@
                         <th>Author(s)</th>
                         <th>Penalty</th>
                         <th width="15%"></th>
+                        <th>Borrower ID</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -221,6 +222,7 @@
                                     @endif
                                 @endif
                             </td>
+                            <td>{{ $loan->Username }}</td>
                         </tr>
                     @endforeach
                 </tbody>
