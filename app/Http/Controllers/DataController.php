@@ -102,7 +102,7 @@ class DataController extends Controller
 
                 foreach($xml as $item) {
                     if($item['name'] == 'loan_limit') {
-                        $data['loan_limit'] = $item['value'];
+                        $data['loan_limit'] = (int) $item['value'];
 
                         break;
                     }

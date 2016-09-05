@@ -50,6 +50,7 @@ $(document).ready(function() {
                 var output = '';
                 var name = '';
                 var onHand = 0;
+                var onL = 0;
 
                 if(response['status'] == 'Success') {
                     if(response['data']['borrower']['Middle_Name'].length > 1) {
@@ -59,12 +60,12 @@ $(document).ready(function() {
                     }
 
                     for(var i = 0; i < response['data']['loan_history'].length; i++) {
-                        if(response['data']['loan_history']['Loan_Status'] == 'active') {
+                        if(response['data']['loan_history'][i]['Loan_Status'] == 'active') {
                             onHand++;
                         }
                     }
 
-                    onLoans = response['data']['loan_history'].length;
+                    onL = response['data']['loan_history'].length;
 
                     output += '<div class="item" data-value="' + response['data']['borrower']['Username'] + '">';
                     output += '<div class="item-body">';
@@ -78,11 +79,11 @@ $(document).ready(function() {
                     output += '</tr>';
                     output += '<tr>';
                     output += '<td class="text-right" width="80%">Number of books loaned:</td>';
-                    output += '<td>' + onLoans + '</td>';
+                    output += '<td>' + onL + '</td>';
                     output += '</tr>';
                     output += '</tbody>';
                     output += '</table>';
-                    output += '<div class="text-right"><button class="btn btn-danger btn-xs" data-button="select-borrower-button" data-var-username="' + response['data']['borrower']['Username'] + '" data-var-type="' + response['data']['borrower']['Type'] + '" data-var-name="' + name + '">Select</button></div>';
+                    output += '<div class="text-right"><button class="btn btn-danger btn-xs" data-button="select-borrower-button" data-var-username="' + response['data']['borrower']['Username'] + '" data-var-type="' + response['data']['borrower']['Type'] + '" data-var-name="' + name + '" data-var-onloans="' + onL + '">Select</button></div>';
                     output += '</div>';
                     output += '</div>';
                 } else {
@@ -97,6 +98,8 @@ $(document).ready(function() {
                     $('[data-button="select-borrower-button"]').click(function() {
                         $(this).parent().parent().parent().remove();
                         $('#borrower-block').html('<div class="list-group-item"><h3 class="list-group-item-heading">' + $(this).data('var-name') + '</h3><div>Borrower ID: <em>' + $(this).data('var-username') + '</em></div><div>Type: <em>' + $(this).data('var-type') + '</em></div></div>');
+
+                        onLoans = $(this).data('var-onloans');
 
                         borrowerInfo = {
                             username: $(this).data('var-username'),
@@ -243,6 +246,9 @@ $(document).ready(function() {
                 output += '</tbody></table>';
 
                 if(borrowerInfo['type'] == 'Student') {
+                    console.log(onLoans);
+                    console.log(loanLimit);
+
                     if(onLoans < loanLimit) {
                         if(onLoans + bookInfo.length <= loanLimit) {
                             setModalContent('Loan Status', output, '<button class="btn btn-danger" data-button="yes-button">Yes</button>&nbsp;<button class="btn btn-default" data-button="no-button">No</button>');
