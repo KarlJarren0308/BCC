@@ -141,6 +141,8 @@ class CardinalController extends Controller
     }
 
     public function postAttendance(Request $request) {
+        // TODO: Modify this function if the system should accept multiple attendance records
+        
         $query = TblAttendances::where('Username', $request->input('username'))->where('Date_Stamp', date('Y-m-d'))->first();
 
         if(!$query) {
