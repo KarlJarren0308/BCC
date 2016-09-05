@@ -141,27 +141,36 @@ class CardinalController extends Controller
     }
 
     public function postAttendance(Request $request) {
-        // TODO: Modify this function if the system should accept multiple attendance records
-        
-        $query = TblAttendances::where('Username', $request->input('username'))->where('Date_Stamp', date('Y-m-d'))->first();
+        $query = TblAccounts::where('tbl_accounts.Username', $request->input('username'))->where('tbl_accounts.Type', '!=', 'Librarian')
+            ->leftJoin('tbl_borrowers', 'tbl_accounts.Owner_ID', '=', 'tbl_borrowers.Borrower_ID')
+        ->first();
 
-        if(!$query) {
-            $query = TblAttendances::insert([
+        if($query) {
+            $attendance = TblAttendances::insert([
                 'Username' => $request->input('username'),
-                'Date_Stamp' => date('Y-m-d')
+                'Date_Stamp' => date('Y-m-d'),
+                'Time_Stamp' => date('H:i:s')
             ]);
 
-            if($query) {
+            if($attendance) {
+                if(strlen($query->Middle_Name) > 1) {
+                    $name = $query->First_Name . ' ' . substr($query->Middle_Name, 0, 1) . '. ' . $query->Last_Name;
+                } else {
+                    $name = $query->First_Name . ' ' . $query->Last_Name;
+                }
+
                 session()->flash('flash_status', 'success');
-                session()->flash('flash_message', 'Oops! Your attendance has been recorded.');
+                session()->flash('flash_message', $name . '\'s attendance has been recorded.');
             } else {
                 session()->flash('flash_status', 'danger');
                 session()->flash('flash_message', 'Oops! Failed to record attendance.');
             }
         } else {
             session()->flash('flash_status', 'danger');
-            session()->flash('flash_message', 'Oops! You already have an attendance for today.');
+            session()->flash('flash_message', 'Oops! Borrower not found.');
         }
+
+        return redirect()->route('cardinal.getAttendance');
     }
 
     public function postSearchOpac(Request $request) {
