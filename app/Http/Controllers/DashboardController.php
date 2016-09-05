@@ -1267,7 +1267,6 @@ class DashboardController extends Controller
         }
 
         $availableBarcodes = [];
-        $barcodes = [];
 
         $borrower = TblAccounts::where('tbl_accounts.Username', $request->input('borrower'))->where('tbl_accounts.Type', '!=', 'Librarian')
             ->leftJoin('tbl_borrowers', 'tbl_accounts.Owner_ID', '=', 'tbl_borrowers.Borrower_ID')
@@ -1405,31 +1404,54 @@ class DashboardController extends Controller
             }
         }
 
-        $query = TblLoans::where('Loan_ID', $request->input('id'))->update([
-            'Loan_Status' => 'inactive'
-        ]);
+        $availableBarcodes = [];
+        $ctr = 0;
 
-        if($query) {
-            $query = TblReceives::insert([
-                'Receive_Date_Stamp' => date('Y-m-d'),
-                'Receive_Time_Stamp' => date('H:i:s'),
-                'Reference_ID' => $request->input('id'),
-                'Penalty' => $request->input('penalty')
+        $infos = $request->input('infos');
+
+        foreach($infos as $info) {
+            $query = TblLoans::where('Loan_ID', $info['id'])->update([
+                'Loan_Status' => 'inactive'
             ]);
 
             if($query) {
-                $query = TblLoans::where('Loan_ID', $request->input('id'))->first();
+                $thisLoan = TblLoans::where('Loan_ID', $info['id'])->first();
 
-                TblBarcodes::where('Accession_Number', $query->Accession_Number)->update([
-                    'Status' => 'available'
+                if($info['condition'] == 'lost') {
+                    $penalty = 0;
+                } else {
+                    $penalty = app('App\Http\Controllers\DataController')->computePenalty($thisLoan->Loan_Date_Stamp . ' ' . $thisLoan->Loan_Time_Stamp);
+                }
+
+                $query = TblReceives::insert([
+                    'Receive_Date_Stamp' => date('Y-m-d'),
+                    'Receive_Time_Stamp' => date('H:i:s'),
+                    'Reference_ID' => $info['id'],
+                    'Penalty' => $penalty
                 ]);
 
-                return response()->json(['status' => 'Success', 'message' => 'Receive Successful.']);
-            } else {
-                return response()->json(['status' => 'Failed', 'message' => 'Oops! Failed to receive book. Please refresh the page and try again.']);
+                if($query) {
+                    TblBarcodes::where('Accession_Number', $info['accession'])->update([
+                        'Condition' => $info['condition'],
+                        'Status' => 'available'
+                    ]);
+
+                    if($query) {
+                        array_push($availableBarcodes, [
+                            'accession' => $info['accession'],
+                            'penalty' => $penalty
+                        ]);
+
+                        $ctr++;
+                    }
+                }
             }
+        }
+
+        if($ctr > 0) {
+            return response()->json(['status' => 'Success', 'message' => 'Receive Successful.', 'data' => ['barcodes' => $availableBarcodes]]);
         } else {
-            return response()->json(['status' => 'Failed', 'message' => 'Oops! Failed to receive book. Please refresh the page and try again.']);
+            return response()->json(['status' => 'Failed', 'message' => 'Oops! Failed to receive book.']);
         }
     }
 

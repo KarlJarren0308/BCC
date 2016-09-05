@@ -77,10 +77,6 @@ $(document).ready(function() {
                     output += '<td class="text-right" width="80%">Number of books on hand:</td>';
                     output += '<td>' + onHand + '</td>';
                     output += '</tr>';
-                    output += '<tr>';
-                    output += '<td class="text-right" width="80%">Number of books loaned:</td>';
-                    output += '<td>' + onL + '</td>';
-                    output += '</tr>';
                     output += '</tbody>';
                     output += '</table>';
                     output += '<div class="text-right"><button class="btn btn-danger btn-xs" data-button="select-borrower-button" data-var-username="' + response['data']['borrower']['Username'] + '" data-var-type="' + response['data']['borrower']['Type'] + '" data-var-name="' + name + '" data-var-onloans="' + onL + '">Select</button></div>';

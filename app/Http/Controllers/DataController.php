@@ -9,6 +9,7 @@ use App\Http\Requests;
 use App\TblAccounts;
 use App\TblBarcodes;
 use App\TblBooks;
+use App\TblHolidays;
 use App\TblBounds;
 use App\TblLoans;
 use App\TblReceives;
@@ -19,6 +20,37 @@ date_default_timezone_set('Asia/Manila');
 
 class DataController extends Controller
 {
+    private function isHoliday($date) {
+        $date = date('Y-m-d', strtotime($date));
+        $holidays = TblHolidays::get();
+
+        if($holidays) {
+            foreach($holidays as $holiday) {
+                if($date == date('Y-m-d', strtotime($holiday->Date_Stamp))) {
+                    return true;
+                }
+            }
+        }
+
+        return false;
+    }
+
+    private function isWeekend($date) {
+        $date = date('l', strtotime($date));
+
+        if($date == 'Sunday') {
+            return true;
+        } else if($date == 'Saturday') {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    private function nextDay($date) {
+        return date('Y-m-d', strtotime('+1 day', strtotime($date)));
+    }
+
     public function initialize(Request $request) {
         $this->checkSettings();
 
@@ -27,8 +59,63 @@ class DataController extends Controller
 
     public function checkSettings() {
         if(!Storage::has('settings.xml')) {
-            Storage::put('settings.xml', '<?xml version="1.0" encoding="UTF-8"?><settings><setting name="reservation_count" value="1" /><setting name="reservation_period" value="2" /><setting name="loan_period" value="1" /><setting name="opac_version" value="v1.0" /></settings>');
+            Storage::put('settings.xml', '<?xml version="1.0" encoding="UTF-8"?><settings><setting name="reservation_count" value="1"/><setting name="reservation_period" value="1"/><setting name="loan_limit" value="1"/><setting name="loan_period" value="1"/><setting name="penalty_per_day" value="10"/><setting name="opac_version" value="v1.0"/></settings>');
         }
+    }
+
+    public function computePenalty($dateLoaned) {
+        $loanPeriod = 1;
+        $penaltyPerDay = 10;
+
+        $this->checkSettings();
+
+        $settingsFile = storage_path('app/public') . '/settings.xml';
+        $xml = simplexml_load_file($settingsFile);
+
+        foreach($xml as $item) {
+            if($item['name'] == 'loan_period') {
+                $loanPeriod = $item['value'];
+            } else if($item['name'] == 'penalty_per_day') {
+                $penaltyPerDay = $item['value'];
+            }
+        }
+
+        $dateLoaned = date('Y-m-d H:i:s', strtotime($dateLoaned));
+        $datePenaltyStarts = date('Y-m-d H:i:s', strtotime('+' . $loanPeriod . ' days', strtotime($dateLoaned)));
+        $daysCount = ceil(strtotime($datePenaltyStarts) - strtotime($dateLoaned)) / 86400;
+        
+        for($i = 1; $i <= $daysCount; $i++) {
+            $currentDate = date('Y-m-d H:i:s', strtotime('+' . $i . ' days', strtotime($dateLoaned)));
+
+            if($this->isWeekend($currentDate)) {
+                $daysCount++;
+                $datePenaltyStarts = $this->nextDay($datePenaltyStarts);
+            } else {
+                if($this->isHoliday($currentDate)) {
+                    $daysCount++;
+                    $datePenaltyStarts = $this->nextDay($datePenaltyStarts);
+                }
+            }
+        }
+
+        $dateReturned = date('Y-m-d H:i:s');
+        $daysCount = ceil(strtotime($dateReturned) - strtotime($datePenaltyStarts)) / 86400;
+
+        for($j = 1; $j <= $daysCount; $j++) {
+            $currentDate = date('Y-m-d H:i:s', strtotime('+' . $i . ' days', strtotime($datePenaltyStarts)));
+
+            if($this->isWeekend($currentDate)) {
+                $daysCount++;
+                $datePenaltyStarts = $this->nextDay($datePenaltyStarts);
+            } else {
+                if($this->isHoliday($currentDate)) {
+                    $daysCount++;
+                    $datePenaltyStarts = $this->nextDay($datePenaltyStarts);
+                }
+            }
+        }
+
+        return ceil((strtotime($dateReturned) - strtotime($datePenaltyStarts)) / 86400) * (double) $penaltyPerDay;
     }
 
     public function postRequestData($what, Request $request) {
