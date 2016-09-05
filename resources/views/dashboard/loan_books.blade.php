@@ -155,7 +155,7 @@
             <div class="row">
                 <div class="col-sm-12">
                     <div class="text-right">
-                        <button class="btn btn-danger" data-button="loan-button" disabled>Loan Book to Borrower</button>
+                        <button class="btn btn-danger btn-lg" data-button="loan-button" disabled>Loan Book(s) to Borrower</button>
                     </div>
                 </div>
             </div>

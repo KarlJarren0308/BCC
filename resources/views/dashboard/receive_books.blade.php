@@ -4,6 +4,43 @@
     <meta name="csrf-token" content="{{ csrf_token() }}">
 @stop
 
+@section('pre_ref')
+    <style>
+        .crank-loader {
+            display: none;
+            margin-top: 100px;
+            text-align: center;
+        }
+
+        #search-borrower-list,
+        #search-book-list {
+            margin: 25px 0;
+            overflow-y: scroll;
+            max-height: 300px;
+        }
+
+        #book-list-crank {
+            margin-top: 25px;
+        }
+
+        #search-borrower-list > .item,
+        #search-book-list > .item {
+            background: #eee;
+            border-left: 5px solid #d9534f;
+            margin-bottom: 2px;
+        }
+
+        #search-borrower-list > .item > .item-body,
+        #search-book-list > .item > .item-body {
+            padding: 1rem 1.5rem;
+        }
+
+        #search-book-list > .item:nth-child(even) {
+            background: white;
+        }
+    </style>
+@stop
+
 @section('content')
     <?php
         function isHoliday($date, $holidays) {
@@ -109,124 +146,54 @@
                     <h1 class="page-header">Receive Books</h1>
                 </div>
             </div>
-            <div class="text-left gap-bottom">
-                @include('partials.flash_alert')
+            <div class="row">
+                <div class="col-sm-4">
+                    <div class="col-sm-12">
+                        <label for="">Search Borrower:</label>
+                    </div>
+                    <div class="col-sm-12">
+                        <form class="form-inline" data-form="search-borrower-form">
+                            <div class="form-group">
+                                <input type="text" name="searchKeyword" class="form-control" required autofocus>
+                            </div>
+                            <div class="form-group">
+                                <input type="submit" class="btn btn-danger" value="Search">
+                            </div>
+                        </form>
+                    </div>
+                    <div id="borrower-list-crank" class="crank-loader">
+                        <span class="fa fa-spinner fa-pulse fa-4x" style="color: #d9534f;"></span>
+                        <h3 style="color: #d9534f; margin: 10px 0;">Searching...</h3>
+                    </div>
+                    <div id="search-borrower-list" class="col-sm-12"></div>
+                </div>
+                <div class="col-sm-4">
+                    <h3 style="margin-top: 0;">Loaned Books:</h3>
+                    <div id="book-list-crank" class="crank-loader">
+                        <span class="fa fa-spinner fa-pulse fa-4x" style="color: #d9534f;"></span>
+                        <h3 style="color: #d9534f; margin: 10px 0;">Searching...</h3>
+                    </div>
+                    <div id="search-book-list" class="col-sm-12"></div>
+                </div>
+                <div class="col-sm-4">
+                    <div class="well">
+                        <h3 style="margin-top: 0;">Borrower</h3>
+                        <div id="borrower-block" class="list-group beautify"></div>
+                    </div>
+                    <div class="well">
+                        <h3 style="margin-top: 0;">Cart</h3>
+                        <div id="books-block" class="list-group beautify"></div>
+                    </div>
+                    <br>
+                </div>
             </div>
-            <table id="books-table" class="table table-bordered table-striped">
-                <thead>
-                    <tr>
-                        <th>Accession Number</th>
-                        <th>Title</th>
-                        <th>Edition</th>
-                        <th>Date Borrowed</th>
-                        <th>Borrowed By</th>
-                        <th>Author(s)</th>
-                        <th>Penalty</th>
-                        <th width="15%"></th>
-                        <th>Borrower ID</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @foreach($loans as $loan)
-                        <tr>
-                            <td>{{ 'C' . sprintf('%04d', $loan->Accession_Number) }}</td>
-                            <td>{{ $loan->Title }}</td>
-                            <td>{{ $loan->Edition }}</td>
-                            <td>{{ date('F d, Y', strtotime($loan->Loan_Date_Stamp)) }}</td>
-                            <td>
-                                @if(strlen($loan->Middle_Name) > 1)
-                                    {{ $loan->First_Name . ' ' . substr($loan->Middle_Name, 0, 1) . '. ' . $loan->Last_Name }}
-                                @else
-                                    {{ $loan->First_Name . ' ' . $loan->Last_Name }}
-                                @endif
-                            </td>
-                            <td>
-                                <?php $isFirst = true; ?>
-                                @foreach($bounds as $bound)
-                                    @if($bound->Book_ID == $loan->Book_ID)
-                                        @if($isFirst)
-                                            <?php $isFirst = false; ?>
-                                        @else
-                                            <br>
-                                        @endif
-
-                                        @if(strlen($bound->Middle_Name) > 1)
-                                            {{ $bound->First_Name . ' ' . substr($bound->Middle_Name, 0, 1) . '. ' . $bound->Last_Name }}
-                                        @else
-                                            {{ $bound->First_Name . ' ' . $bound->Last_Name }}
-                                        @endif
-                                    @endif
-                                @endforeach
-                            </td>
-                            <?php
-                                // Penalty Computation
-                                $dateLoaned = $loan->Loan_Date_Stamp . ' ' . $loan->Loan_Time_Stamp;
-                                $dayEnd = date('Y-m-d H:i:s', strtotime('+1 day', strtotime($dateLoaned)));
-                                $dayStart = strtotime($dateLoaned);
-                                $graceDays = ceil((strtotime($dayEnd) - $dayStart) / 86400);
-                                $i = 1;
-
-                                while($i <= $graceDays) {
-                                    $markedDate = date('Y-m-d H:i:s', strtotime('+' . $i . ' days', strtotime($dateLoaned)));
-
-                                    if(isWeekend($markedDate)) {
-                                        $graceDays++;
-                                        $dayEnd = nextDay($dayEnd);
-                                    } else {
-                                        if(isHoliday($markedDate, $holidays)) {
-                                            $graceDays++;
-                                            $dayEnd = nextDay($dayEnd);
-                                        }
-                                    }
-
-                                    $i++;
-                                }
-
-                                $newDayEnd = $dayEnd;
-                                $newGraceDays = ceil((strtotime(date('Y-m-d H:i:s')) - strtotime($newDayEnd)) / 86400);
-                                $j = 1;
-
-                                while($j <= $newGraceDays) {
-                                    $markedDate = date('Y-m-d H:i:s', strtotime('+' . $j . ' days', strtotime($newDayEnd)));
-
-                                    if(isWeekend($markedDate)) {
-                                        $newGraceDays++;
-                                        $newDayEnd = nextDay($newDayEnd);
-                                    } else {
-                                        if(isHoliday($markedDate, $holidays)) {
-                                            $newGraceDays++;
-                                            $newDayEnd = nextDay($newDayEnd);
-                                        }
-                                    }
-
-                                    $j++;
-                                }
-
-                                $totalPenalty = floor((strtotime(date('Y-m-d H:i:s')) - strtotime($newDayEnd)) / 86400) * 5;
-                            ?>
-                            <td>
-                                @if($loan->Loan_Status == 'active')
-                                    &#8369; {{ ($totalPenalty > 0 ? $totalPenalty : 0) }}.00
-                                @else
-                                    @foreach($receives as $receive)
-                                        @if($loan->Loan_ID == $receive->Reference_ID)
-                                            &#8369; {{ $receive->Penalty }}.00
-                                        @endif
-                                    @endforeach
-                                @endif
-                            </td>
-                            <td class="text-center">
-                                @if(session()->has('username'))
-                                    @if($loan->Loan_Status == 'active')
-                                        <button data-button="receive-book-button" data-var-id="{{ $loan->Loan_ID }}" data-var-penalty="{{ ($totalPenalty > 0 ? $totalPenalty : 0) }}" class="btn btn-primary btn-xs">Receive Book</button>
-                                    @endif
-                                @endif
-                            </td>
-                            <td>{{ $loan->Username }}</td>
-                        </tr>
-                    @endforeach
-                </tbody>
-            </table>
+            <div class="row">
+                <div class="col-sm-12">
+                    <div class="text-right">
+                        <button class="btn btn-danger btn-lg" data-button="receive-button" disabled>Receive Book(s) from Borrower</button>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
     <div class="modal fade">

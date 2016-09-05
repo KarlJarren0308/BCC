@@ -6,6 +6,18 @@ function deactivateLoanButton() {
     $('[data-button="loan-button"]').prop('disabled', true);
 }
 
+function removeByAttr(arr, attr, value) {
+    var i = arr.length;
+
+    while(i--) {
+        if(arr[i] && arr[i].hasOwnProperty(attr) && (arguments.length > 2 && arr[i][attr] === value)) {
+            arr.splice(i, 1);
+        }
+    }
+
+    return arr;
+}
+
 function padZeros(number, length) {
     var output = number.toString();
 
@@ -17,14 +29,6 @@ function padZeros(number, length) {
 }
 
 $(document).ready(function() {
-    var arg0 = false;
-    var arg1 = false;
-    var bookTitle = '';
-    var bookStatus = '';
-    var borrower = '';
-    var borrowerType = '';
-    var borrowerID = '';
-    var bookID = '';
     var onLoans = 0;
     var loanLimit = 1;
     var borrowerInfo = {};
@@ -99,9 +103,6 @@ $(document).ready(function() {
                             type: $(this).data('var-type'),
                             full_name: $(this).data('var-name')
                         };
-
-                        console.log($.isEmptyObject(borrowerInfo));
-                        console.log(bookInfo.length);
 
                         if(!$.isEmptyObject(borrowerInfo) && bookInfo.length > 0) {
                             activateLoanButton();
@@ -202,18 +203,15 @@ $(document).ready(function() {
 
                     $('[data-button="add-book-button"]').click(function() {
                         $(this).parent().parent().parent().remove();
-                        $('#books-block').append('<div class="list-group-item"><h3 class="list-group-item-heading">' + $(this).data('var-title') + '</h3><div>Accession Number: <em>C' + padZeros($(this).data('var-accession'), 4) + '</em></div><div>Status: <em>' + $(this).data('var-status') + '</em></div></div>');
+                        $('#books-block').append('<div class="list-group-item"><h3 class="list-group-item-heading">' + $(this).data('var-title') + '</h3><div>Accession Number: <em>C' + padZeros($(this).data('var-accession'), 4) + '</em></div><div>Status: <em>' + $(this).data('var-status') + '</em></div><div class="text-right"><button class="btn btn-danger btn-xs" data-button="remove-from-cart-button" data-var-id="' + $(this).data('var-id') + '">Remove</button></div></div>');
                         $('[data-form="search-book-form"] input[name="searchKeyword"]').val('').focus();
 
                         bookInfo.push({
                             id: $(this).data('var-id'),
                             accession: $(this).data('var-accession'),
                             title: $(this).data('var-title'),
-                            status: $(this).data('var-status')
+                            status: $(this).data('var-status'),
                         });
-
-                        console.log($.isEmptyObject(borrowerInfo));
-                        console.log(bookInfo.length);
 
                         if(!$.isEmptyObject(borrowerInfo) && bookInfo.length > 0) {
                             activateLoanButton();
@@ -316,7 +314,7 @@ $(document).ready(function() {
 
                         $('.modal').click(function() {
                             location.reload();
-                            
+
                             $('.modal').modal('hide');
                         });
 
@@ -335,5 +333,17 @@ $(document).ready(function() {
 
     onDynamicDataButtonClick('no-button', function() {
         closeModal();
+    });
+
+    onDynamicDataButtonClick('remove-from-cart-button', function() {
+        $(this).parent().parent().remove();
+
+        removeByAttr(bookInfo, 'id', $(this).data('var-id'));
+
+        if(!$.isEmptyObject(borrowerInfo) && bookInfo.length > 0) {
+            activateLoanButton();
+        } else {
+            deactivateLoanButton();
+        }
     });
 });

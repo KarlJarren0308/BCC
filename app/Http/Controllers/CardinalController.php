@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 
 use App\Http\Requests;
 
+use App\TblAttendances;
 use App\TblAccounts;
 use App\TblBooks;
 use App\TblBorrowers;
@@ -28,6 +29,10 @@ class CardinalController extends Controller
         }
 
         return view('cardinal.index');
+    }
+
+    public function getAttendance() {
+        return view('cardinal.attendance');
     }
 
     public function getAccountInformation($username = null) {
@@ -133,6 +138,28 @@ class CardinalController extends Controller
         session()->flush();
 
         return redirect()->route('cardinal.getIndex');
+    }
+
+    public function postAttendance(Request $request) {
+        $query = TblAttendances::where('Username', $request->input('username'))->where('Date_Stamp', date('Y-m-d'))->first();
+
+        if(!$query) {
+            $query = TblAttendances::insert([
+                'Username' => $request->input('username'),
+                'Date_Stamp' => date('Y-m-d')
+            ]);
+
+            if($query) {
+                session()->flash('flash_status', 'success');
+                session()->flash('flash_message', 'Oops! Your attendance has been recorded.');
+            } else {
+                session()->flash('flash_status', 'danger');
+                session()->flash('flash_message', 'Oops! Failed to record attendance.');
+            }
+        } else {
+            session()->flash('flash_status', 'danger');
+            session()->flash('flash_message', 'Oops! You already have an attendance for today.');
+        }
     }
 
     public function postSearchOpac(Request $request) {

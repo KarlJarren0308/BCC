@@ -61,7 +61,11 @@ class DataController extends Controller
 
                 $barcode = TblBarcodes::orderBy('Accession_Number', 'desc')->first();
 
-                return response()->json(['status' => 'Success', 'data' => $barcode->Accession_Number]);
+                if($barcode) {
+                    return response()->json(['status' => 'Success', 'data' => $barcode->Accession_Number]);
+                } else {
+                    return response()->json(['status' => 'Success', 'data' => 0]);
+                }
 
                 break;
             case 'e22d6930d5a3d304e7f190fc75c3d43c':
@@ -109,12 +113,23 @@ class DataController extends Controller
                     $data['authors'] = TblBounds::where('tbl_bounds.Book_ID', $data['book']['Book_ID'])->join('tbl_authors', 'tbl_bounds.Author_ID', '=', 'tbl_authors.Author_ID')->get();
 
                     if($data['book']) {
-                        return response()->json(['status' => 'Success', 'message' => ' book(s) found.', 'data' => $data]);
+                        return response()->json(['status' => 'Success', 'message' => 'Some books found.', 'data' => $data]);
                     } else {
                         return response()->json(['status' => 'Failed', 'message' => 'No results found.']);
                     }
                 } else {
                     return response()->json(['status' => 'Failed', 'message' => 'Invalid Accession Number.']);
+                }
+
+                break;
+            case '64d808802eda41de389118b03d15ccb9':
+                // Request Loaned Book Information
+                $data['loan_history'] = TblLoans::where('Username', $request->input('searchKeyword'))->where('Loan_Status', 'active')->join('tbl_barcodes', 'tbl_loans.Accession_Number', '=', 'tbl_barcodes.Accession_Number')->join('tbl_books', 'tbl_barcodes.Book_ID', '=', 'tbl_books.Book_ID')->get();
+
+                if($data['loan_history']) {
+                    return response()->json(['status' => 'Success', 'message' => 'Some books found.', 'data' => $data]);
+                } else {
+                    return response()->json(['status' => 'Failed', 'message' => 'No results found.']);
                 }
 
                 break;

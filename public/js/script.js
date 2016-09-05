@@ -91,8 +91,5 @@ function validateDataForm(dataForm, validations) {
  */
 
 function logAjaxError(arg0, arg1, ar2) {
-    var tab = window.open();
-
-    tab.document.write(arg0.responseText);
     console.log(arg0.responseText);
 }

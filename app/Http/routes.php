@@ -12,6 +12,7 @@
 */
 
 Route::get('/', ['as' => 'cardinal.getIndex', 'uses' => 'CardinalController@getIndex']);
+Route::get('attendance', ['as' => 'cardinal.getAttendance', 'uses' => 'CardinalController@getAttendance']);
 Route::get('logout', ['as' => 'cardinal.getLogout', 'uses' => 'CardinalController@getLogout']);
 Route::get('opac', ['as' => 'cardinal.getOpac', 'uses' => 'CardinalController@getOpac']);
 Route::get('my_reservations', ['as' => 'cardinal.getReservations', 'uses' => 'CardinalController@getReservations']);
@@ -31,6 +32,7 @@ Route::get('delete_record/{what}/{id}', ['as' => 'dashboard.getDeleteRecord', 'u
 Route::get('recover_book/{id}', ['as' => 'dashboard.getRecoverBook', 'uses' => 'DashboardController@getRecoverBook']);
 Route::get('force_change_password/{what}/{id}', ['as' => 'dashboard.getChangePassword', 'uses' => 'DashboardController@getChangePassword']);
 
+Route::post('attendance', ['as' => 'cardinal.postAttendance', 'uses' => 'CardinalController@postAttendance']);
 Route::post('opac/search', ['as' => 'cardinal.postSearchOpac', 'uses' => 'CardinalController@postSearchOpac']);
 Route::post('opac/reserve', ['as' => 'cardinal.postReserve', 'uses' => 'CardinalController@postReserve']);
 Route::post('opac/cancel_reservation', ['as' => 'cardinal.postCancelReservation', 'uses' => 'CardinalController@postCancelReservation']);
