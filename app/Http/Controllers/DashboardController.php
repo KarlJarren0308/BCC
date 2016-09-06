@@ -993,7 +993,8 @@ class DashboardController extends Controller
                             'Telephone_Number' => $request->input('telephoneNumber'),
                             'Cellphone_Number' => $request->input('cellphoneNumber'),
                             'Year_Level' => $request->input('yearLevel'),
-                            'Course' => $request->input('course')
+                            'Course' => $request->input('course'),
+                            'Status' => $request->input('status')
                         ]);
 
                         if($borrowerID) {
@@ -1270,7 +1271,8 @@ class DashboardController extends Controller
                             'Telephone_Number' => $request->input('telephoneNumber'),
                             'Cellphone_Number' => $request->input('cellphoneNumber'),
                             'Year_Level' => $request->input('yearLevel'),
-                            'Course' => $request->input('course')
+                            'Course' => $request->input('course'),
+                            'Status' => $request->input('status')
                         ]);
 
                         if($query1 || $query2) {

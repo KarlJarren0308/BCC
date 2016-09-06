@@ -161,19 +161,29 @@
                                     {!! Form::label('course', 'Course: *') !!}
                                     <select name="course" id="course" class="form-control" required>
                                         <option value="" selected disabled>Select an option...</option>
-                                        <option value="Bachelor of Science in Information Technology">Bachelor of Science in Accountancy</option>
-                                        <option value="Bachelor of Science in Information Technology">Bachelor of Science in Business Administration</option>
-                                        <option value="Bachelor of Science in Information Technology">Bachelor of Science in Civil Engineering</option>
-                                        <option value="Bachelor of Science in Information Technology">Bachelor of Science in Electrical Engineering</option>
-                                        <option value="Bachelor of Science in Information Technology">Bachelor of Science in Mechanical Engineering</option>
-                                        <option value="Bachelor of Science in Information Technology">Bachelor of Science in Computer Science</option>
-                                        <option value="Bachelor of Science in Information Technology">Bachelor of Science in Information Technology</option>
-                                        <option value="Bachelor of Science in Information Technology">Bachelor of Science in Tourism Management</option>
-                                        <option value="Bachelor of Science in Information Technology">Bachelor of Science in Hotel and Restaurant Management</option>
+                                        <option value="Bachelor of Science in Information Technology"{{ ($borrower->Course == 'Bachelor of Science in Information Technology' ? ' selected' : '') }}>Bachelor of Science in Information Technology</option>
+                                        <option value="Bachelor of Science in Office Administration"{{ ($borrower->Course == 'Bachelor of Science in Office Administration' ? ' selected' : '') }}>Bachelor of Science in Office Administration</option>
+                                        <option value="Bachelor of Science in Business Administration"{{ ($borrower->Course == 'Bachelor of Science in Business Administration' ? ' selected' : '') }}>Bachelor of Science in Business Administration</option>
+                                        <option value="Bachelor on Secondary Education"{{ ($borrower->Course == 'Bachelor on Secondary Education' ? ' selected' : '') }}>Bachelor on Secondary Education</option>
+                                        <option value="Bachelor of Science in Elementary Education"{{ ($borrower->Course == 'Bachelor of Science in Elementary Education' ? ' selected' : '') }}>Bachelor of Science in Elementary Education</option>
+                                        <option value="Associate in Computer Secretarial"{{ ($borrower->Course == 'Associate in Computer Secretarial' ? ' selected' : '') }}>Associate in Computer Secretarial</option>
+                                        <option value="Associate in Computer Technology"{{ ($borrower->Course == 'Associate in Computer Technology' ? ' selected' : '') }}>Associate in Computer Technology</option>
                                     </select>
                                 </div>
                             </div>
                         </fieldset>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-3">
+                            <div class="form-group">
+                                {!! Form::label('status', 'Status: *') !!}
+                                <select name="status" id="status" class="form-control" required>
+                                    <option value="" selected disabled>Select an option...</option>
+                                    <option value="active"{{ ($borrower->Status == 'active' ? ' selected' : '') }}>Active</option>
+                                    <option value="inactive"{{ ($borrower->Status == 'inactive' ? ' selected' : '') }}>Inactive</option>
+                                </select>
+                            </div>
+                        </div>
                     </div>
                     <div class="form-group text-right no-margin">
                         <input type="submit" class="btn btn-primary" value="Save Changes">

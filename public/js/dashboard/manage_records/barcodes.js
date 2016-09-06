@@ -1,3 +1,13 @@
+function padZeros(number, length) {
+    var output = number.toString();
+
+    while(output.length < length) {
+        output = '0' + output;
+    }
+
+    return output;
+}
+
 $(document).ready(function() {
     $('#books-table').dataTable({
         aoColumnDefs: [
@@ -9,6 +19,38 @@ $(document).ready(function() {
     onDataButtonClick('add-button', function() {
         setModalContent('Add Accession Number', '<form data-form="add-barcode-form"><input type="hidden" name="id" value="' + $(this).data('var-id') + '"><div class="form-group"><label for="">Book Title:</label><input type="text" class="form-control" value="' + $(this).data('var-title') + '" disabled></div><div class="form-group"><label for="numberOfCopies">Number of Copies to be Added:</label><input type="number" min="1" name="numberOfCopies" id="numberOfCopies" class="form-control" value="1"></div><div class="form-group text-right no-margin"><input type="submit" class="btn btn-primary" value="Add Accession Number"></div></form>', '');
         openModal();
+    });
+
+    onDataButtonClick('print-button', function() {
+        var tab = window.open();
+
+        $.ajax({
+            url: '/data/37a8d82416afe092db1eefa22205d024',
+            method: 'POST',
+            headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
+            data: {
+                id: $(this).data('var-id')
+            },
+            dataType: 'json',
+            success: function(response) {
+                var output = '<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><title>Binangonan Catholic College</title></head><body><table><tbody>';
+
+                for(var i = 0; i < response['data']['barcodes'].length; i++) {
+                    output += '<div style="display: inline-block; text-align: center; height: 75px; width: 20%;"><img src="data:image/png;base64,' + response['data']['barcodes'][i]['draw'] + '"><div style="padding: 2px;">C' + padZeros(response['data']['barcodes'][i]['accession'], 4) + '</div></div>';
+                }
+
+                output += '</tbody></table></body></html>';
+
+                tab.document.write(output);
+                tab.print();
+                tab.close();
+            },
+            error: function(arg0, arg1, arg2) {
+                console.log(arg0.responseText);
+            }
+        });
+
+        return false;
     });
 
     onDataButtonClick('delete-button', function() {

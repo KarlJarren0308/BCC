@@ -3,9 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-
 use App\Http\Requests;
-
 use App\TblAccounts;
 use App\TblBarcodes;
 use App\TblBooks;
@@ -14,6 +12,7 @@ use App\TblBounds;
 use App\TblLoans;
 use App\TblReceives;
 
+use DNS1D;
 use Storage;
 
 date_default_timezone_set('Asia/Manila');
@@ -118,12 +117,41 @@ class DataController extends Controller
         return abs(ceil((strtotime($dateReturned) - strtotime($datePenaltyStarts)) / 86400)) * (double) $penaltyPerDay;
     }
 
+    public function getRequestData($what) {
+        switch($what) {
+            case '241780b527972f1e2a4ef12d92237e99':
+                // Request Barcode
+                return DNS1D::getBarcodePNG('C' . sprintf('%04d', $request->input()), 'C39+', 0.75, 37.5);
+
+                break;
+            default:
+                break;
+        }
+    }
+
     public function postRequestData($what, Request $request) {
         if(!session()->has('username')) {
             return response()->json(['status' => 'Failed', 'message' => 'Oops! Please login first...']);
         }
 
         switch($what) {
+            case '37a8d82416afe092db1eefa22205d024':
+                //Request Barcode Stickers
+
+                $barcodes = TblBarcodes::where('Book_ID', $request->input('id'))->get();
+
+                $data['barcodes'] = [];
+
+                foreach($barcodes as $barcode) {
+                    array_push($data['barcodes'], [
+                        'accession' => $barcode->Accession_Number,
+                        'draw' => DNS1D::getBarcodePNG('C' . sprintf('%04d', $barcode->Accession_Number), 'C39+', 0.75, 37.5)
+                    ]);
+                }
+
+                return response()->json(['status' => '', 'message' => '', 'data' => $data]);
+
+                break;
             case '840f2bd83877ed89f2561b8cb1cd9c88':
                 // Request Computation Tools
 

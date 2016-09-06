@@ -161,19 +161,29 @@
                                     {!! Form::label('course', 'Course: *') !!}
                                     <select name="course" id="course" class="form-control" required>
                                         <option value="" selected disabled>Select an option...</option>
-                                        <option value="Bachelor of Science in Information Technology">Bachelor of Science in Accountancy</option>
-                                        <option value="Bachelor of Science in Information Technology">Bachelor of Science in Business Administration</option>
-                                        <option value="Bachelor of Science in Information Technology">Bachelor of Science in Civil Engineering</option>
-                                        <option value="Bachelor of Science in Information Technology">Bachelor of Science in Electrical Engineering</option>
-                                        <option value="Bachelor of Science in Information Technology">Bachelor of Science in Mechanical Engineering</option>
-                                        <option value="Bachelor of Science in Information Technology">Bachelor of Science in Computer Science</option>
                                         <option value="Bachelor of Science in Information Technology">Bachelor of Science in Information Technology</option>
-                                        <option value="Bachelor of Science in Information Technology">Bachelor of Science in Tourism Management</option>
-                                        <option value="Bachelor of Science in Information Technology">Bachelor of Science in Hotel and Restaurant Management</option>
+                                        <option value="Bachelor of Science in Office Administration">Bachelor of Science in Office Administration</option>
+                                        <option value="Bachelor of Science in Business Administration">Bachelor of Science in Business Administration</option>
+                                        <option value="Bachelor on Secondary Education">Bachelor on Secondary Education</option>
+                                        <option value="Bachelor of Science in Elementary Education">Bachelor of Science in Elementary Education</option>
+                                        <option value="Associate in Computer Secretarial">Associate in Computer Secretarial</option>
+                                        <option value="Associate in Computer Technology">Associate in Computer Technology</option>
                                     </select>
                                 </div>
                             </div>
                         </fieldset>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-3">
+                            <div class="form-group">
+                                {!! Form::label('status', 'Status: *') !!}
+                                <select name="status" id="status" class="form-control" required>
+                                    <option value="" selected disabled>Select an option...</option>
+                                    <option value="active">Active</option>
+                                    <option value="inactive">Inactive</option>
+                                </select>
+                            </div>
+                        </div>
                     </div>
                     <div class="form-group text-right no-margin">
                         <input type="submit" class="btn btn-primary" value="Add Borrower">

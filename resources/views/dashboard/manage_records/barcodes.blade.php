@@ -88,6 +88,7 @@
                             </tr>
                         </tbody>
                     </table>
+                    <button data-button="print-button" data-var-id="{{ $book->Book_ID }}" data-var-title="{{ $book->Title }}" class="btn btn-success">Print Accession Numbers</button>
                 </div>
                 <div class="col-sm-6">
                     <div class="text-left gap-bottom">

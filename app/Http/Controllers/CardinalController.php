@@ -3,9 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-
 use App\Http\Requests;
-
 use App\TblAttendances;
 use App\TblAccounts;
 use App\TblBooks;
