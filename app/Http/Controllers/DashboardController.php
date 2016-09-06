@@ -1200,7 +1200,10 @@ class DashboardController extends Controller
 
                 if(!$query || ($query && $query->Publisher_ID == $id)) {
                     $query = TblPublishers::where('Publisher_ID', $id)->update([
-                        'Publisher_Name' => $request->input('publisherName')
+                        'Publisher_Name' => $request->input('publisherName'),
+                        'Address' => $request->input('publisherAddress'),
+                        'Telephone_Number' => $request->input('publisherTelephoneNumber'),
+                        'Email_Address' => $request->input('publisherEmailAddress')
                     ]);
 
                     if($query) {
@@ -1688,9 +1691,9 @@ class DashboardController extends Controller
                     ->join('tbl_books', 'tbl_weeding.Book_ID', '=', 'tbl_books.Book_ID')
                 ->get();
 
-                $pdf = PDF::loadView('reports.attendance', $data);
+                $pdf = PDF::loadView('reports.weeded', $data);
 
-                return $pdf->stream('BCC_Attendance_Report.pdf');
+                return $pdf->stream('BCC_Weeded_Report.pdf');
 
                 break;
             default:
