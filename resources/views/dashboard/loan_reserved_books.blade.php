@@ -116,7 +116,8 @@
                             </td>
                             <td class="text-center">
                                 @if(session()->has('username'))
-                                    <button data-button="loan-book-button" data-var-id="{{ $book->Reservation_ID }}" class="btn btn-primary btn-xs">Loan Book</button>
+                                    <!-- <button data-button="loan-book-button" data-var-id="{{ $book->Reservation_ID }}" class="btn btn-primary btn-xs">Loan Book</button> -->
+                                    <a href="/loan_books?id={{ $book->Username }}" class="btn btn-primary btn-xs">Loan Book</a>
                                 @endif
                             </td>
                         </tr>

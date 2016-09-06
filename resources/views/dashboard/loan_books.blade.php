@@ -108,7 +108,7 @@
                     <div class="col-sm-12">
                         <form class="form-inline" data-form="search-borrower-form">
                             <div class="form-group">
-                                <input type="text" name="searchKeyword" class="form-control" required autofocus>
+                                <input type="text" name="searchKeyword" class="form-control"{{ (isset($_GET['id']) && $_GET['id'] != '' ? ' value=' . $_GET['id'] : '') }} required autofocus>
                             </div>
                             <div class="form-group">
                                 <input type="submit" class="btn btn-danger" value="Search">
