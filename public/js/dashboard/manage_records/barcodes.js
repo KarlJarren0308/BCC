@@ -36,6 +36,12 @@ $(document).ready(function() {
                 dataType: 'json',
                 success: function(response) {
                     setModalContent('Weeding Status', response['message'], '');
+
+                    setTimeout(function() {
+                        closeModal();
+
+                        location.reload();
+                    }, 2000);
                 }
             });
         } else {
