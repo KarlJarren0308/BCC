@@ -246,7 +246,7 @@ class DataController extends Controller
                 }
 
                 if(strlen($request->input('searchKeyword')) == 5 && strtoupper(substr($request->input('searchKeyword'), 0, 1)) == 'C') {
-                    $data['book'] = TblBarcodes::whereNull('tbl_weeding.Accession_Number')->where('tbl_barcodes.Condition', '!=', 'lost')->where('tbl_barcodes.Accession_Number', (int) substr($request->input('searchKeyword'), 1))->join('tbl_books', 'tbl_barcodes.Book_ID', '=' ,'tbl_books.Book_ID')->leftJoin('tbl_weeding', 'tbl_barcodes.Accession_Number', '=', 'tbl_weeding.Accession_Number')->first();
+                    $data['book'] = TblBarcodes::whereNull('tbl_weeding.Accession_Number')->where('tbl_barcodes.Condition', '!=', 'lost')->where('tbl_barcodes.Accession_Number', (int) substr($request->input('searchKeyword'), 1))->join('tbl_books', 'tbl_barcodes.Book_ID', '=' ,'tbl_books.Book_ID')->leftJoin('tbl_weeding', 'tbl_barcodes.Accession_Number', '=', 'tbl_weeding.Accession_Number')->select('tbl_barcodes.*', 'tbl_books.*')->first();
                     $data['authors'] = TblBounds::where('tbl_bounds.Book_ID', $data['book']['Book_ID'])->join('tbl_authors', 'tbl_bounds.Author_ID', '=', 'tbl_authors.Author_ID')->get();
 
                     if($data['book']) {

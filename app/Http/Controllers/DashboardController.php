@@ -1578,7 +1578,7 @@ class DashboardController extends Controller
                         array_push($availableBarcodes, [
                             'accession' => $info['accession'],
                             'condition' => $info['condition'],
-                            'penalty' => $info['penalty']
+                            'penalty' => $info['penalty'] + $cups[$key]['additional']
                         ]);
 
                         $ctr++;

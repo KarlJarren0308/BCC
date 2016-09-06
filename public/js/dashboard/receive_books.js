@@ -282,11 +282,8 @@ $(document).ready(function() {
 
                                     receipt += '<li>';
                                     receipt += bookInfo[k]['title'] + ' [C' + padZeros(bookInfo[k]['accession'], 4) + ']';
-                                    receipt += '<div>Condition: ' + response['data']['barcodes'][j]['Condition'] + '</div>';
-
-                                    if(response['data']['barcodes'][j]['condition'] == 'good') {
-                                        receipt += '<div>Penalty: ' + response['data']['barcodes'][j]['penalty'] + '</div>';
-                                    }
+                                    receipt += '<div>Condition: ' + response['data']['barcodes'][j]['condition'] + '</div>';
+                                    receipt += '<div>Penalty: ' + response['data']['barcodes'][j]['penalty'] + '</div>';
 
                                     receipt += '</li>';
 
