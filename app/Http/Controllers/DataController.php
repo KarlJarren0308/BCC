@@ -102,7 +102,7 @@ class DataController extends Controller
         $daysCount = ceil(strtotime($dateReturned) - strtotime($datePenaltyStarts)) / 86400;
 
         for($j = 1; $j <= $daysCount; $j++) {
-            $currentDate = date('Y-m-d H:i', strtotime('+' . $i . ' days', strtotime($datePenaltyStarts)));
+            $currentDate = date('Y-m-d H:i', strtotime('+' . $j . ' days', strtotime($datePenaltyStarts)));
 
             if($this->isWeekend($currentDate)) {
                 $daysCount++;
@@ -124,6 +124,27 @@ class DataController extends Controller
         }
 
         switch($what) {
+            case '840f2bd83877ed89f2561b8cb1cd9c88':
+                // Request Computation Tools
+
+                $this->checkSettings();
+
+                $settingsFile = storage_path('app/public') . '/settings.xml';
+                $xml = simplexml_load_file($settingsFile);
+
+                foreach($xml as $item) {
+                    if($item['name'] == 'loan_period') {
+                        $data['loan_period'] = (string) $item['value'];
+                    } else if($item['name'] == 'penalty_per_day') {
+                        $data['penalty_per_day'] = (string) $item['value'];
+                    }
+                }
+
+                $data['holidays'] = TblHolidays::get();
+
+                return response()->json(['status' => '', 'message' => '', 'data' => $data]);
+
+                break;
             case '07489691941dcd1830a96d9f61121278':
                 // Request Borrower List
 
@@ -197,7 +218,7 @@ class DataController extends Controller
                 }
 
                 if(strlen($request->input('searchKeyword')) == 5 && strtoupper(substr($request->input('searchKeyword'), 0, 1)) == 'C') {
-                    $data['book'] = TblBarcodes::where('tbl_barcodes.Accession_Number', (int) substr($request->input('searchKeyword'), 1))->join('tbl_books', 'tbl_barcodes.Book_ID', '=' ,'tbl_books.Book_ID')->first();
+                    $data['book'] = TblBarcodes::whereNull('tbl_weeding.Accession_Number')->where('tbl_barcodes.Condition', '!=', 'lost')->where('tbl_barcodes.Accession_Number', (int) substr($request->input('searchKeyword'), 1))->join('tbl_books', 'tbl_barcodes.Book_ID', '=' ,'tbl_books.Book_ID')->leftJoin('tbl_weeding', 'tbl_barcodes.Accession_Number', '=', 'tbl_weeding.Accession_Number')->first();
                     $data['authors'] = TblBounds::where('tbl_bounds.Book_ID', $data['book']['Book_ID'])->join('tbl_authors', 'tbl_bounds.Author_ID', '=', 'tbl_authors.Author_ID')->get();
 
                     if($data['book']) {

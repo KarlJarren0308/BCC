@@ -102,6 +102,19 @@ class DashboardController extends Controller
             }
         }
 
+        app('App\Http\Controllers\DataController')->checkSettings();
+
+        $settingsFile = storage_path('app/public') . '/settings.xml';
+        $xml = simplexml_load_file($settingsFile);
+
+        foreach($xml as $item) {
+            if($item['name'] == 'loan_period') {
+                $data['loan_period'] = (int) $item['value'];
+            } else if($item['name'] == 'penalty_per_day') {
+                $data['penalty_per_day'] = (int) $item['value'];
+            }
+        }
+
         $data['bounds'] = TblBounds::join('tbl_authors', 'tbl_bounds.Author_ID', '=', 'tbl_authors.Author_ID')->get();
         $data['loans'] = TblLoans::join('tbl_accounts', 'tbl_loans.Username', '=', 'tbl_accounts.Username')->join('tbl_borrowers', 'tbl_accounts.Owner_ID', '=', 'tbl_borrowers.Borrower_ID')->join('tbl_barcodes', 'tbl_loans.Accession_Number', '=', 'tbl_barcodes.Accession_Number')->join('tbl_books', 'tbl_barcodes.Book_ID', '=', 'tbl_books.Book_ID')->get();
         $data['receives'] = TblReceives::get();
@@ -1514,8 +1527,9 @@ class DashboardController extends Controller
         $ctr = 0;
 
         $infos = $request->input('infos');
+        $cups = $request->input('cups');
 
-        foreach($infos as $info) {
+        foreach($infos as $key => $info) {
             $query = TblLoans::where('Loan_ID', $info['id'])->update([
                 'Loan_Status' => 'inactive'
             ]);
@@ -1524,6 +1538,17 @@ class DashboardController extends Controller
                 $thisLoan = TblLoans::where('Loan_ID', $info['id'])->first();
 
                 if($info['condition'] == 'lost') {
+                    $barcode = TblBarcodes::where('Accession_Number', $info['accession'])->first();
+
+                    if($query) {
+                        $query = TblWeeding::insert([
+                            'Accession_Number' => $barcode['Accession_Number'],
+                            'Book_ID' => $barcode['Book_ID'],
+                            'Reason' => 'Lost',
+                            'Date_Weeded' => date('Y-m-d')
+                        ]);
+                    }
+
                     $penalty = 0;
                 } else {
                     $penalty = app('App\Http\Controllers\DataController')->computePenalty($thisLoan->Loan_Date_Stamp . ' ' . $thisLoan->Loan_Time_Stamp);
@@ -1533,7 +1558,8 @@ class DashboardController extends Controller
                     'Receive_Date_Stamp' => date('Y-m-d'),
                     'Receive_Time_Stamp' => date('H:i:s'),
                     'Reference_ID' => $info['id'],
-                    'Penalty' => $penalty,
+                    'Penalty' => $info['penalty'],
+                    'Charges' => $cups[$key]['additional'],
                     'Settlement_Status' => ($penalty > 0 ? 'unpaid' : 'paid')
                 ]);
 
@@ -1547,7 +1573,7 @@ class DashboardController extends Controller
                         array_push($availableBarcodes, [
                             'accession' => $info['accession'],
                             'condition' => $info['condition'],
-                            'penalty' => $penalty
+                            'penalty' => $info['penalty']
                         ]);
 
                         $ctr++;
@@ -1630,7 +1656,7 @@ class DashboardController extends Controller
                     ->join('tbl_books', 'tbl_barcodes.Book_ID', '=', 'tbl_books.Book_ID')
                     ->join('tbl_accounts', 'tbl_loans.Username', '=', 'tbl_accounts.Username')
                     ->join('tbl_borrowers', 'tbl_accounts.Owner_ID', '=', 'tbl_borrowers.Borrower_ID')
-                    ->leftJoin('tbl_receives', 'tbl_loans.Loan_ID', '=', 'tbl_receives.Reference_ID')
+                    ->join('tbl_receives', 'tbl_loans.Loan_ID', '=', 'tbl_receives.Reference_ID')
                 ->get();
 
                 $pdf = PDF::loadView('reports.penalty', $data);
@@ -1641,7 +1667,26 @@ class DashboardController extends Controller
             case 'attendance':
                 $data['from'] = date('Y-m-d', strtotime($request->input('from')));;
                 $data['to'] = date('Y-m-d', strtotime($request->input('to')));;
-                $data['borrowers'] = TblAttendances::orderBy('tbl_attendance.Date_Stamp')->orderBy('tbl_attendance.Time_Stamp')->orderBy('tbl_borrowers.Year_Level')->orderBy('tbl_borrowers.Course')->join('tbl_accounts', 'tbl_attendance.Username', '=', 'tbl_accounts.Username')->join('tbl_borrowers', 'tbl_accounts.Owner_ID', '=', 'tbl_borrowers.Borrower_ID')->get();
+                $data['borrowers'] = TblAttendances::whereBetween('tbl_attendance.Date_Stamp', array($data['from'], $data['to']))
+                    ->orderBy('tbl_attendance.Date_Stamp')
+                    ->orderBy('tbl_attendance.Time_Stamp')
+                    ->orderBy('tbl_borrowers.Year_Level')
+                    ->orderBy('tbl_borrowers.Course')
+                    ->join('tbl_accounts', 'tbl_attendance.Username', '=', 'tbl_accounts.Username')
+                    ->join('tbl_borrowers', 'tbl_accounts.Owner_ID', '=', 'tbl_borrowers.Borrower_ID')
+                ->get();
+
+                $pdf = PDF::loadView('reports.attendance', $data);
+
+                return $pdf->stream('BCC_Attendance_Report.pdf');
+
+                break;
+            case 'weeding':
+                $data['from'] = date('Y-m-d', strtotime($request->input('from')));;
+                $data['to'] = date('Y-m-d', strtotime($request->input('to')));;
+                $data['books'] = TblWeeding::whereBetween('tbl_weeding.Date_Weeded', array($data['from'], $data['to']))
+                    ->join('tbl_books', 'tbl_weeding.Book_ID', '=', 'tbl_books.Book_ID')
+                ->get();
 
                 $pdf = PDF::loadView('reports.attendance', $data);
 

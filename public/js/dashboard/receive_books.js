@@ -130,7 +130,7 @@ $(document).ready(function() {
                                         booksOutput += '</tr>';
                                         booksOutput += '</tbody>';
                                         booksOutput += '</table>';
-                                        booksOutput += '<div class="text-right"><button class="btn btn-danger btn-xs" data-button="add-book-button" data-var-id="' + response2['data']['loan_history'][j]['Loan_ID'] + '" data-var-title="' + response2['data']['loan_history'][j]['Title'] + '" data-var-accession="' + response2['data']['loan_history'][j]['Accession_Number'] + '">Add to Cart</button></div>';
+                                        booksOutput += '<div class="text-right"><button class="btn btn-danger btn-xs" data-button="add-book-button" data-var-id="' + response2['data']['loan_history'][j]['Loan_ID'] + '" data-var-price="' + response2['data']['loan_history'][j]['Price'] + '" data-var-acquisition="' + response2['data']['loan_history'][j]['Acquisition_Method'] + '" data-var-condition="' + response2['data']['loan_history'][j]['Condition'] + '" data-var-date-loaned="' + (response2['data']['loan_history'][j]['Loan_Date_Stamp'] + ' ' + response2['data']['loan_history'][j]['Loan_Time_Stamp']) + '" data-var-title="' + response2['data']['loan_history'][j]['Title'] + '" data-var-accession="' + response2['data']['loan_history'][j]['Accession_Number'] + '">Add to Cart</button></div>';
                                         booksOutput += '</div>';
                                         booksOutput += '</div>';
                                     }
@@ -149,6 +149,10 @@ $(document).ready(function() {
 
                                         bookInfo.push({
                                             id: $(this).data('var-id'),
+                                            condition: $(this).data('var-condition'),
+                                            price: $(this).data('var-price'),
+                                            acquisition: $(this).data('var-acquisition'),
+                                            date_loaned: $(this).data('var-date-loaned'),
                                             accession: $(this).data('var-accession'),
                                             title: $(this).data('var-title'),
                                             status: $(this).data('var-status'),
@@ -185,7 +189,10 @@ $(document).ready(function() {
                     output += '<tr>';
                     output += '<td>' + bookInfo[i]['title'] + '</td>';
                     output += '<td>C' + padZeros(bookInfo[i]['accession'], 4) + '</td>';
-                    output += '<td><div class="form-group"><select class="copy-condition form-control" data-var-id="' + bookInfo[i]['id'] + '" data-var-accession="' + bookInfo[i]['accession'] + '"><option value="" selected disabled>Select an option...</option><option value="good">Good Condition</option><option value="damaged">Damaged</option><option value="lost">Lost</option></select></div></td>';
+                    output += '<td><div class="form-group">';
+                    output += '<select class="copy-condition form-control" data-var-id="' + bookInfo[i]['id'] + '" data-var-date-loaned="' + bookInfo[i]['date_loaned'] + '" data-var-accession="' + bookInfo[i]['accession'] + '"><option value="" selected disabled>Select an option...</option><option value="good">Good Condition</option><option value="damaged">Damaged</option><option value="lost">Lost</option></select>';
+                    output += '<input type="text" class="copy-amount form-control" data-var-acquisition="' + bookInfo[i]['acquisition'] + '" data-var-price="' + bookInfo[i]['price'] + '" readonly>';
+                    output += '</div></td>';
                     output += '</tr>';
                 }
 
@@ -193,6 +200,20 @@ $(document).ready(function() {
 
                 setModalContent('Loan Status', output, '<button class="btn btn-danger" data-button="yes-button">Yes</button>&nbsp;<button class="btn btn-default" data-button="no-button">No</button>');
                 openModal('static');
+
+                $('.copy-condition').change(function() {
+                    if($(this).val() == 'good') {
+                        $(this).parent().find('.copy-amount').val(0).attr('readonly', true);
+                    } else if($(this).val() == 'damaged') {
+                        $(this).parent().find('.copy-amount').val(0).removeAttr('readonly');
+                    } else {
+                        if($(this).parent().find('.copy-amount').data('var-acquisition') == 'Purchased') {
+                            $(this).parent().find('.copy-amount').val($(this).parent().find('.copy-amount').data('var-price')).attr('readonly', true);
+                        } else {
+                            $(this).parent().find('.copy-amount').val(0).removeAttr('readonly');
+                        }
+                    }
+                });
             } else {
                 setModalContent('Loan Status', 'You motherfucka hacker.', '');
                 openModal();
@@ -208,6 +229,7 @@ $(document).ready(function() {
         var receipt = '';
         var emptyFields = 0;
         var superInfo = [];
+        var superCup = [];
 
         $('.copy-condition').each(function() {
             if(!$.trim($(this).val())) {
@@ -221,8 +243,15 @@ $(document).ready(function() {
             $('.copy-condition').each(function() {
                 superInfo.push({
                     id: $(this).data('var-id'),
+                    penalty: computePenalty($(this).data('var-date-loaned'), $('.data-holder').data('var-holidays'), $('.data-holder').data('var-penalty-per-day'), $('.data-holder').data('var-loan-period')),
                     accession: $(this).data('var-accession'),
                     condition: $(this).val()
+                });
+            });
+
+            $('.copy-amount').each(function() {
+                superCup.push({
+                    additional: $(this).val()
                 });
             });
 
@@ -233,7 +262,8 @@ $(document).ready(function() {
                 method: 'POST',
                 headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
                 data: {
-                    infos: superInfo
+                    infos: superInfo,
+                    cups: superCup
                 },
                 dataType: 'json',
                 success: function(response) {
@@ -252,12 +282,14 @@ $(document).ready(function() {
 
                                     receipt += '<li>';
                                     receipt += bookInfo[k]['title'] + ' [C' + padZeros(bookInfo[k]['accession'], 4) + ']';
+                                    receipt += '<div>Condition: ' + response['data']['barcodes'][j]['Condition'] + '</div>';
 
                                     if(response['data']['barcodes'][j]['condition'] == 'good') {
                                         receipt += '<div>Penalty: ' + response['data']['barcodes'][j]['penalty'] + '</div>';
                                     }
 
                                     receipt += '</li>';
+
                                     totalPenalty += response['data']['barcodes'][j]['penalty'];
                                 }
                             }

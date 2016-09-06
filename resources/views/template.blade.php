@@ -22,6 +22,7 @@
     <script src="/js/sb-admin-2.js"></script>
     <script src="/js/moment.js"></script>
     <script src="/js/script.js"></script>
+    <script src="/js/computation.js"></script>
 @yield('pre_ref')
 </head>
 <body>

@@ -11,6 +11,7 @@ use App\TblAccounts;
 use App\TblBooks;
 use App\TblBorrowers;
 use App\TblBounds;
+use App\TblHolidays;
 use App\TblLibrarians;
 use App\TblLoans;
 use App\TblReservations;
@@ -125,6 +126,20 @@ class CardinalController extends Controller
             return redirect()->route('cardinal.getIndex');
         }
 
+        app('App\Http\Controllers\DataController')->checkSettings();
+
+        $settingsFile = storage_path('app/public') . '/settings.xml';
+        $xml = simplexml_load_file($settingsFile);
+
+        foreach($xml as $item) {
+            if($item['name'] == 'loan_period') {
+                $data['loanPeriod'] = $item['value'];
+            } else if($item['name'] == 'penalty_per_day') {
+                $data['penaltyPerDay'] = $item['value'];
+            }
+        }
+
+        $data['holidays'] = TblHolidays::get();
         $data['borrowed_books'] = TblLoans::where('tbl_loans.Username', session()->get('username'))->join('tbl_barcodes', 'tbl_loans.Accession_Number', '=', 'tbl_barcodes.Accession_Number')->join('tbl_books', 'tbl_barcodes.Book_ID', '=', 'tbl_books.Book_ID')->leftJoin('tbl_receives', 'tbl_loans.Loan_ID', '=', 'tbl_receives.Reference_ID')->get();
 
         return view('cardinal.borrowed_books', $data);

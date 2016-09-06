@@ -85,7 +85,7 @@
                         <li><a href="{{ route('dashboard.getManageRecords', 'borrowers') }}">Manage Borrowers</a></li>
                         <li><a href="{{ route('dashboard.getManageRecords', 'librarians') }}">Manage Librarians</a></li>
                         <li><a href="{{ route('dashboard.getManageRecords', 'librarians') }}">Manage Holidays</a></li>
-                        <li><a href="{{ route('dashboard.getManageRecords', 'weeding') }}">Weeding Books</a></li>
+                        <li><a href="{{ route('dashboard.getManageRecords', 'weeding') }}">Weeded Books</a></li>
                         <li><a href="{{ route('dashboard.getManageRecords', 'reports') }}">Generate Reports</a></li>
                         <li><a href="{{ route('dashboard.getSystemSettings') }}">System Settings</a></li>
                     </ul>
@@ -138,11 +138,11 @@
                                 @if(isset($loan->Receive_ID) && $loan->Receive_ID != -1)
                                     &#8369; {{ $loan->Penalty }}
                                 @else
-                                    <?php
+                                    <!-- <?php
                                         /*
                                          * Penalty Computation
                                          */
-
+                                    
                                         $totalPenalty = 0;
                                         $dateLoaned = date('Y-m-d H:i', strtotime($loan->Loan_Date_Stamp . ' ' . $loan->Loan_Time_Stamp));
                                         $datePenaltyStarts = date('Y-m-d H:i', strtotime('+' . $loanPeriod . ' days', strtotime($dateLoaned)));
@@ -150,7 +150,7 @@
                                         
                                         for($i = 1; $i <= $daysCount; $i++) {
                                             $currentDate = date('Y-m-d H:i', strtotime('+' . $i . ' days', strtotime($dateLoaned)));
-
+                                    
                                             if(isWeekend($currentDate)) {
                                                 $daysCount++;
                                                 $datePenaltyStarts = nextDay($datePenaltyStarts);
@@ -161,13 +161,13 @@
                                                 }
                                             }
                                         }
-
+                                    
                                         $dateReturned = date('Y-m-d H:i');
                                         $daysCount = ceil((strtotime($dateReturned) - strtotime($datePenaltyStarts)) / 86400);
-
+                                    
                                         for($j = 1; $j <= $daysCount; $j++) {
                                             $currentDate = date('Y-m-d H:i', strtotime('+' . $j . ' days', strtotime($datePenaltyStarts)));
-
+                                    
                                             if(isWeekend($currentDate)) {
                                                 $daysCount++;
                                                 $datePenaltyStarts = nextDay($datePenaltyStarts);
@@ -178,11 +178,12 @@
                                                 }
                                             }
                                         }
-
+                                    
                                         $totalPenalty = abs(ceil((strtotime($dateReturned) - strtotime($datePenaltyStarts)) / 86400)) * (double) $penaltyPerDay;
-
+                                    
                                         echo '&#8369; ' . $totalPenalty;
-                                    ?>
+                                    ?> -->
+                                    &#8369; <span class="penalty-computation-block" data-var-date-loaned="{{ $loan->Loan_Date_Stamp . ' ' . $loan->Loan_Time_Stamp }}" data-var-penalty-per-day="{{ $penaltyPerDay }}" data-var-loan-period="{{ $loanPeriod }}" data-var-holidays="{{ $holidays }}"></span>
                                 @endif
                             </td>
                             <td class="text-center">

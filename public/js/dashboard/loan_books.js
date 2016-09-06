@@ -28,34 +28,6 @@ function padZeros(number, length) {
     return output;
 }
 
-function isHolidays(holidays, dateStamp) {
-    if(holidays.length > 0) {
-        for(var i = 0; i < holidays.length; i) {
-            if(moment(dateStamp).isSame(holidays['Date_Stamp'])) {
-                return true;
-            }
-        }
-    }
-
-    return false;
-}
-
-function isWeekend(dateStamp) {
-    dateStamp = moment(dateStamp).format('dddd');
-
-    if(dateStamp == 'Sunday') {
-        return true;
-    } else if(dateStamp == 'Saturday') {
-        return true;
-    } else {
-        return false;
-    }
-}
-
-function nextDay(dateStamp) {
-    return moment(dateStamp).add(1, 'days').format('YYYY-MM-DD HH:mm:ss');
-}
-
 $(document).ready(function() {
     var onLoans = 0;
     var loanLimit = 1;
@@ -80,6 +52,7 @@ $(document).ready(function() {
                 var onHand = 0;
                 var onL = 0;
                 var penalty = 0;
+                var arg = 0;
 
                 if(response['status'] == 'Success') {
                     if(response['data']['borrower']['Middle_Name'].length > 1) {
@@ -98,6 +71,10 @@ $(document).ready(function() {
 
                     for(var j = 0; j < response['data']['receive_history'].length; j++) {
                         penalty += response['data']['receive_history'][j]['Penalty'];
+
+                        if(response['data']['receive_history'][j]['Settlement_Status'] == 'unpaid') {
+                            arg++;
+                        }
                     }
 
                     onL = response['data']['loan_history'].length;
@@ -115,7 +92,7 @@ $(document).ready(function() {
                     output += '</tbody>';
                     output += '</table>';
 
-                    if(penalty) {
+                    if(arg > 0) {
                         output += '<div><em>This borrower has an existing penalty.</em></div>';
                     }
 
@@ -132,7 +109,7 @@ $(document).ready(function() {
                     $('#search-borrower-list').html(output);
 
                     $('[data-button="select-borrower-button"]').click(function() {
-                        if($(this).data('var-penalty') > 0) {
+                        if(arg > 0) {
                             setModalContent('Loan Books', 'Oops! This borrower has an unpaid penalty. Please remind the borrower to pay the existing penalty before borrowing another book.', '');
                             openModal();
                         } else {
@@ -356,10 +333,8 @@ $(document).ready(function() {
                         var tab = window.open();
                         var dateToday = moment().format('YYYY-MM-DD HH:mm:ss');
                         var dueDate = moment(dateToday).add(response['data']['loan_period'], 'days').format('YYYY-MM-DD HH:mm:ss');
-                        var graceDays = moment().diff(dateToday, 'days');
-                        var currentDate = '';
-
-                        console.log(response['data']['loan_period']);
+                        var graceDays = moment(dueDate).diff(dateToday, 'days');
+                        var currentDate;
 
                         for(var i = 1; i <= graceDays; i++) {
                             currentDate = moment(dateToday).add(i, 'days');
@@ -368,7 +343,7 @@ $(document).ready(function() {
                                 graceDays++;
                                 dueDate = nextDay(dueDate);
                             } else {
-                                if(isHoliday(response['data']['holidays'], currentDate)) {
+                                if(isHolidays(response['data']['holidays'], currentDate)) {
                                     graceDays++;
                                     dueDate = nextDay(dueDate);
                                 }

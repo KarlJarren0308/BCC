@@ -87,7 +87,11 @@
                             </td>
                             <td>
                                 <!-- TODO: Compute for penalty -->
-                                {{ '&#8369; 0.00' }}
+                                @if(isset($borrowed_book->Receive_ID) && $borrowed_book->Receive_ID != -1)
+                                    &#8369; {{ $borrowed_book->Penalty }}
+                                @else
+                                    &#8369; <span class="penalty-computation-block" data-var-date-loaned="{{ $borrowed_book->Loan_Date_Stamp . ' ' . $borrowed_book->Loan_Time_Stamp }}" data-var-penalty-per-day="{{ $penaltyPerDay }}" data-var-loan-period="{{ $loanPeriod }}" data-var-holidays="{{ $holidays }}"></span>
+                                @endif
                             </td>
                             <td>
                                 @if($borrowed_book->Loan_Status == 'active')

@@ -85,6 +85,7 @@
             return date('Y-m-d', strtotime('+1 day', strtotime($date)));
         }
     ?>
+    <div class="data-holder" data-var-holidays="{{ $holidays }}" data-var-loan-period="{{ $loan_period }}" data-var-penalty-per-day="{{ $penalty_per_day }}"></div>
     <div id="wrapper">
         <nav class="navbar navbar-custom navbar-static-top" role="navigation" style="margin-bottom: 0">
             <div class="navbar-header">
@@ -134,7 +135,7 @@
                         <li><a href="{{ route('dashboard.getManageRecords', 'borrowers') }}">Manage Borrowers</a></li>
                         <li><a href="{{ route('dashboard.getManageRecords', 'librarians') }}">Manage Librarians</a></li>
                         <li><a href="{{ route('dashboard.getManageRecords', 'holidays') }}">Manage Holidays</a></li>
-                        <li><a href="{{ route('dashboard.getManageRecords', 'weeding') }}">Weeding Books</a></li>
+                        <li><a href="{{ route('dashboard.getManageRecords', 'weeding') }}">Weeded Books</a></li>
                         <li><a href="{{ route('dashboard.getManageRecords', 'reports') }}">Generate Reports</a></li>
                         <li><a href="{{ route('dashboard.getSystemSettings') }}">System Settings</a></li>
                     </ul>

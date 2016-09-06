@@ -31,6 +31,10 @@
             font-size: 0.75em;
         }
 
+        .body {
+            margin-top: -50px;
+        }
+
         .footer {
             border-top: 1px solid #888;
             font-size: 10px;
@@ -123,6 +127,7 @@
         </script>
     </div>
     <div class="body">
+        <h2 class="text-center">List of Borrowed Books Report</h2>
         <div class="size-4">Date Range: {{ date('F d, Y', strtotime($from)) }} - {{ date('F d, Y', strtotime($to)) }}</div>
         <table class="table">
             <thead>

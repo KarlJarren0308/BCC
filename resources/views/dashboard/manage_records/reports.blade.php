@@ -54,7 +54,7 @@
                         <li><a href="{{ route('dashboard.getManageRecords', 'borrowers') }}">Manage Borrowers</a></li>
                         <li><a href="{{ route('dashboard.getManageRecords', 'librarians') }}">Manage Librarians</a></li>
                         <li><a href="{{ route('dashboard.getManageRecords', 'librarians') }}">Manage Holidays</a></li>
-                        <li><a href="{{ route('dashboard.getManageRecords', 'weeding') }}">Weeding Books</a></li>
+                        <li><a href="{{ route('dashboard.getManageRecords', 'weeding') }}">Weeded Books</a></li>
                         <li><a href="{{ route('dashboard.getManageRecords', 'reports') }}">Generate Reports</a></li>
                         <li><a href="{{ route('dashboard.getSystemSettings') }}">System Settings</a></li>
                     </ul>
@@ -178,7 +178,7 @@
                     </div>
                     <div class="panel panel-red">
                         <div class="panel-heading">
-                            <strong class="panel-title">Weeding Report</strong>
+                            <strong class="panel-title">Weeded Report</strong>
                         </div>
                         <div class="panel-body">
                             {!! Form::open(['route' => ['dashboard.postGenerateReport', 'weeding']]) !!}
