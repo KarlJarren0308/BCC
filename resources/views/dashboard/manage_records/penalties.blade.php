@@ -186,7 +186,7 @@
                             <td class="text-center">
                                 @if(isset($loan->Receive_ID))
                                     @if($loan->Settlement_Status == 'unpaid')
-                                        <button class="btn btn-primary btn-xs" data-button="settle-payment">Settle</button>
+                                        <a href="{{ route('dashboard.getSettlePenalty', $loan->Receive_ID) }}" class="btn btn-primary btn-xs">Settle</a>
                                     @else
                                         <button class="btn btn-danger btn-xs">Already Settled</button>
                                     @endif

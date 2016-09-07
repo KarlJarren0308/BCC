@@ -23,6 +23,7 @@ Route::get('dashboard', ['as' => 'dashboard.getIndex', 'uses' => 'DashboardContr
 Route::get('loan_books', ['as' => 'dashboard.getLoanBooks', 'uses' => 'DashboardController@getLoanBooks']);
 Route::get('reserved_books', ['as' => 'dashboard.getReservedBooks', 'uses' => 'DashboardController@getReservedBooks']);
 Route::get('receive_books', ['as' => 'dashboard.getReceiveBooks', 'uses' => 'DashboardController@getReceiveBooks']);
+Route::get('settle_penalty/{id}', ['as' => 'dashboard.getSettlePenalty', 'uses' => 'DashboardController@getSettlePenalty']);
 Route::get('manage_records/{what}', ['as' => 'dashboard.getManageRecords', 'uses' => 'DashboardController@getManageRecords']);
 Route::get('manage_records/barcodes/{id}', ['as' => 'dashboard.getBarcodes', 'uses' => 'DashboardController@getBarcodes']);
 Route::get('system_settings', ['as' => 'dashboard.getSystemSettings', 'uses' => 'DashboardController@getSystemSettings']);

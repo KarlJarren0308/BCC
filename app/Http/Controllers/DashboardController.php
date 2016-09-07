@@ -1479,6 +1479,34 @@ class DashboardController extends Controller
         }
     }
 
+    public function postSettlePenalty($id) {
+        if(!session()->has('username')) {
+            session()->flash('flash_status', 'danger');
+            session()->flash('flash_message', 'Oops! Please login first.');
+
+            return redirect()->route('cardinal.getIndex');
+        } else {
+            if(session()->get('type') != 'Librarian') {
+                session()->flash('flash_status', 'danger');
+                session()->flash('flash_message', 'Oops! You do not have to privilege to access the dashboard.');
+
+                return redirect()->route('cardinal.getOpac');
+            }
+        }
+
+        $query = TblReceives::where('Receive_ID', $id)->update([
+            'Settlement_Status' => 'paid'
+        ]);
+
+        if($query) {
+            session()->flash('flash_status', 'success');
+            session()->flash('flash_message', 'Penalty has been settled.');
+        } else {
+            session()->flash('flash_status', 'warning');
+            session()->flash('flash_message', 'Oops! Failed to settle penalty. Please refresh the page and try again.');
+        }
+    }
+
     public function postGenerateReport($what, Request $request) {
         if(!session()->has('username')) {
             session()->flash('flash_status', 'danger');
