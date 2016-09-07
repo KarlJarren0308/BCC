@@ -77,7 +77,7 @@
                 }
             }
 
-            return (double) abs(ceil((strtotime($dateReturned) - strtotime($datePenaltyStarts)) / 86400)) * (double) $penaltyPerDay;
+            return (double) ceil((strtotime($dateReturned) - strtotime($datePenaltyStarts)) / 86400) * (double) $penaltyPerDay;
         }
     ?>
     <div id="wrapper">
