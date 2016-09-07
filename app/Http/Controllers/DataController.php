@@ -115,7 +115,7 @@ class DataController extends Controller
             }
         }
 
-        return ceil((strtotime($dateReturned) - strtotime($datePenaltyStarts)) / 86400) * (double) $penaltyPerDay;
+        return (double) abs(ceil((strtotime($dateReturned) - strtotime($datePenaltyStarts)) / 86400)) * (double) $penaltyPerDay;
     }
 
     public function postRequestData($what, Request $request) {

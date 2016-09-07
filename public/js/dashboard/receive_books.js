@@ -250,7 +250,14 @@ $(document).ready(function() {
                                     output += '<td>C' + padZeros(bookInfo[k]['accession'], 4) + '</td>';
                                     output += '</tr>';
 
-                                    receipt += '<li>' + bookInfo[k]['title'] + ' [C' + padZeros(bookInfo[k]['accession'], 4) + ']<div>Penalty: ' + response['data']['barcodes'][j]['penalty'] + '</div></li>';
+                                    receipt += '<li>';
+                                    receipt += bookInfo[k]['title'] + ' [C' + padZeros(bookInfo[k]['accession'], 4) + ']';
+
+                                    if(barcodes[j]['condition'] == 'good') {
+                                        receipt += '<div>Penalty: ' + response['data']['barcodes'][j]['penalty'] + '</div>';
+                                    }
+
+                                    receipt += '</li>';
                                     totalPenalty += response['data']['barcodes'][j]['penalty'];
                                 }
                             }

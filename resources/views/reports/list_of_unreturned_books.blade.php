@@ -157,12 +157,6 @@
                 @endforeach
             </tbody>
         </table>
-        <table>
-            <tr>
-                <td class="text-right" width="85%">Total number of books unreturned within date range:</td>
-                <td class="text-center"></td>
-            </tr>
-        </table>
     </div>
 </body>
 </html>

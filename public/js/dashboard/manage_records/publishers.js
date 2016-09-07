@@ -17,8 +17,8 @@ $(document).ready(function() {
         publisherAddress: {
             validators: {
                 regexp: {
-                    regexp: /^([a-z\s])+$/i,
-                    message: 'The value must contain letters only.'
+                    regexp: /^([a-z0-9,.-\s])+$/i,
+                    message: 'The value must contain letters, numbers and the following symbol(s) only: ,.-'
                 }
             }
         },

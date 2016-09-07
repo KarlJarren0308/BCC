@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Http\Requests;
 use App\TblAccounts;
+use App\TblAttendances;
 use App\TblAuthors;
 use App\TblBarcodes;
 use App\TblBorrowers;
@@ -125,6 +126,27 @@ class DashboardController extends Controller
         }
 
         switch($what) {
+            case 'penalties':
+                app('App\Http\Controllers\DataController')->checkSettings();
+
+                $settingsFile = storage_path('app/public') . '/settings.xml';
+                $xml = simplexml_load_file($settingsFile);
+
+                foreach($xml as $item) {
+                    if($item['name'] == 'loan_period') {
+                        $data['loanPeriod'] = $item['value'];
+                    } else if($item['name'] == 'penalty_per_day') {
+                        $data['penaltyPerDay'] = $item['value'];
+                    }
+                }
+
+                $data['loans'] = TblLoans::join('tbl_accounts', 'tbl_loans.Username', '=', 'tbl_accounts.Username')->join('tbl_borrowers', 'tbl_accounts.Owner_ID', '=', 'tbl_borrowers.Borrower_ID')->join('tbl_barcodes', 'tbl_loans.Accession_Number', '=', 'tbl_barcodes.Accession_Number')->join('tbl_books', 'tbl_barcodes.Book_ID', '=', 'tbl_books.Book_ID')->leftJoin('tbl_receives', 'tbl_loans.Loan_ID', '=', 'tbl_receives.Reference_ID')->get();
+                $data['receives'] = TblReceives::get();
+                $data['holidays'] = TblHolidays::get();
+
+                return view('dashboard.manage_records.penalties', $data);
+
+                break;
             case 'books':
                 $data['bounds'] = TblBounds::join('tbl_authors', 'tbl_bounds.Author_ID', '=', 'tbl_authors.Author_ID')->get();
                 $data['books'] = TblBooks::whereNull('tbl_weeding.Book_ID')->leftJoin('tbl_weeding', 'tbl_books.Book_ID', '=', 'tbl_weeding.Book_ID')->select('tbl_books.*')->get();
@@ -1427,7 +1449,8 @@ class DashboardController extends Controller
                     'Receive_Date_Stamp' => date('Y-m-d'),
                     'Receive_Time_Stamp' => date('H:i:s'),
                     'Reference_ID' => $info['id'],
-                    'Penalty' => $penalty
+                    'Penalty' => $penalty,
+                    'Settlement_Status' => ($penalty > 0 ? 'unpaid' : 'paid')
                 ]);
 
                 if($query) {
@@ -1439,6 +1462,7 @@ class DashboardController extends Controller
                     if($query) {
                         array_push($availableBarcodes, [
                             'accession' => $info['accession'],
+                            'condition' => $info['condition'],
                             'penalty' => $penalty
                         ]);
 
@@ -1512,6 +1536,32 @@ class DashboardController extends Controller
                 $pdf = PDF::loadView('reports.list_of_unreturned_books', $data);
 
                 return $pdf->stream('BCC_List_of_Unreturned_Books_Report.pdf');
+
+                break;
+            case 'penalty':
+                $data['from'] = date('Y-m-d', strtotime($request->input('from')));;
+                $data['to'] = date('Y-m-d', strtotime($request->input('to')));;
+                $data['books'] = TblLoans::whereBetween('tbl_loans.Loan_Date_Stamp', array($data['from'], $data['to']))
+                    ->join('tbl_barcodes', 'tbl_loans.Accession_Number', '=', 'tbl_barcodes.Accession_Number')
+                    ->join('tbl_books', 'tbl_barcodes.Book_ID', '=', 'tbl_books.Book_ID')
+                    ->join('tbl_accounts', 'tbl_loans.Username', '=', 'tbl_accounts.Username')
+                    ->join('tbl_borrowers', 'tbl_accounts.Owner_ID', '=', 'tbl_borrowers.Borrower_ID')
+                    ->leftJoin('tbl_receives', 'tbl_loans.Loan_ID', '=', 'tbl_receives.Reference_ID')
+                ->get();
+
+                $pdf = PDF::loadView('reports.penalty', $data);
+
+                return $pdf->stream('BCC_Penalty_Report.pdf');
+
+                break;
+            case 'attendance':
+                $data['from'] = date('Y-m-d', strtotime($request->input('from')));;
+                $data['to'] = date('Y-m-d', strtotime($request->input('to')));;
+                $data['borrowers'] = TblAttendances::orderBy('tbl_attendance.Date_Stamp')->orderBy('tbl_attendance.Time_Stamp')->orderBy('tbl_borrowers.Year_Level')->orderBy('tbl_borrowers.Course')->join('tbl_accounts', 'tbl_attendance.Username', '=', 'tbl_accounts.Username')->join('tbl_borrowers', 'tbl_accounts.Owner_ID', '=', 'tbl_borrowers.Borrower_ID')->get();
+
+                $pdf = PDF::loadView('reports.attendance', $data);
+
+                return $pdf->stream('BCC_Attendance_Report.pdf');
 
                 break;
             default:

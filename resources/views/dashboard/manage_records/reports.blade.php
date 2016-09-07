@@ -91,6 +91,26 @@
                             {!! Form::close() !!}
                         </div>
                     </div>
+                    <div class="panel panel-red">
+                        <div class="panel-heading">
+                            <strong class="panel-title">Penalty Report</strong>
+                        </div>
+                        <div class="panel-body">
+                            {!! Form::open(['route' => ['dashboard.postGenerateReport', 'penalty']]) !!}
+                                <div class="form-group">
+                                    {!! Form::label('from', 'From: *') !!}
+                                    {!! Form::date('from', null, ['class' => 'form-control', 'placeholder' => '', 'required' => 'required']) !!}
+                                </div>
+                                <div class="form-group">
+                                    {!! Form::label('to', 'To: *') !!}
+                                    {!! Form::date('to', null, ['class' => 'form-control', 'placeholder' => '', 'required' => 'required']) !!}
+                                </div>
+                                <div class="form-group text-right">
+                                    {!! Form::submit('View Report', array('class' => 'btn btn-warning')) !!}
+                                </div>
+                            {!! Form::close() !!}
+                        </div>
+                    </div>
                 </div>
                 <div class="col-sm-4">
                     <div class="panel panel-red">
@@ -113,6 +133,26 @@
                             {!! Form::close() !!}
                         </div>
                     </div>
+                    <div class="panel panel-red">
+                        <div class="panel-heading">
+                            <strong class="panel-title">Attendance Report</strong>
+                        </div>
+                        <div class="panel-body">
+                            {!! Form::open(['route' => ['dashboard.postGenerateReport', 'attendance']]) !!}
+                                <div class="form-group">
+                                    {!! Form::label('from', 'From: *') !!}
+                                    {!! Form::date('from', null, ['class' => 'form-control', 'placeholder' => '', 'required' => 'required']) !!}
+                                </div>
+                                <div class="form-group">
+                                    {!! Form::label('to', 'To: *') !!}
+                                    {!! Form::date('to', null, ['class' => 'form-control', 'placeholder' => '', 'required' => 'required']) !!}
+                                </div>
+                                <div class="form-group text-right">
+                                    {!! Form::submit('View Report', array('class' => 'btn btn-warning')) !!}
+                                </div>
+                            {!! Form::close() !!}
+                        </div>
+                    </div>
                 </div>
                 <div class="col-sm-4">
                     <div class="panel panel-red">
@@ -121,6 +161,26 @@
                         </div>
                         <div class="panel-body">
                             {!! Form::open(['route' => ['dashboard.postGenerateReport', 'list_of_unreturned_books']]) !!}
+                                <div class="form-group">
+                                    {!! Form::label('from', 'From: *') !!}
+                                    {!! Form::date('from', null, ['class' => 'form-control', 'placeholder' => '', 'required' => 'required']) !!}
+                                </div>
+                                <div class="form-group">
+                                    {!! Form::label('to', 'To: *') !!}
+                                    {!! Form::date('to', null, ['class' => 'form-control', 'placeholder' => '', 'required' => 'required']) !!}
+                                </div>
+                                <div class="form-group text-right">
+                                    {!! Form::submit('View Report', array('class' => 'btn btn-warning')) !!}
+                                </div>
+                            {!! Form::close() !!}
+                        </div>
+                    </div>
+                    <div class="panel panel-red">
+                        <div class="panel-heading">
+                            <strong class="panel-title">Weeding Report</strong>
+                        </div>
+                        <div class="panel-body">
+                            {!! Form::open(['route' => ['dashboard.postGenerateReport', 'weeding']]) !!}
                                 <div class="form-group">
                                     {!! Form::label('from', 'From: *') !!}
                                     {!! Form::date('from', null, ['class' => 'form-control', 'placeholder' => '', 'required' => 'required']) !!}
