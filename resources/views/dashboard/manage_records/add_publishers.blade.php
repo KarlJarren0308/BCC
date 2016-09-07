@@ -42,6 +42,7 @@
                         <li><a href="{{ route('dashboard.getLoanBooks') }}">Loan Books</a></li>
                         <li><a href="{{ route('dashboard.getReservedBooks') }}">Reserved Books</a></li>
                         <li><a href="{{ route('dashboard.getReceiveBooks') }}">Receive Books</a></li>
+                        <li><a href="{{ route('dashboard.getManageRecords', 'penalties') }}">Manage Penalties</a></li>
                         <li><a href="{{ route('dashboard.getManageRecords', 'books') }}">Manage Book Records</a></li>
                         <li><a href="{{ route('dashboard.getManageRecords', 'authors') }}">Manage Author Records</a></li>
                         <li><a class="active" href="{{ route('dashboard.getManageRecords', 'publishers') }}">Manage Publisher Records<span class="badge pull-right">Add</span></a></li>
