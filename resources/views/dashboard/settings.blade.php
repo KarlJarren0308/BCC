@@ -111,6 +111,30 @@
                             {!! Form::close() !!}
                         </div>
                     </div>
+                    <div class="panel panel-red">
+                        <div class="panel-heading">
+                            <strong class="panel-title">Online Public Access Catalog Penalty Amount</strong>
+                        </div>
+                        <div class="panel-body">
+                            <p class="text-justify">Set how much penalty should be accounted per day.</p>
+                            <p class="text-justify"><em>Note: This setting applies to student borrowers only.</em></p>
+                            {!! Form::open(['route' => 'dashboard.postSystemSettings']) !!}
+                                @foreach($settings as $item)
+                                    @if($item['name'] == 'penalty_per_day')
+                                        <?php $penaltyPerDay = $item['value']; ?>
+                                    @endif
+                                @endforeach
+                                <input type="hidden" name="settingName" value="{{ md5('penalty_per_day') }}">
+                                <div class="form-group">
+                                    <label for="settingValue">Set the penalty amount:</label>
+                                    {!! Form::number('settingValue', $penaltyPerDay, ['class' => 'form-control', 'min' => '1', 'placeholder' => '', 'required' => 'required']) !!}
+                                </div>
+                                <div class="form-group text-right">
+                                    <input type="submit" class="btn btn-danger" value="Save Changes">
+                                </div>
+                            {!! Form::close() !!}
+                        </div>
+                    </div>
                 </div>
                 <div class="col-sm-4">
                     <div class="panel panel-red">
@@ -119,6 +143,7 @@
                         </div>
                         <div class="panel-body">
                             <p class="text-justify">Set how many books can a borrower reserve.</p>
+                            <p class="text-justify"><em>Note: This setting applies to student borrowers only.</em></p>
                             {!! Form::open(['route' => 'dashboard.postSystemSettings']) !!}
                                 @foreach($settings as $item)
                                     @if($item['name'] == 'reservation_count')
@@ -136,6 +161,30 @@
                             {!! Form::close() !!}
                         </div>
                     </div>
+                    <div class="panel panel-red">
+                        <div class="panel-heading">
+                            <strong class="panel-title">Online Public Access Catalog Loan Limit</strong>
+                        </div>
+                        <div class="panel-body">
+                            <p class="text-justify">Set how many books can a borrower borrow.</p>
+                            <p class="text-justify"><em>Note: This setting applies to student borrowers only.</em></p>
+                            {!! Form::open(['route' => 'dashboard.postSystemSettings']) !!}
+                                @foreach($settings as $item)
+                                    @if($item['name'] == 'loan_limit')
+                                        <?php $loanLimit = $item['value']; ?>
+                                    @endif
+                                @endforeach
+                                <input type="hidden" name="settingName" value="{{ md5('loan_limit') }}">
+                                <div class="form-group">
+                                    <label for="settingValue">Set the loan limit:</label>
+                                    {!! Form::number('settingValue', $loanLimit, ['class' => 'form-control', 'min' => '1', 'placeholder' => '', 'required' => 'required']) !!}
+                                </div>
+                                <div class="form-group text-right">
+                                    <input type="submit" class="btn btn-danger" value="Save Changes">
+                                </div>
+                            {!! Form::close() !!}
+                        </div>
+                    </div>
                 </div>
                 <div class="col-sm-4">
                     <div class="panel panel-red">
@@ -144,6 +193,7 @@
                         </div>
                         <div class="panel-body">
                             <p class="text-justify">Set how many days a reservation has before expiring.</p>
+                            <p class="text-justify"><em>Note: This setting applies to student borrowers only.</em></p>
                             {!! Form::open(['route' => 'dashboard.postSystemSettings']) !!}
                                 @foreach($settings as $item)
                                     @if($item['name'] == 'reservation_period')
@@ -167,6 +217,7 @@
                         </div>
                         <div class="panel-body">
                             <p class="text-justify">Set how many days a loaned book has before computation of penalty starts.</p>
+                            <p class="text-justify"><em>Note: This setting applies to student borrowers only.</em></p>
                             {!! Form::open(['route' => 'dashboard.postSystemSettings']) !!}
                                 @foreach($settings as $item)
                                     @if($item['name'] == 'loan_period')

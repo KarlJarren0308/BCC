@@ -6,12 +6,10 @@
 
 @section('content')
     <?php
-        function isHoliday($date) {
-            global $holidays;
-
+        function isHoliday($date, $holidays) {
             $date = date('Y-m-d', strtotime($date));
 
-            if($holidays) {
+            if(count($holidays) > 0) {
                 foreach($holidays as $holiday) {
                     if($date == date('Y-m-d', strtotime($holiday->Date_Stamp))) {
                         return true;
@@ -35,49 +33,7 @@
         }
 
         function nextDay($date) {
-            return date('Y-m-d', strtotime('+1 day', strtotime($date)));
-        }
-
-        function computePenalty($dateLoaned) {
-            $loanPeriod = 1;
-            $penaltyPerDay = 10;
-
-            $dateLoaned = date('Y-m-d H:i:s', strtotime($dateLoaned));
-            $datePenaltyStarts = date('Y-m-d H:i:s', strtotime('+' . $loanPeriod . ' days', strtotime($dateLoaned)));
-            $daysCount = ceil(strtotime($datePenaltyStarts) - strtotime($dateLoaned)) / 86400;
-            
-            for($i = 1; $i <= $daysCount; $i++) {
-                $currentDate = date('Y-m-d H:i:s', strtotime('+' . $i . ' days', strtotime($dateLoaned)));
-
-                if(isWeekend($currentDate)) {
-                    $daysCount++;
-                    $datePenaltyStarts = nextDay($datePenaltyStarts);
-                } else {
-                    if(isHoliday($currentDate)) {
-                        $daysCount++;
-                        $datePenaltyStarts = nextDay($datePenaltyStarts);
-                    }
-                }
-            }
-
-            $dateReturned = date('Y-m-d H:i:s');
-            $daysCount = ceil(strtotime($dateReturned) - strtotime($datePenaltyStarts)) / 86400;
-
-            for($j = 1; $j <= $daysCount; $j++) {
-                $currentDate = date('Y-m-d H:i:s', strtotime('+' . $i . ' days', strtotime($datePenaltyStarts)));
-
-                if(isWeekend($currentDate)) {
-                    $daysCount++;
-                    $datePenaltyStarts = nextDay($datePenaltyStarts);
-                } else {
-                    if(isHoliday($currentDate)) {
-                        $daysCount++;
-                        $datePenaltyStarts = nextDay($datePenaltyStarts);
-                    }
-                }
-            }
-
-            return (double) ceil((strtotime($dateReturned) - strtotime($datePenaltyStarts)) / 86400) * (double) $penaltyPerDay;
+            return date('Y-m-d H:i', strtotime('+1 day', strtotime($date)));
         }
     ?>
     <div id="wrapper">
@@ -139,8 +95,11 @@
         <div id="page-wrapper">
             <div class="row">
                 <div class="col-lg-12">
-                    <h1 class="page-header">Dashboard</h1>
+                    <h1 class="page-header">Manage Penalties</h1>
                 </div>
+            </div>
+            <div class="text-left gap-bottom">
+                @include('partials.flash_alert')
             </div>
             <table id="loans-table" class="table table-bordered table-striped">
                 <thead>
@@ -180,7 +139,47 @@
                                 @if(isset($loan->Receive_ID) && $loan->Receive_ID != -1)
                                     &#8369; {{ $loan->Penalty }}
                                 @else
-                                    &#8369; {{ computePenalty($loan->Loan_Date_Stamp . ' ' . $loan->Loan_Time_Stamp) }}
+                                    <?php
+                                        /*
+                                         * Penalty Computation
+                                         */
+                                        $dateLoaned = date('Y-m-d H:i', strtotime($loan->Loan_Date_Stamp . ' ' . $loan->Loan_Time_Stamp));
+                                        $datePenaltyStarts = date('Y-m-d H:i', strtotime('+' . $loanPeriod . ' days', strtotime($dateLoaned)));
+                                        $daysCount = ceil((strtotime($datePenaltyStarts) - strtotime($dateLoaned)) / 86400);
+                                        
+                                        for($i = 1; $i <= $daysCount; $i++) {
+                                            $currentDate = date('Y-m-d H:i', strtotime('+' . $i . ' days', strtotime($dateLoaned)));
+
+                                            if(isWeekend($currentDate)) {
+                                                $daysCount++;
+                                                $datePenaltyStarts = nextDay($datePenaltyStarts);
+                                            } else {
+                                                if(isHoliday($currentDate, $holidays)) {
+                                                    $daysCount++;
+                                                    $datePenaltyStarts = nextDay($datePenaltyStarts);
+                                                }
+                                            }
+                                        }
+
+                                        $dateReturned = date('Y-m-d H:i');
+                                        $daysCount = ceil((strtotime($dateReturned) - strtotime($datePenaltyStarts)) / 86400);
+
+                                        for($j = 1; $j <= $daysCount; $j++) {
+                                            $currentDate = date('Y-m-d H:i', strtotime('+' . $j . ' days', strtotime($datePenaltyStarts)));
+
+                                            if(isWeekend($currentDate)) {
+                                                $daysCount++;
+                                                $datePenaltyStarts = nextDay($datePenaltyStarts);
+                                            } else {
+                                                if(isHoliday($currentDate, $holidays)) {
+                                                    $daysCount--;
+                                                    $datePenaltyStarts = nextDay($datePenaltyStarts);
+                                                }
+                                            }
+                                        }
+
+                                        echo '&#8369; ' . abs(ceil((strtotime($dateReturned) - strtotime($datePenaltyStarts)) / 86400)) * (double) $penaltyPerDay;
+                                    ?>
                                 @endif
                             </td>
                             <td class="text-center">

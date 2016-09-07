@@ -80,12 +80,12 @@ class DataController extends Controller
             }
         }
 
-        $dateLoaned = date('Y-m-d H:i:s', strtotime($dateLoaned));
-        $datePenaltyStarts = date('Y-m-d H:i:s', strtotime('+' . $loanPeriod . ' days', strtotime($dateLoaned)));
+        $dateLoaned = date('Y-m-d H:i', strtotime($dateLoaned));
+        $datePenaltyStarts = date('Y-m-d H:i', strtotime('+' . $loanPeriod . ' days', strtotime($dateLoaned)));
         $daysCount = ceil(strtotime($datePenaltyStarts) - strtotime($dateLoaned)) / 86400;
         
         for($i = 1; $i <= $daysCount; $i++) {
-            $currentDate = date('Y-m-d H:i:s', strtotime('+' . $i . ' days', strtotime($dateLoaned)));
+            $currentDate = date('Y-m-d H:i', strtotime('+' . $i . ' days', strtotime($dateLoaned)));
 
             if($this->isWeekend($currentDate)) {
                 $daysCount++;
@@ -98,11 +98,11 @@ class DataController extends Controller
             }
         }
 
-        $dateReturned = date('Y-m-d H:i:s');
+        $dateReturned = date('Y-m-d H:i');
         $daysCount = ceil(strtotime($dateReturned) - strtotime($datePenaltyStarts)) / 86400;
 
         for($j = 1; $j <= $daysCount; $j++) {
-            $currentDate = date('Y-m-d H:i:s', strtotime('+' . $i . ' days', strtotime($datePenaltyStarts)));
+            $currentDate = date('Y-m-d H:i', strtotime('+' . $i . ' days', strtotime($datePenaltyStarts)));
 
             if($this->isWeekend($currentDate)) {
                 $daysCount++;
@@ -115,7 +115,7 @@ class DataController extends Controller
             }
         }
 
-        return (double) abs(ceil((strtotime($dateReturned) - strtotime($datePenaltyStarts)) / 86400)) * (double) $penaltyPerDay;
+        return abs(ceil((strtotime($dateReturned) - strtotime($datePenaltyStarts)) / 86400)) * (double) $penaltyPerDay;
     }
 
     public function postRequestData($what, Request $request) {

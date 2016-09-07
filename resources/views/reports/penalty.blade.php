@@ -134,6 +134,7 @@
                     <th>Date Borrowed</th>
                     <th>Date Returned</th>
                     <th>Penalty</th>
+                    <th>Settlement Status</th>
                 </tr>
             </thead>
             <tbody>
@@ -156,6 +157,9 @@
                             </td>
                             <td class="text-center">
                                 Php {{ $book->Penalty }}
+                            </td>
+                            <td class="text-center">
+                                {{ ucfirst($book->Settlement_Status) }}
                             </td>
                         @else
                             <td class="text-center" colspan="2">Not yet Returned</td>
