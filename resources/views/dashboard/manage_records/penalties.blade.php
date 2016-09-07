@@ -184,10 +184,12 @@
                                 @endif
                             </td>
                             <td class="text-center">
-                                @if($loan->Settlement_Status == 'unpaid')
-                                    <button class="btn btn-primary btn-xs" data-button="settle-payment">Settle</button>
-                                @else
-                                    <button class="btn btn-danger btn-xs">Already Settled</button>
+                                @if(isset($loan->Receive_ID))
+                                    @if($loan->Settlement_Status == 'unpaid')
+                                        <button class="btn btn-primary btn-xs" data-button="settle-payment">Settle</button>
+                                    @else
+                                        <button class="btn btn-danger btn-xs">Already Settled</button>
+                                    @endif
                                 @endif
                             </td>
                         </tr>

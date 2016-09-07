@@ -4,4 +4,8 @@ $(document).ready(function() {
             { bSearchable: false, bSortable: false, aTargets: [8] }
         ]
     });
+
+    onDynamicDataButtonClick('settle-button', function() {
+        alert();
+    });
 });
