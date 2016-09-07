@@ -1,3 +1,4 @@
+
 @extends('template')
 
 @section('content')
@@ -6,6 +7,7 @@
         $reservationCount = 0;
         $reservationPeriod = 0;
         $loanPeriod = 0;
+        $penaltyPerDay = 0;
     ?>
     <div id="wrapper">
         <nav class="navbar navbar-custom navbar-static-top" role="navigation" style="margin-bottom: 0">
