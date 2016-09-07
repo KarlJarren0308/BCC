@@ -253,7 +253,7 @@ $(document).ready(function() {
                                     receipt += '<li>';
                                     receipt += bookInfo[k]['title'] + ' [C' + padZeros(bookInfo[k]['accession'], 4) + ']';
 
-                                    if(response['barcodes'][j]['condition'] == 'good') {
+                                    if(response['data']['barcodes'][j]['condition'] == 'good') {
                                         receipt += '<div>Penalty: ' + response['data']['barcodes'][j]['penalty'] + '</div>';
                                     }
 
