@@ -28,6 +28,34 @@ function padZeros(number, length) {
     return output;
 }
 
+function isHolidays(holidays, dateStamp) {
+    if(holidays.length > 0) {
+        for(var i = 0; i < holidays.length; i) {
+            if(moment(dateStamp).isSame(holidays['Date_Stamp'])) {
+                return true;
+            }
+        }
+    }
+
+    return false;
+}
+
+function isWeekend(dateStamp) {
+    dateStamp = moment(dateStamp).format('dddd');
+
+    if(dateStamp == 'Sunday') {
+        return true;
+    } else if(dateStamp == 'Saturday') {
+        return true;
+    } else {
+        return false;
+    }
+}
+
+function nextDay(dateStamp) {
+    return moment(dateStamp).add(1, 'days').format('YYYY-MM-DD HH:mm:ss');
+}
+
 $(document).ready(function() {
     var onLoans = 0;
     var loanLimit = 1;
@@ -51,6 +79,7 @@ $(document).ready(function() {
                 var name = '';
                 var onHand = 0;
                 var onL = 0;
+                var penalty = 0;
 
                 if(response['status'] == 'Success') {
                     if(response['data']['borrower']['Middle_Name'].length > 1) {
@@ -59,10 +88,16 @@ $(document).ready(function() {
                         name = response['data']['borrower']['First_Name'] + ' ' + response['data']['borrower']['Last_Name'];
                     }
 
+                    penalty = 0;
+
                     for(var i = 0; i < response['data']['loan_history'].length; i++) {
                         if(response['data']['loan_history'][i]['Loan_Status'] == 'active') {
                             onHand++;
                         }
+                    }
+
+                    for(var j = 0; j < response['data']['receive_history'].length; j++) {
+                        penalty += response['data']['receive_history'][j]['Penalty'];
                     }
 
                     onL = response['data']['loan_history'].length;
@@ -79,7 +114,12 @@ $(document).ready(function() {
                     output += '</tr>';
                     output += '</tbody>';
                     output += '</table>';
-                    output += '<div class="text-right"><button class="btn btn-danger btn-xs" data-button="select-borrower-button" data-var-username="' + response['data']['borrower']['Username'] + '" data-var-type="' + response['data']['borrower']['Type'] + '" data-var-name="' + name + '" data-var-onloans="' + onL + '">Select</button></div>';
+
+                    if(penalty) {
+                        output += '<div><em>This borrower has an existing penalty.</em></div>';
+                    }
+
+                    output += '<div class="text-right"><button class="btn btn-danger btn-xs" data-button="select-borrower-button" data-var-username="' + response['data']['borrower']['Username'] + '" data-var-type="' + response['data']['borrower']['Type'] + '" data-var-name="' + name + '" data-var-onloans="' + onL + '" data-var-penalty="' + penalty + '">Select</button></div>';
                     output += '</div>';
                     output += '</div>';
                 } else {
@@ -92,21 +132,26 @@ $(document).ready(function() {
                     $('#search-borrower-list').html(output);
 
                     $('[data-button="select-borrower-button"]').click(function() {
-                        $(this).parent().parent().parent().remove();
-                        $('#borrower-block').html('<div class="list-group-item"><h3 class="list-group-item-heading">' + $(this).data('var-name') + '</h3><div>Borrower ID: <em>' + $(this).data('var-username') + '</em></div><div>Type: <em>' + $(this).data('var-type') + '</em></div></div>');
-
-                        onLoans = $(this).data('var-onloans');
-
-                        borrowerInfo = {
-                            username: $(this).data('var-username'),
-                            type: $(this).data('var-type'),
-                            full_name: $(this).data('var-name')
-                        };
-
-                        if(!$.isEmptyObject(borrowerInfo) && bookInfo.length > 0) {
-                            activateLoanButton();
+                        if($(this).data('var-penalty') > 0) {
+                            setModalContent('Loan Books', 'Oops! This borrower has an unpaid penalty. Please remind the borrower to pay the existing penalty before borrowing another book.', '');
+                            openModal();
                         } else {
-                            deactivateLoanButton();
+                            $(this).parent().parent().parent().remove();
+                            $('#borrower-block').html('<div class="list-group-item"><h3 class="list-group-item-heading">' + $(this).data('var-name') + '</h3><div>Borrower ID: <em>' + $(this).data('var-username') + '</em></div><div>Type: <em>' + $(this).data('var-type') + '</em></div></div>');
+
+                            onLoans = $(this).data('var-onloans');
+
+                            borrowerInfo = {
+                                username: $(this).data('var-username'),
+                                type: $(this).data('var-type'),
+                                full_name: $(this).data('var-name')
+                            };
+
+                            if(!$.isEmptyObject(borrowerInfo) && bookInfo.length > 0) {
+                                activateLoanButton();
+                            } else {
+                                deactivateLoanButton();
+                            }
                         }
                     });
                 });
@@ -309,8 +354,28 @@ $(document).ready(function() {
 
                     $('[data-button="print-button"]').click(function() {
                         var tab = window.open();
+                        var dateToday = moment().format('YYYY-MM-DD HH:mm:ss');
+                        var dueDate = moment(dateToday).add(response['data']['loan_period'], 'days').format('YYYY-MM-DD HH:mm:ss');
+                        var graceDays = moment().diff(dateToday, 'days');
+                        var currentDate = '';
 
-                        tab.document.write('<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><title>Binangonan Catholic College</title><style>.block { border: 1px solid #ddd; display: inline-block; font-family: "Helvetica"; font-size: 12px; padding: 10px 15px; width: 200px; } .header >.school-name { font-size: 18px; text-align: center; } .header >.system-type { font-size: 10px; text-align: center; } .body { margin-top: 15px; } .body >.entry-info { text-indent: -15px; padding-left: 15px; } ul { margin-top: 2px; }</style></head><body><div class="block"><div class="header"><div class="school-name">Binangonan Catholic College</div><div class="system-type">Library System</div></div><div class="body"><div class="entry-info"><strong>Borrower ID: </strong>' + borrowerInfo['username'] + '</div><div class="entry-info"><strong>Borrower: </strong>' + borrowerInfo['full_name'] + '</div><div class="entry-info"><strong>Type: </strong>' + borrowerInfo['type'] + '</div><br><br><strong>Borrower Book(s):</strong><ul>' + receipt + '</ul><div class="entry-info"><strong>Date Borrowed: </strong>' + moment().format('MMMM DD, YYYY') + '</div></div></div></body></html>');
+                        console.log(response['data']['loan_period']);
+
+                        for(var i = 1; i <= graceDays; i++) {
+                            currentDate = moment(dateToday).add(i, 'days');
+
+                            if(isWeekend(currentDate)) {
+                                graceDays++;
+                                dueDate = nextDay(dueDate);
+                            } else {
+                                if(isHoliday(response['data']['holidays'], currentDate)) {
+                                    graceDays++;
+                                    dueDate = nextDay(dueDate);
+                                }
+                            }
+                        }
+
+                        tab.document.write('<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><title>Binangonan Catholic College</title><style>.block { border: 1px solid #ddd; display: inline-block; font-family: "Helvetica"; font-size: 12px; padding: 10px 15px; width: 200px; } .header >.school-name { font-size: 18px; text-align: center; } .header >.system-type { font-size: 10px; text-align: center; } .body { margin-top: 15px; } .body >.entry-info { text-indent: -15px; padding-left: 15px; } ul { margin-top: 2px; }</style></head><body><div class="block"><div class="header"><div class="school-name">Binangonan Catholic College</div><div class="system-type">Library System</div></div><div class="body"><div class="entry-info"><strong>Borrower ID: </strong>' + borrowerInfo['username'] + '</div><div class="entry-info"><strong>Borrower: </strong>' + borrowerInfo['full_name'] + '</div><div class="entry-info"><strong>Type: </strong>' + borrowerInfo['type'] + '</div><br><br><strong>Borrowerd Book(s):</strong><ul>' + receipt + '</ul><div class="entry-info"><strong>Date Borrowed: </strong>' + moment().format('MMMM DD, YYYY (hh:mm A)') + '</div><div class="entry-info"><strong>Due Date: </strong>' + moment(dueDate).format('MMMM DD, YYYY (hh:mm A)') + '</div></div></div></body></html>');
                         tab.print();
                         tab.close();
 

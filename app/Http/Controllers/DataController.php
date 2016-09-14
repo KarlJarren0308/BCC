@@ -171,6 +171,7 @@ class DataController extends Controller
                 }
 
                 $data['loan_history'] = TblLoans::where('Username', $request->input('searchKeyword'))->whereNull('tbl_receives.Receive_ID')->leftJoin('tbl_receives', 'tbl_loans.Loan_ID', '=', 'tbl_receives.Reference_ID')->get();
+                $data['receive_history'] = TblLoans::where('Username', $request->input('searchKeyword'))->join('tbl_receives', 'tbl_loans.Loan_ID', '=', 'tbl_receives.Reference_ID')->get();
 
                 if($ctr > 0) {
                     return response()->json(['status' => 'Success', 'message' => '1 borrower found.', 'data' => $data]);

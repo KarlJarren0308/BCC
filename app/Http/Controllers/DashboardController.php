@@ -1364,8 +1364,23 @@ class DashboardController extends Controller
                 }
             }
 
+            app('App\Http\Controllers\DataController')->checkSettings();
+
+            $settingsFile = storage_path('app/public') . '/settings.xml';
+            $xml = simplexml_load_file($settingsFile);
+
+            foreach($xml as $item) {
+                if($item['name'] == 'loan_period') {
+                    $loan_period = (string) $item['value'];
+
+                    break;
+                }
+            }
+
+            $holidays = TblHolidays::get();
+
             if($ctr > 0) {
-                return response()->json(['status' => 'Success', 'message' => 'Loan Successful. You may now hand the book(s) to the borrower, ' . $borrowerName . '.', 'data' => ['barcodes' => $availableBarcodes, 'borrower' => $borrowerName]]);
+                return response()->json(['status' => 'Success', 'message' => 'Loan Successful. You may now hand the book(s) to the borrower, ' . $borrowerName . '.', 'data' => ['barcodes' => $availableBarcodes, 'borrower' => $borrowerName, 'loan_period' => $loan_period, 'holidays' => $holidays]]);
             } else {
                 return response()->json(['status' => 'Failed', 'message' => 'Oops! Failed to loan book.']);
             }

@@ -132,7 +132,6 @@
                             <td>
                                 @if(isset($loan->Receive_ID) && $loan->Receive_ID != -1)
                                     {{ date('F d, Y (h:i A)', strtotime($loan->Receive_Date_Stamp . ' ' . $loan->Receive_Time_Stamp)) }}
-                                @else
                                 @endif
                             </td>
                             <td>
@@ -143,6 +142,8 @@
                                         /*
                                          * Penalty Computation
                                          */
+
+                                        $totalPenalty = 0;
                                         $dateLoaned = date('Y-m-d H:i', strtotime($loan->Loan_Date_Stamp . ' ' . $loan->Loan_Time_Stamp));
                                         $datePenaltyStarts = date('Y-m-d H:i', strtotime('+' . $loanPeriod . ' days', strtotime($dateLoaned)));
                                         $daysCount = ceil((strtotime($datePenaltyStarts) - strtotime($dateLoaned)) / 86400);
@@ -178,7 +179,9 @@
                                             }
                                         }
 
-                                        echo '&#8369; ' . abs(ceil((strtotime($dateReturned) - strtotime($datePenaltyStarts)) / 86400)) * (double) $penaltyPerDay;
+                                        $totalPenalty = abs(ceil((strtotime($dateReturned) - strtotime($datePenaltyStarts)) / 86400)) * (double) $penaltyPerDay;
+
+                                        echo '&#8369; ' . $totalPenalty;
                                     ?>
                                 @endif
                             </td>
