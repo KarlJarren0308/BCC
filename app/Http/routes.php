@@ -26,6 +26,7 @@ Route::get('receive_books', ['as' => 'dashboard.getReceiveBooks', 'uses' => 'Das
 Route::get('settle_penalty/{id}', ['as' => 'dashboard.getSettlePenalty', 'uses' => 'DashboardController@getSettlePenalty']);
 Route::get('manage_records/{what}', ['as' => 'dashboard.getManageRecords', 'uses' => 'DashboardController@getManageRecords']);
 Route::get('manage_records/barcodes/{id}', ['as' => 'dashboard.getBarcodes', 'uses' => 'DashboardController@getBarcodes']);
+Route::get('manage_records/weeding/{id}', ['as' => 'dashboard.getWeedingBarcodes', 'uses' => 'DashboardController@getWeedingBarcodes']);
 Route::get('system_settings', ['as' => 'dashboard.getSystemSettings', 'uses' => 'DashboardController@getSystemSettings']);
 Route::get('add_record/{what}', ['as' => 'dashboard.getAddRecord', 'uses' => 'DashboardController@getAddRecord']);
 Route::get('edit_record/{what}/{id}', ['as' => 'dashboard.getEditRecord', 'uses' => 'DashboardController@getEditRecord']);

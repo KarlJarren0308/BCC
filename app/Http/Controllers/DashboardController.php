@@ -149,7 +149,7 @@ class DashboardController extends Controller
                 break;
             case 'books':
                 $data['bounds'] = TblBounds::join('tbl_authors', 'tbl_bounds.Author_ID', '=', 'tbl_authors.Author_ID')->get();
-                $data['books'] = TblBooks::whereNull('tbl_weeding.Book_ID')->leftJoin('tbl_weeding', 'tbl_books.Book_ID', '=', 'tbl_weeding.Book_ID')->select('tbl_books.*')->get();
+                $data['books'] = TblBarcodes::whereNull('tbl_weeding.Accession_Number')->join('tbl_books', 'tbl_barcodes.Book_ID', '=', 'tbl_books.Book_ID')->leftJoin('tbl_weeding', 'tbl_barcodes.Accession_Number', '=', 'tbl_weeding.Accession_Number')->groupBy('tbl_books.Title')->select('tbl_books.*')->get();
 
                 return view('dashboard.manage_records.books', $data);
 
@@ -197,7 +197,7 @@ class DashboardController extends Controller
 
                 break;
             case 'weeding':
-                $data['weeding'] = TblWeeding::join('tbl_books', 'tbl_weeding.Book_ID', '=', 'tbl_books.Book_ID')->get();
+                $data['weeding'] = TblWeeding::join('tbl_books', 'tbl_weeding.Book_ID', '=', 'tbl_books.Book_ID')->groupBy('tbl_books.Title')->get();
 
                 return view('dashboard.manage_records.weeding', $data);
 
@@ -223,9 +223,30 @@ class DashboardController extends Controller
         }
 
         $data['book'] = TblBooks::where('Book_ID', $id)->first();
-        $data['barcodes'] = TblBarcodes::where('Book_ID', $id)->get();
+        $data['barcodes'] = TblBarcodes::whereNull('tbl_weeding.Accession_Number')->where('tbl_barcodes.Book_ID', $id)->leftJoin('tbl_weeding', 'tbl_barcodes.Accession_Number', '=', 'tbl_weeding.Accession_Number')->select('tbl_barcodes.*')->get();
 
         return view('dashboard.manage_records.barcodes', $data);
+    }
+
+    public function getWeedingBarcodes($id) {
+        if(!session()->has('username')) {
+            session()->flash('flash_status', 'danger');
+            session()->flash('flash_message', 'Oops! Please login first.');
+
+            return redirect()->route('cardinal.getIndex');
+        } else {
+            if(session()->get('type') != 'Librarian') {
+                session()->flash('flash_status', 'danger');
+                session()->flash('flash_message', 'Oops! You do not have to privilege to access the dashboard.');
+
+                return redirect()->route('cardinal.getOpac');
+            }
+        }
+
+        $data['book'] = TblBooks::where('Book_ID', $id)->first();
+        $data['barcodes'] = TblBarcodes::where('tbl_weeding.Book_ID', $id)->join('tbl_weeding', 'tbl_barcodes.Accession_Number', '=', 'tbl_weeding.Accession_Number')->get();
+
+        return view('dashboard.manage_records.weeding_barcodes', $data);
     }
 
     public function getAddRecord($what) {
@@ -377,11 +398,18 @@ class DashboardController extends Controller
                 $barcode = TblBarcodes::where('Accession_Number', $id)->first();
 
                 if($barcode) {
-                    $query = TblBarcodes::where('Accession_Number', $id)->delete();
+                    $query = TblWeeding::where('Accession_Number', $id)->delete();
 
                     if($query) {
-                        session()->flash('flash_status', 'success');
-                        session()->flash('flash_message', 'Accession Number has been deleted.');
+                        $query = TblBarcodes::where('Accession_Number', $id)->delete();
+
+                        if($query) {
+                            session()->flash('flash_status', 'success');
+                            session()->flash('flash_message', 'Accession Number has been deleted.');
+                        } else {
+                            session()->flash('flash_status', 'danger');
+                            session()->flash('flash_message', 'Oops! Failed to delete accession number. Please refresh the page and try again.');
+                        }
                     } else {
                         session()->flash('flash_status', 'danger');
                         session()->flash('flash_message', 'Oops! Failed to delete accession number. Please refresh the page and try again.');
@@ -391,7 +419,7 @@ class DashboardController extends Controller
                     session()->flash('flash_message', 'Oops! Accession Number doesn\'t exist anymore.');
                 }
 
-                return redirect()->route('dashboard.getBarcodes', $barcode['Book_ID']);
+                return redirect()->route('dashboard.getWeedingBarcodes', $barcode->Book_ID);
 
                 break;
             case 'books':
@@ -653,7 +681,7 @@ class DashboardController extends Controller
         switch($what) {
             case 'barcodes':
                 $query = TblWeeding::insert([
-                    'Accession_Number' => $request->input('reason'),
+                    'Accession_Number' => $request->input('accession'),
                     'Book_ID' => $id,
                     'Reason' => $request->input('reason'),
                     'Date_Weeded' => date('Y-m-d')
@@ -667,13 +695,24 @@ class DashboardController extends Controller
 
                 break;
             case 'books':
-                $query = TblWeeding::insert([
-                    'Book_ID' => $id,
-                    'Reason' => $request->input('reason'),
-                    'Date_Weeded' => date('Y-m-d')
-                ]);
+                $ctr = 0;
 
-                if($query) {
+                $barcodes = TblBarcodes::where('Book_ID', $id)->get();
+
+                foreach($barcodes as $barcode) {
+                    $query = TblWeeding::insert([
+                        'Accession_Number' => $barcode->Accession_Number,
+                        'Book_ID' => $barcode->Book_ID,
+                        'Reason' => $request->input('reason'),
+                        'Date_Weeded' => date('Y-m-d')
+                    ]);
+
+                    if($query) {
+                        $ctr++;
+                    }
+                }
+
+                if($ctr > 0) {
                     return response()->json(['status' => 'success', 'message' => 'Book has been weeded.']);
                 } else {
                     return response()->json(['status' => 'danger', 'message' => 'Oops! Failed to weed book. Please refresh the page and try again.']);

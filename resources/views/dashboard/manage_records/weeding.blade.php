@@ -64,7 +64,7 @@
         <div id="page-wrapper">
             <div class="row">
                 <div class="col-lg-12">
-                    <h1 class="page-header">Weeding Books</h1>
+                    <h1 class="page-header">Weeded Books</h1>
                 </div>
             </div>
             <div class="text-left gap-bottom">
@@ -73,27 +73,28 @@
             <table id="books-table" class="table table-bordered table-striped">
                 <thead>
                     <tr>
+                        <th>Call Number</th>
                         <th>Title</th>
                         <th>Edition</th>
-                        <th>ISBN</th>
                         <td>Date Weeded</td>
                         <td>Status</td>
                         <td>Reason</td>
-                        <th width="20%"></th>
+                        <th width="25%"></th>
                     </tr>
                 </thead>
                 <tbody>
                     @foreach($weeding as $item)
                         <tr>
+                            <td>{{ $item->Call_Number }}</td>
                             <td>{{ $item->Title }}</td>
                             <td>{{ $item->Edition }}</td>
-                            <td>{{ $item->ISBN }}</td>
                             <td>{{ date('F d, Y', strtotime($item->Date_Weeded)) }}</td>
                             <td>{{ $item->Weeding_Status }}</td>
                             <td>{{ $item->Reason }}</td>
                             <td class="text-center">
                                 @if($item->Weeding_Status == 'pending')
-                                    <a href="{{ route('dashboard.getRecoverBook', $item->Book_ID) }}" class="btn btn-info btn-xs">Recover</a>
+                                    <a href="{{ route('dashboard.getRecoverBook', $item->Book_ID) }}" class="btn btn-primary btn-xs">Recover</a>
+                                    <a href="{{ route('dashboard.getWeedingBarcodes', $item->Book_ID) }}" class="btn btn-info btn-xs">Accession Number</a>
                                     <a href="{{ route('dashboard.getDeleteRecord', ['books', $item->Book_ID]) }}" class="btn btn-danger btn-xs">Delete</a>
                                 @endif
                             </td>
